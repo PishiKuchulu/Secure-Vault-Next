@@ -28,6 +28,7 @@ value class VaultId(val value: String) {
     }
 }
 
+@Serializable
 @JvmInline
 value class ItemId(val value: String) {
     init {
