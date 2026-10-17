@@ -155,14 +155,4 @@ class VaultTypeConverters {
     fun toAuthenticationMethod(value: String?): AuthenticationMethod? =
         value?.let { runCatching { AuthenticationMethod.valueOf(it) }.getOrNull() ?: AuthenticationMethod.MASTER_PASSWORD }
 
-    // --- Collections ---
-
-    @TypeConverter
-    fun fromTagIdSet(value: Set<TagId>?): String? = value?.joinToString(",") { it.value }
-
-    @TypeConverter
-    fun toTagIdSet(value: String?): Set<TagId>? = value?.let { s ->
-        if (s.isEmpty()) emptySet()
-        else s.split(",").map { TagId(it) }.toSet()
-    }
 }
