@@ -15,7 +15,7 @@ import com.securevault.next.data.persistence.entity.CategoryEntity
 import com.securevault.next.data.persistence.entity.CreditCardEntity
 import com.securevault.next.data.persistence.entity.IdentityDocumentEntity
 import com.securevault.next.data.persistence.entity.ItemEntity
-import com.securevault.next.data.persistence.entity.ItemFtsEntity
+// BISECT import
 import com.securevault.next.data.persistence.entity.ItemTagCrossRef
 import com.securevault.next.data.persistence.entity.PasswordEntity
 import com.securevault.next.data.persistence.entity.PasswordHistoryEntity
@@ -39,7 +39,7 @@ import com.securevault.next.data.persistence.entity.VaultEntity
     entities = [
         VaultEntity::class,
         ItemEntity::class,
-        ItemFtsEntity::class,
+        // BISECT: ItemFtsEntity::class,
         CategoryEntity::class,
         TagEntity::class,
         ItemTagCrossRef::class,
@@ -67,7 +67,7 @@ abstract class SecureVaultDatabase : RoomDatabase(), TransactionRunner {
     abstract fun categoryDao(): CategoryDao
     abstract fun tagDao(): TagDao
     abstract fun itemDao(): ItemDao
-    abstract fun searchDao(): SearchDao
+    // BISECT: abstract fun searchDao(): SearchDao
     abstract fun auditDao(): AuditDao
     abstract fun backupDao(): BackupDao
 
