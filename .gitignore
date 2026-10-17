@@ -1,0 +1,39 @@
+# =====================================================================
+# Build outputs
+# =====================================================================
+*.class
+bin/
+gen/
+out/
+build/
+.gradle/
+captures/
+.cxx/
+
+# =====================================================================
+# Local configuration that must never be committed
+# =====================================================================
+local.properties
+keystore.properties
+*.jks
+*.keystore
+
+# =====================================================================
+# IDE
+# =====================================================================
+.idea/
+*.iml
+.DS_Store
+*.hprof
+
+# =====================================================================
+# Room schema exports (generated; regenerate via ksp, don't hand-edit)
+# =====================================================================
+# Schemas ARE checked in once persistence work begins in Milestone 4 —
+# they are Room's migration source of truth — so this project does not
+# blanket-ignore data/persistence/schemas/.
+
+# =====================================================================
+# Test/lint output
+# =====================================================================
+*.log

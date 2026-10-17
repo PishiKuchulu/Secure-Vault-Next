@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="240dp"
+    android:height="240dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Shield outline: a calm, geometric mark chosen per Part 6 (Visual
+         Identity) to communicate trust and security without decoration. -->
+    <path
+        android:fillColor="@color/splash_icon_tint"
+        android:pathData="M12,2 L20,5.2 V11 C20,16 16.6,20.3 12,22 C7.4,20.3 4,16 4,11 V5.2 Z" />
+    <!-- Keyhole cut-out -->
+    <path
+        android:fillColor="#FFFBFF"
+        android:pathData="M12,8 C13.1,8 14,8.9 14,10 C14,10.8 13.5,11.5 12.8,11.8 L13.6,15 H10.4 L11.2,11.8 C10.5,11.5 10,10.8 10,10 C10,8.9 10.9,8 12,8 Z" />
+</vector>

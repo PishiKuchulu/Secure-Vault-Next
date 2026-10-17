@@ -1,0 +1,168 @@
+# =====================================================================
+# SecureVault Next — Gradle Version Catalog
+#
+# Single source of truth for every dependency version used across all
+# modules. Part 7 (Dependency Management): "Use mature libraries only.
+# Avoid abandoned projects. Minimize dependencies. Every dependency
+# must have a clear purpose."
+# =====================================================================
+
+[versions]
+# --- Build tooling -----------------------------------------------------
+# AGP is deliberately pinned to the 8.x line rather than 9.x: AGP 9
+# requires Gradle 9.1+ and newer Hilt releases move the Hilt Gradle
+# plugin to a hard AGP-9 requirement (see the `hilt` version note
+# below). AGP 8.7.3 is the pinned stable release on this project's
+# well-tested AGP 8 / Gradle 8 path (with Kotlin 2.1.20).
+agp = "8.7.3"
+kotlin = "2.1.20"
+ksp = "2.1.20-1.0.32"
+
+# --- Core AndroidX -------------------------------------------------------
+coreKtx = "1.13.1"
+lifecycle = "2.8.7"
+activityCompose = "1.9.3"
+
+# --- Jetpack Compose (BOM-managed) --------------------------------------
+composeBom = "2025.04.01"
+composeCompiler = "2.1.20"
+
+# --- Navigation ----------------------------------------------------------
+navigationCompose = "2.8.4"
+hiltNavigationCompose = "1.2.0"
+
+# --- Dependency Injection --------------------------------------------------
+# Newer Dagger/Hilt releases (2.59+) made AGP 9 (and therefore Gradle
+# 9.1+) a hard requirement for the Hilt Gradle plugin. This project
+# intentionally stays on AGP 8.x (see above), so Hilt is pinned to
+# 2.58 — the last release where the AGP 8.x path still works.
+hilt = "2.58"
+
+# --- Persistence (scaffolded now, wired up in Phase 4 / Milestone 4) -----
+room = "2.7.1"
+
+# --- Biometric (scaffolded now, implemented in Phase 3) -------------------
+androidxBiometric = "1.2.0-alpha05"
+
+
+# --- Coroutines ------------------------------------------------------------
+coroutines = "1.9.0"
+
+# --- Serialization -----------------------------------------------------
+kotlinxSerialization = "1.7.3"
+
+# --- Splash screen ---------------------------------------------------------
+coreSplashscreen = "1.0.1"
+
+# --- Testing -----------------------------------------------------------
+junit = "4.13.2"
+junitExt = "1.2.1"
+espresso = "3.6.1"
+truth = "1.4.4"
+turbine = "1.2.0"
+mockk = "1.13.13"
+composeUiTestJunit4 = "2024.10.01"
+
+# --- Static analysis --------------------------------------------------
+ktlint = "12.1.2"
+detekt = "1.23.7"
+
+# --- DI primitives (JSR-330, no Android/Hilt dependency) ------------------
+javaxInject = "1"
+
+# --- Cryptography (Argon2id has no JDK/Android stdlib implementation) -----
+bouncycastle = "1.84"
+
+[libraries]
+# --- AndroidX core ---
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
+
+
+# --- Compose (versions resolved via BOM) ---
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+
+# --- Navigation ---
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+# --- Hilt ---
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+
+# --- Room (scaffolded) ---
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+# --- Biometric (scaffolded) ---
+androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "androidxBiometric" }
+
+# --- DI primitives ---
+javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javaxInject" }
+
+# --- Cryptography ---
+bouncycastle-provider = { group = "org.bouncycastle", name = "bcprov-jdk18on", version.ref = "bouncycastle" }
+
+# --- Coroutines ---
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+
+# --- Serialization ---
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+# --- Testing ---
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk" }
+kotlinx-coroutines-test-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+[bundles]
+compose = [
+    "compose-ui",
+    "compose-ui-graphics",
+    "compose-ui-tooling-preview",
+    "compose-material3",
+    "compose-foundation",
+]
+coroutines = [
+    "kotlinx-coroutines-core",
+    "kotlinx-coroutines-android",
+]
+testing-unit = [
+    "junit",
+    "truth",
+    "turbine",
+    "mockk",
+    "kotlinx-coroutines-test",
+]

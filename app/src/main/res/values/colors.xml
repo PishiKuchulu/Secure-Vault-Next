@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        These colors exist solely for the system SplashScreen API, which
+        renders before the Compose runtime (and therefore before the
+        Material 3 dynamic color scheme in core:ui) is available.
+
+        The palette echoes the Material seed color defined in
+        core/ui/theme/Color.kt: a calm, desaturated indigo chosen per
+        Part 6 (Visual Identity) to communicate trust, privacy and
+        precision without feeling aggressive or decorative.
+    -->
+    <color name="splash_background_light">#FFFBFF</color>
+    <color name="splash_background_dark">#1B1B23</color>
+    <color name="splash_icon_tint">#4355B9</color>
+</resources>

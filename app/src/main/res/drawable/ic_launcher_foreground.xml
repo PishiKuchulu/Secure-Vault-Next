@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Content kept within the 66dp adaptive-icon safe zone. -->
+    <group
+        android:translateX="21"
+        android:translateY="21">
+        <path
+            android:fillColor="#FFFBFF"
+            android:pathData="M33,3 L60,15.6 V33 C60,50 46.8,63.9 33,68 C19.2,63.9 6,50 6,33 V15.6 Z" />
+        <path
+            android:fillColor="#4355B9"
+            android:pathData="M33,24 C36.3,24 39,26.7 39,30 C39,32.4 37.5,34.5 35.4,35.4 L37.4,45 H28.6 L30.6,35.4 C28.5,34.5 27,32.4 27,30 C27,26.7 29.7,24 33,24 Z" />
+    </group>
+</vector>

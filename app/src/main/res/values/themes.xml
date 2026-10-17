@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+        Base application theme. The activity itself is 100% Jetpack
+        Compose (Part 2: "Jetpack Compose only" for Presentation), so this
+        theme only needs to provide a sane system window baseline; all
+        real theming (color scheme, typography, shapes) is applied by
+        SecureVaultTheme in core:ui.
+    -->
+    <style name="Theme.SecureVaultNext" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+    </style>
+
+    <!--
+        Theme.SplashScreen must be applied only to the launching Activity,
+        and only until setKeepOnScreenCondition releases it (see
+        MainActivity.kt). Part 9: "Never remain visible longer than
+        necessary."
+    -->
+    <style name="Theme.SecureVaultNext.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splash_background_light</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/Theme.SecureVaultNext</item>
+    </style>
+
+</resources>
