@@ -21,30 +21,26 @@ import kotlinx.serialization.Serializable
  * class) because `data:repository`'s audit persistence decodes
  * `List<ItemId>` from JSON.
  */
-@JvmInline
-value class VaultId(val value: String) {
+data class VaultId(val value: String) {
     init {
         require(value.isNotBlank()) { "VaultId must not be blank" }
     }
 }
 
 @Serializable
-@JvmInline
-value class ItemId(val value: String) {
+data class ItemId(val value: String) {
     init {
         require(value.isNotBlank()) { "ItemId must not be blank" }
     }
 }
 
-@JvmInline
-value class CategoryId(val value: String) {
+data class CategoryId(val value: String) {
     init {
         require(value.isNotBlank()) { "CategoryId must not be blank" }
     }
 }
 
-@JvmInline
-value class TagId(val value: String) {
+data class TagId(val value: String) {
     init {
         require(value.isNotBlank()) { "TagId must not be blank" }
     }
@@ -56,8 +52,7 @@ value class TagId(val value: String) {
  * from [ItemId], which identifies the [com.securevault.next.core.domain.model.item.PasswordItem]
  * the history entry belongs to.
  */
-@JvmInline
-value class PasswordId(val value: String) {
+data class PasswordId(val value: String) {
     init {
         require(value.isNotBlank()) { "PasswordId must not be blank" }
     }
