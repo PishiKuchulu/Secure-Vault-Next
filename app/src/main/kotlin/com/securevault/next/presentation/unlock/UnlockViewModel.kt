@@ -77,7 +77,7 @@ class UnlockViewModel @Inject constructor(
             refreshBiometricAvailability(vaultId)
             // A lockout survives screen rotations (the tracker is
             // process-scoped): resume its countdown if one is active.
-            when (val state = failedAttemptTracker.currentState()) {
+            when (val state = failedAttemptTracker.currentState(VaultId(vaultId))) {
                 is LockoutState.LockedOut -> startLockoutCountdown(state.retryAt)
                 is LockoutState.Allowed -> Unit
             }
@@ -258,7 +258,7 @@ class UnlockViewModel @Inject constructor(
                     Instant.now().plusSeconds(error.retryAfterSeconds),
                 )
             is DomainError.AuthenticationError.InvalidCredentials -> {
-                val remaining = when (val state = failedAttemptTracker.currentState()) {
+                val remaining = when (val state = failedAttemptTracker.currentState(VaultId(vaultId))) {
                     is LockoutState.Allowed -> state.attemptsRemaining
                     is LockoutState.LockedOut -> {
                         startLockoutCountdown(state.retryAt)

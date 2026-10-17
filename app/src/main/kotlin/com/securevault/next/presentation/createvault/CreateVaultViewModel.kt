@@ -11,6 +11,8 @@ import com.securevault.next.core.domain.model.VaultSettings
 import com.securevault.next.core.domain.model.enums.PasswordStrengthLevel
 import com.securevault.next.core.domain.model.valueobject.PasswordStrength
 import com.securevault.next.core.domain.model.valueobject.VaultName
+import com.securevault.next.core.domain.model.isValid
+import com.securevault.next.core.domain.model.validationErrors
 import com.securevault.next.core.domain.usecase.CreateVaultUseCase
 import com.securevault.next.core.domain.usecase.GeneratePasswordUseCase
 import com.securevault.next.core.domain.usecase.PasswordGenerationOptions
