@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
+import com.securevault.next.core.ui.theme.footnote
 
 /*
  * Settings surfaces follow the inset-grouped pattern: a SectionHeader

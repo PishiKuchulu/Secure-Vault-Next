@@ -75,6 +75,7 @@ import com.securevault.next.core.ui.components.SectionHeader
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 import com.securevault.next.core.ui.theme.SecureVaultTheme
+import com.securevault.next.core.ui.theme.footnote
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
 import javax.inject.Inject

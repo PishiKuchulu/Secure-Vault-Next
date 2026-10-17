@@ -46,6 +46,7 @@ import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.repository.VaultRepository
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
+import com.securevault.next.core.ui.theme.footnote
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

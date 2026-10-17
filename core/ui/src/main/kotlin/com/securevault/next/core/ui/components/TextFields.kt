@@ -20,6 +20,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
+import com.securevault.next.core.ui.theme.footnote
 
 /*
  * Shape lock: inputs are 12dp. Error is never conveyed by border color

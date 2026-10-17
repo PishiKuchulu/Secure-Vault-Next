@@ -2,6 +2,7 @@ package com.securevault.next.core.ui.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -85,7 +86,7 @@ fun VaultButton(
             disabledContainerColor = colors.accent.copy(alpha = 0.30f),
             disabledContentColor = colors.onAccent.copy(alpha = 0.55f),
         ),
-        contentPadding = ButtonDefaults.ContentPadding.copy(
+        contentPadding = PaddingValues(
             start = 24.dp,
             end = 24.dp,
         ),
@@ -123,7 +124,7 @@ fun VaultSecondaryButton(
             disabledContainerColor = colors.fill.copy(alpha = 0.60f),
             disabledContentColor = colors.secondaryLabel.copy(alpha = 0.55f),
         ),
-        contentPadding = ButtonDefaults.ContentPadding.copy(
+        contentPadding = PaddingValues(
             start = 24.dp,
             end = 24.dp,
         ),
@@ -192,7 +193,7 @@ fun VaultDestructiveButton(
             disabledContainerColor = colors.danger.copy(alpha = 0.30f),
             disabledContentColor = colors.onDanger.copy(alpha = 0.55f),
         ),
-        contentPadding = ButtonDefaults.ContentPadding.copy(
+        contentPadding = PaddingValues(
             start = 24.dp,
             end = 24.dp,
         ),

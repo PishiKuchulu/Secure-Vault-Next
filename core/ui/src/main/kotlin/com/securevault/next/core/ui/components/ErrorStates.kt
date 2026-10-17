@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
+import com.securevault.next.core.ui.theme.footnote
 
 /*
  * Errors are inline and specific: they say what went wrong and how to

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultEaseOut
 import com.securevault.next.core.ui.theme.SecureVaultStateChangeDurationMs
+import com.securevault.next.core.ui.theme.footnote
 
 /**
  * Animated password-strength meter.

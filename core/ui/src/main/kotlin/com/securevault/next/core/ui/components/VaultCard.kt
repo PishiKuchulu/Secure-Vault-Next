@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
+import com.securevault.next.core.ui.theme.footnote
 
 /*
  * Shape lock: cards are 16dp. VaultCard is the vault-item list row:
