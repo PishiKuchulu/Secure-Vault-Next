@@ -34,7 +34,10 @@ class SessionKeyHolder {
     @Synchronized
     fun set(key: SessionKey) {
         val existing = current
-        if (existing != null && existing === key) return
+        // Identity is compared on the underlying key material: re-installing
+        // the identical instance is a no-op (Finding L5) — destroying it
+        // first would leave a destroyed key installed.
+        if (existing != null && existing.bytes === key.bytes) return
         existing?.destroy()
         current = key
     }
