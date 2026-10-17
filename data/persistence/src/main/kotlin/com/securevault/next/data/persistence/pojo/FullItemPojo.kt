@@ -62,17 +62,11 @@ data class FullItemPojo(
     val sshKey: SshKeyEntity? = null,
 
     @Relation(parentColumn = "id", entityColumn = "item_id")
-    val recoveryCode: RecoveryCodePojo? = null,
+    val recoveryCode: RecoveryCodeEntity? = null,
+
+    @Relation(parentColumn = "id", entityColumn = "recovery_code_item_id")
+    val recoveryCodeValues: List<RecoveryCodeValueEntity> = emptyList(),
 
     @Relation(parentColumn = "id", entityColumn = "item_id")
     val totpSeed: TotpSeedEntity? = null,
-)
-
-/** Aggregate for RecoveryCode including its multiple values. */
-data class RecoveryCodePojo(
-    @Embedded
-    val metadata: RecoveryCodeEntity,
-
-    @Relation(parentColumn = "item_id", entityColumn = "recovery_code_item_id")
-    val values: List<RecoveryCodeValueEntity>
 )

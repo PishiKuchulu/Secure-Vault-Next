@@ -464,12 +464,12 @@ object ItemMapper {
             )
             pojo.recoveryCode != null -> RecoveryCode(
                 metadata = metadata,
-                service = pojo.recoveryCode.metadata.service,
-                codes = pojo.recoveryCode.values.sortedBy { it.sortOrder }
+                service = pojo.recoveryCode.service,
+                codes = pojo.recoveryCodeValues.sortedBy { it.sortOrder }
                     .map { toEncryptedDomain(it.code) },
                 // L13: never throw on malformed CSV — drop unparseable tokens.
-                usedCodeIndices = if (pojo.recoveryCode.metadata.usedIndicesCsv.isEmpty()) emptySet()
-                else pojo.recoveryCode.metadata.usedIndicesCsv.split(",").mapNotNull { it.toIntOrNull() }.toSet()
+                usedCodeIndices = if (pojo.recoveryCode.usedIndicesCsv.isEmpty()) emptySet()
+                else pojo.recoveryCode.usedIndicesCsv.split(",").mapNotNull { it.toIntOrNull() }.toSet()
             )
             pojo.totpSeed != null -> TOTPSeed(
                 metadata = metadata,
