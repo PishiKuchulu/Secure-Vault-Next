@@ -44,7 +44,7 @@ import com.securevault.next.data.persistence.entity.VaultEntity
 )
 // BISECT: @TypeConverters
 abstract class SecureVaultDatabase : RoomDatabase(), TransactionRunner {
-    abstract fun vaultDao(): VaultDao
+    // BISECT-DAO2: abstract fun vaultDao(): VaultDao
     // BISECT-DAO: abstract fun categoryDao(): CategoryDao
     // BISECT-DAO: abstract fun tagDao(): TagDao
     // BISECT-DAO: abstract fun itemDao(): ItemDao
