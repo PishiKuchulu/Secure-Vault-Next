@@ -33,8 +33,9 @@ class SessionKeyHolder {
      */
     @Synchronized
     fun set(key: SessionKey) {
-        if (key === current) return
-        current?.destroy()
+        val existing = current
+        if (existing != null && existing === key) return
+        existing?.destroy()
         current = key
     }
 

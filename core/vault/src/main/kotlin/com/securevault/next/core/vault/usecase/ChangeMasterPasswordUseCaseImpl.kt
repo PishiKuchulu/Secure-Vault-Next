@@ -4,6 +4,8 @@ import com.securevault.next.core.common.dispatcher.Dispatcher
 import com.securevault.next.core.common.dispatcher.SecureVaultDispatcher
 import com.securevault.next.core.common.result.Result
 import com.securevault.next.core.contracts.VaultKeyEncryptionService
+import com.securevault.next.core.domain.model.isValid
+import com.securevault.next.core.domain.model.validationErrors
 import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.repository.VaultRepository
 import com.securevault.next.core.domain.result.DomainResult
