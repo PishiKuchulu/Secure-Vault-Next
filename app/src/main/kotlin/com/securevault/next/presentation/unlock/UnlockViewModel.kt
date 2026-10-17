@@ -148,7 +148,8 @@ class UnlockViewModel @Inject constructor(
                 onSuccess = {
                     viewModelScope.launch {
                         when (val result = biometricKeyManager.unlockWithBiometrics(VaultId(vaultId))) {
-                            BiometricUnlockResult.Success, BiometricUnlockResult.AlreadyUnlocked -> goHome(),
+                            is BiometricUnlockResult.Success -> goHome()
+                            is BiometricUnlockResult.AlreadyUnlocked -> goHome()
                             BiometricUnlockResult.KeyInvalidated -> {
                                 refreshBiometricAvailability(vaultId)
                                 _uiState.update {
