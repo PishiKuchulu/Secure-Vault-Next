@@ -72,8 +72,8 @@ interface SessionListener {
 class VaultSessionManager @Inject constructor(
     private val clock: SessionClock,
     private val sessionKeyStore: SessionKeyStore,
-    private val listeners: Set<SessionListener>,
 ) {
+    private val listeners: Set<SessionListener> = emptySet()
 
     private val monitor = Any()
 
