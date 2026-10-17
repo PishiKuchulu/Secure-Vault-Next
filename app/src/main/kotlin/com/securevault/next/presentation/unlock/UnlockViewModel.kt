@@ -121,7 +121,7 @@ class UnlockViewModel @Inject constructor(
                     AuthenticationMethod.MASTER_PASSWORD,
                 ).fold(
                     onSuccess = { onPasswordUnlockSucceeded(vaultId) },
-                    onFailure = { error -> handleUnlockError(error) },
+                    onFailure = { error -> handleUnlockError(error, vaultId) },
                 )
             } finally {
                 MemoryWiper.wipe(passwordChars)
@@ -251,7 +251,7 @@ class UnlockViewModel @Inject constructor(
         }
     }
 
-    private fun handleUnlockError(error: DomainError) {
+    private fun handleUnlockError(error: DomainError, vaultId: String) {
         when (error) {
             is DomainError.AuthenticationError.TooManyAttempts ->
                 startLockoutCountdown(

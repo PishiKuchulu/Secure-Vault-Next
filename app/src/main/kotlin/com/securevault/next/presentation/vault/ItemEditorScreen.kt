@@ -42,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.draw.clip
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -546,9 +547,6 @@ private fun ItemEditorContent(
                         } else {
                             TextButton(
                                 onClick = onSave,
-                                colors = androidx.compose.material3.TextButtonDefaults.textButtonColors(
-                                    contentColor = colors.accent,
-                                ),
                             ) {
                                 Text(
                                     text = stringResource(R.string.item_editor_save),

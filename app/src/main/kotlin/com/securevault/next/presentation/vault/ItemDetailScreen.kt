@@ -532,20 +532,22 @@ private fun LoadedDetail(
                     SectionHeader(title = stringResource(R.string.item_detail_section_totp))
                     TotpCard(totp = totp, onCopy = onCopy)
                 }
+                val notesLabel = stringResource(R.string.item_detail_field_notes)
                 item.notes?.takeIf { it.isNotBlank() }?.let { notes ->
-                    SectionHeader(title = stringResource(R.string.item_detail_field_notes))
+                    SectionHeader(title = notesLabel)
                     NotesCard(
                         notes = notes,
-                        copied = copiedLabel == stringResource(R.string.item_detail_field_notes),
-                        onCopy = { onCopy(stringResource(R.string.item_detail_field_notes), notes) },
+                        copied = copiedLabel == notesLabel,
+                        onCopy = { onCopy(notesLabel, notes) },
                     )
                 }
             }
             is DecryptedItemUi.Note -> {
+                val noteLabel = stringResource(R.string.item_detail_field_notes)
                 NotesCard(
                     notes = item.content,
-                    copied = copiedLabel == stringResource(R.string.item_detail_field_notes),
-                    onCopy = { onCopy(stringResource(R.string.item_detail_field_notes), item.content) },
+                    copied = copiedLabel == noteLabel,
+                    onCopy = { onCopy(noteLabel, item.content) },
                 )
             }
             is DecryptedItemUi.Other -> {
@@ -771,8 +773,9 @@ private fun TotpCard(
                         style = Stroke(width = stroke, cap = StrokeCap.Round),
                     )
                 }
+                val totpLabel = stringResource(R.string.item_detail_section_totp)
                 if (code != null) {
-                    IconButton(onClick = { onCopy(stringResource(R.string.item_detail_section_totp), code) }) {
+                    IconButton(onClick = { onCopy(totpLabel, code) }) {
                         Icon(
                             imageVector = Icons.Filled.ContentCopy,
                             contentDescription = stringResource(R.string.item_detail_totp_copy_desc),
