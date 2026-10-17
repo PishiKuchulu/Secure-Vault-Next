@@ -7,6 +7,13 @@ import androidx.room.migration.Migration
 import androidx.room.withTransaction
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.securevault.next.data.persistence.converter.VaultTypeConverters
+import com.securevault.next.data.persistence.dao.AuditDao
+import com.securevault.next.data.persistence.dao.BackupDao
+import com.securevault.next.data.persistence.dao.CategoryDao
+import com.securevault.next.data.persistence.dao.ItemDao
+import com.securevault.next.data.persistence.dao.SearchDao
+import com.securevault.next.data.persistence.dao.TagDao
+import com.securevault.next.data.persistence.dao.VaultDao
 import com.securevault.next.data.persistence.entity.ApiKeyEntity
 import com.securevault.next.data.persistence.entity.AuditResultEntity
 import com.securevault.next.data.persistence.entity.BankAccountEntity
