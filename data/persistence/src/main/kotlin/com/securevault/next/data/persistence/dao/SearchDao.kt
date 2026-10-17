@@ -7,7 +7,7 @@ import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.data.persistence.pojo.ItemSummaryPojo
 
 /**
- * Data access object for high-performance search using FTS5.
+ * Data access object for high-performance search using FTS4.
  *
  * The `items_fts` table is kept in sync with `items` by the triggers in
  * `SecureVaultDatabase.FTS_SYNC_CALLBACK` (C6) — this DAO only reads.

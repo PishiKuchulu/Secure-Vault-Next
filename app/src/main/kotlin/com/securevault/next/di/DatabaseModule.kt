@@ -27,7 +27,7 @@ object DatabaseModule {
                 SecureVaultDatabase.MIGRATION_1_2,
                 SecureVaultDatabase.MIGRATION_2_3
             )
-            // C6: installs the triggers that keep the FTS5 search index
+            // C6: installs the triggers that keep the FTS4 search index
             // in sync with the items table (plus a one-time backfill).
             .addCallback(SecureVaultDatabase.FTS_SYNC_CALLBACK)
             .build()

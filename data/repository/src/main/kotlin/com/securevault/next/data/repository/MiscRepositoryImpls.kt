@@ -74,7 +74,7 @@ class SearchRepositoryImpl @Inject constructor(
     private val encryptionEngine: ItemEncryptionEngine,
 ) : SearchRepository {
     override suspend fun search(vaultId: VaultId, filter: SearchFilter): DomainResult<SearchResult> {
-        // H5: the raw user query is sanitized into safe FTS5 syntax before
+        // H5: the raw user query is sanitized into safe FTS4 syntax before
         // it ever reaches MATCH. A null result means "nothing searchable".
         val ftsQuery = buildFtsMatchQuery(filter.query ?: "")
             ?: return DomainResult.success(SearchResult(emptyList(), 0, filter))
@@ -103,9 +103,9 @@ class SearchRepositoryImpl @Inject constructor(
 }
 
 /**
- * Builds a safe FTS5 MATCH query from raw user input (H5).
+ * Builds a safe FTS4 MATCH query from raw user input (H5).
  *
- * FTS5 rejects a leading `*` (syntax error) and treats `"`, `*`, `(`, `)`,
+ * FTS4 rejects a leading `*` (syntax error) and treats `"`, `*`, `(`, `)`,
  * `:`, `AND`/`OR`/`NOT`/`NEAR` and `column:` filters as query syntax —
  * feeding raw user input to MATCH therefore crashes on ordinary input.
  * This sanitizer:
@@ -117,7 +117,7 @@ class SearchRepositoryImpl @Inject constructor(
  *   with a single trailing `*` for prefix matching.
  *
  * The value is still passed as a bound parameter, so there is no SQL
- * injection vector; this is purely about FTS5 syntax safety.
+ * injection vector; this is purely about FTS4 syntax safety.
  *
  * Returns null when nothing searchable remains.
  */

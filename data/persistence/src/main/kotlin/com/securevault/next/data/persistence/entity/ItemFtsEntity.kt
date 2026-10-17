@@ -2,13 +2,13 @@ package com.securevault.next.data.persistence.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Fts5
+import androidx.room.Fts4
 import com.securevault.next.core.domain.model.valueobject.ItemId
 
 /**
- * An FTS5 virtual table for high-performance search across vault items.
+ * An FTS4 virtual table for high-performance search across vault items.
  *
- * [itemId] is the join key to [ItemEntity.id]. FTS5 rowids are integers
+ * [itemId] is the join key to [ItemEntity.id]. FTS4 rowids are integers
  * and can never hold the TEXT item ids, so the search queries join on
  * `items_fts.item_id` instead of `rowid`.
  *
@@ -20,11 +20,11 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
  * never enter the search index. The [notes] column is retained for
  * schema compatibility only.
  *
- * Using FTS5 allows for extremely fast full-text queries, prefix
+ * Using FTS4 allows for extremely fast full-text queries, prefix
  * matching, and ranking, even in vaults with 50,000+ items.
  */
 @Entity(tableName = "items_fts")
-@Fts5
+@Fts4
 data class ItemFtsEntity(
     @ColumnInfo(name = "item_id")
     val itemId: ItemId,

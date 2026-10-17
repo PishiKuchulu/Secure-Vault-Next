@@ -24,7 +24,7 @@ class LargeVaultBenchmark {
 
         val searchTime = measureTimeMillis {
             // Simulating FTS query over 100k items.
-            // With FTS5, this should be sub-millisecond on SQLite.
+            // With FTS4, this should be sub-millisecond on SQLite.
         }
 
         println("Search over 100k items completed in ${searchTime}ms")

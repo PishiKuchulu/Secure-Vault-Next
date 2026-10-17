@@ -97,7 +97,7 @@ abstract class SecureVaultDatabase : RoomDatabase(), TransactionRunner {
          *   field). The legacy plaintext `notes` column is kept so existing
          *   rows can be lazily migrated on read; writers must leave it NULL.
          * - `items_fts`: rebuilt with an explicit `item_id` TEXT column (C6).
-         *   FTS5 rowids are integers and can never hold the TEXT item ids the
+         *   FTS4 rowids are integers and can never hold the TEXT item ids the
          *   search queries join on, so the old table is dropped and rebuilt
          *   from item titles only — never from decrypted secrets. (SQLite
          *   cannot ADD COLUMN on a virtual table, hence the rebuild.)
@@ -127,18 +127,18 @@ abstract class SecureVaultDatabase : RoomDatabase(), TransactionRunner {
                 db.execSQL("ALTER TABLE backups ADD COLUMN vault_revision INTEGER")
                 db.execSQL("ALTER TABLE backups ADD COLUMN sha256 TEXT")
 
-                // C6: FTS5 virtual tables do not support ADD COLUMN — drop and
+                // C6: FTS4 virtual tables do not support ADD COLUMN — drop and
                 // recreate with the item_id column, re-indexing titles only.
                 // (Triggers do not exist yet at migration time; they are
                 // created in FTS_SYNC_CALLBACK.onOpen afterwards.)
                 db.execSQL("DROP TABLE items_fts")
-                db.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS items_fts USING FTS5(item_id, title, notes)")
+                db.execSQL("CREATE VIRTUAL TABLE IF NOT EXISTS items_fts USING FTS4(item_id, title, notes)")
                 db.execSQL("INSERT INTO items_fts(item_id, title, notes) SELECT id, title, NULL FROM items")
             }
         }
 
         /**
-         * Keeps the FTS5 search index ([ItemFtsEntity]) in sync with the
+         * Keeps the FTS4 search index ([ItemFtsEntity]) in sync with the
          * `items` table (C6).
          *
          * Three triggers mirror every INSERT/UPDATE/DELETE into `items_fts`.
