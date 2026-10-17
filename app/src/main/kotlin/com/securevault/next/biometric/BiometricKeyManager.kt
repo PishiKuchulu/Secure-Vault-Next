@@ -217,7 +217,7 @@ class BiometricKeyManager @Inject constructor(
             try {
                 val unlocked = sessionManager.unlock(session, keyBytes)
                 if (unlocked) {
-                    failedAttemptTracker.recordSuccess()
+                    failedAttemptTracker.recordSuccess(vaultId)
                     BiometricUnlockResult.Success
                 } else {
                     BiometricUnlockResult.Failed("could not establish the vault session")

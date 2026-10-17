@@ -94,6 +94,7 @@ dependencies {
     implementation(project(":core:platform"))
     implementation(project(":core:ui"))
     implementation(project(":data:persistence"))
+    implementation(libs.room.runtime)
     implementation(project(":data:repository"))
 
     // ---------------------------------------------------------------
