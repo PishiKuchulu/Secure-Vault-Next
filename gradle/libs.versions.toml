@@ -16,7 +16,7 @@
 # well-tested AGP 8 / Gradle 8 path (with Kotlin 2.1.20).
 agp = "8.7.3"
 kotlin = "2.1.20"
-ksp = "2.1.20-1.0.32"
+ksp = "2.1.20-1.0.29"
 
 # --- Core AndroidX -------------------------------------------------------
 coreKtx = "1.13.1"
