@@ -16,27 +16,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface VaultDao {
 
-    @Query("SELECT * FROM vaults WHERE id = :vaultId")
-    fun observeVault(vaultId: VaultId): Flow<VaultEntity?>
-
     @Query("SELECT * FROM vaults")
     fun observeAllVaults(): Flow<List<VaultEntity>>
-
-    @Query("SELECT * FROM vaults WHERE id = :vaultId")
-    suspend fun getVault(vaultId: VaultId): VaultEntity?
-
-    @Query("SELECT envelope_json FROM vaults WHERE id = :vaultId")
-    suspend fun getEnvelopeJson(vaultId: VaultId): String?
-
-    @Query("UPDATE vaults SET envelope_json = :envelopeJson WHERE id = :vaultId")
-    suspend fun updateEnvelopeJson(vaultId: VaultId, envelopeJson: String): Int
-
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertVault(vault: VaultEntity)
-
-    @Update
-    suspend fun updateVault(vault: VaultEntity)
-
-    @Query("DELETE FROM vaults WHERE id = :vaultId")
-    suspend fun deleteVault(vaultId: VaultId)
 }
