@@ -3,6 +3,7 @@ package com.securevault.next.di
 import com.securevault.next.core.crypto.PasswordGeneratorImpl
 import com.securevault.next.core.domain.usecase.*
 import com.securevault.next.core.vault.usecase.*
+import com.securevault.next.core.security.usecase.ValidatePasswordUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
