@@ -6,6 +6,7 @@ import com.securevault.next.core.domain.model.CustomField
 import com.securevault.next.core.domain.model.PasswordHistory
 import com.securevault.next.core.domain.model.VaultItemMetadata
 import com.securevault.next.core.domain.result.DomainResult
+import com.securevault.next.core.common.result.getOrNull
 import com.securevault.next.core.domain.model.item.ApiKey
 import com.securevault.next.core.domain.model.item.BankAccount
 import com.securevault.next.core.domain.model.item.CreditCard

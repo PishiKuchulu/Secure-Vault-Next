@@ -1,6 +1,7 @@
 package com.securevault.next.data.repository
 
 import com.securevault.next.core.common.result.getOrElse
+import com.securevault.next.core.common.result.getOrNull
 import com.securevault.next.core.domain.crypto.ItemEncryptionEngine
 import com.securevault.next.core.domain.error.DomainError
 import com.securevault.next.core.domain.model.PasswordHistory
