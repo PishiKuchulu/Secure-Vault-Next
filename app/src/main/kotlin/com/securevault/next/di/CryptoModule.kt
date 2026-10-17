@@ -107,7 +107,7 @@ abstract class CryptoModule {
 
         @Provides
         @Singleton
-        fun provideSessionListeners(): Set<@JvmSuppressWildcards SessionListener> = emptySet()
+        fun provideSessionListeners(): Set<SessionListener> = emptySet()
 
         @Provides
         @Singleton
