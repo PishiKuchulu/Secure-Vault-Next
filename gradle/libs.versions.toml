@@ -39,7 +39,7 @@ hiltNavigationCompose = "1.2.0"
 hilt = "2.58"
 
 # --- Persistence (scaffolded now, wired up in Phase 4 / Milestone 4) -----
-room = "2.7.1"
+room = "2.6.1"
 
 # --- Biometric (scaffolded now, implemented in Phase 3) -------------------
 androidxBiometric = "1.2.0-alpha05"
