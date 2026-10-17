@@ -477,7 +477,7 @@ object ItemMapper {
             recoveryCode != null -> RecoveryCode(
                 metadata = metadata,
                 service = recoveryCode.service,
-                codes = recoveryCodeValues.sortedBy { it.sortOrder }
+                codes = pojo.recoveryCodeValues.sortedBy { it.sortOrder }
                     .map { toEncryptedDomain(it.code) },
                 // L13: never throw on malformed CSV — drop unparseable tokens.
                 usedCodeIndices = if (recoveryCode.usedIndicesCsv.isEmpty()) emptySet()
