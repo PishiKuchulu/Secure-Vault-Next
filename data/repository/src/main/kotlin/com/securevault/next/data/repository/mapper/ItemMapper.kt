@@ -21,6 +21,7 @@ import com.securevault.next.core.domain.model.item.TOTPSeed
 import com.securevault.next.core.domain.model.item.VaultItem
 import com.securevault.next.core.domain.model.valueobject.CreatedAt
 import com.securevault.next.core.domain.model.valueobject.EncryptedField
+import com.securevault.next.core.domain.model.valueobject.ItemId
 import com.securevault.next.core.domain.model.valueobject.Notes
 import com.securevault.next.core.domain.model.valueobject.Revision
 import com.securevault.next.core.domain.model.valueobject.UpdatedAt
@@ -400,81 +401,91 @@ object ItemMapper {
         val summary = ItemSummaryPojo(pojo.item, pojo.tags)
         val metadata = toMetadata(summary, resolveNotes(pojo.item, engine, itemDao))
 
+        val password = pojo.password
+        val creditCard = pojo.creditCard
+        val secureNote = pojo.secureNote
+        val identityDocument = pojo.identityDocument
+        val sshKey = pojo.sshKey
+        val apiKey = pojo.apiKey
+        val bankAccount = pojo.bankAccount
+        val softwareLicense = pojo.softwareLicense
+        val totpSeed = pojo.totpSeed
+        val recoveryCode = pojo.recoveryCode
         return when {
-            pojo.password != null -> PasswordItem(
+            password != null -> PasswordItem(
                 metadata = metadata,
-                username = pojo.password.username,
-                password = toEncryptedDomain(pojo.password.password),
-                url = pojo.password.url?.let { UrlValue(it) },
-                totp = pojo.password.totp?.let { toTotpDomain(it) }
+                username = password.username,
+                password = toEncryptedDomain(password.password),
+                url = password.url?.let { UrlValue(it) },
+                totp = password.totp?.let { toTotpDomain(it) }
             )
-            pojo.creditCard != null -> CreditCard(
+            creditCard != null -> CreditCard(
                 metadata = metadata,
-                cardholderName = pojo.creditCard.cardholderName,
-                cardNumber = toEncryptedDomain(pojo.creditCard.cardNumber),
-                expiryMonth = pojo.creditCard.expiryMonth,
-                expiryYear = pojo.creditCard.expiryYear,
-                cvv = toEncryptedDomain(pojo.creditCard.cvv),
-                pin = pojo.creditCard.pin?.let { toEncryptedDomain(it) }
+                cardholderName = creditCard.cardholderName,
+                cardNumber = toEncryptedDomain(creditCard.cardNumber),
+                expiryMonth = creditCard.expiryMonth,
+                expiryYear = creditCard.expiryYear,
+                cvv = toEncryptedDomain(creditCard.cvv),
+                pin = creditCard.pin?.let { toEncryptedDomain(it) }
             )
-            pojo.secureNote != null -> SecureNote(
+            secureNote != null -> SecureNote(
                 metadata = metadata,
-                content = toEncryptedDomain(pojo.secureNote.content)
+                content = toEncryptedDomain(secureNote.content)
             )
-            pojo.bankAccount != null -> BankAccount(
+            bankAccount != null -> BankAccount(
                 metadata = metadata,
-                bankName = pojo.bankAccount.bankName,
-                accountHolderName = pojo.bankAccount.accountHolderName,
-                accountNumber = toEncryptedDomain(pojo.bankAccount.accountNumber),
-                routingNumber = pojo.bankAccount.routingNumber?.let { toEncryptedDomain(it) },
-                iban = pojo.bankAccount.iban?.let { toEncryptedDomain(it) },
-                swiftCode = pojo.bankAccount.swiftCode
+                bankName = bankAccount.bankName,
+                accountHolderName = bankAccount.accountHolderName,
+                accountNumber = toEncryptedDomain(bankAccount.accountNumber),
+                routingNumber = bankAccount.routingNumber?.let { toEncryptedDomain(it) },
+                iban = bankAccount.iban?.let { toEncryptedDomain(it) },
+                swiftCode = bankAccount.swiftCode
             )
-            pojo.identityDocument != null -> IdentityDocument(
+            identityDocument != null -> IdentityDocument(
                 metadata = metadata,
-                documentType = pojo.identityDocument.documentType,
-                fullName = pojo.identityDocument.fullName,
-                documentNumber = toEncryptedDomain(pojo.identityDocument.documentNumber),
-                issueDate = pojo.identityDocument.issueDate,
-                expiryDate = pojo.identityDocument.expiryDate,
-                issuingCountry = pojo.identityDocument.issuingCountry
+                documentType = identityDocument.documentType,
+                fullName = identityDocument.fullName,
+                documentNumber = toEncryptedDomain(identityDocument.documentNumber),
+                issueDate = identityDocument.issueDate,
+                expiryDate = identityDocument.expiryDate,
+                issuingCountry = identityDocument.issuingCountry
             )
-            pojo.softwareLicense != null -> SoftwareLicense(
+            softwareLicense != null -> SoftwareLicense(
                 metadata = metadata,
-                productName = pojo.softwareLicense.productName,
-                licenseKey = toEncryptedDomain(pojo.softwareLicense.licenseKey),
-                licensedTo = pojo.softwareLicense.licensedTo,
-                purchaseDate = pojo.softwareLicense.purchaseDate,
-                expiryDate = pojo.softwareLicense.expiryDate,
-                vendor = pojo.softwareLicense.vendor
+                productName = softwareLicense.productName,
+                licenseKey = toEncryptedDomain(softwareLicense.licenseKey),
+                licensedTo = softwareLicense.licensedTo,
+                purchaseDate = softwareLicense.purchaseDate,
+                expiryDate = softwareLicense.expiryDate,
+                vendor = softwareLicense.vendor
             )
-            pojo.apiKey != null -> ApiKey(
+            apiKey != null -> ApiKey(
                 metadata = metadata,
-                service = pojo.apiKey.service,
-                keyValue = toEncryptedDomain(pojo.apiKey.keyValue),
-                keySecret = pojo.apiKey.keySecret?.let { toEncryptedDomain(it) },
-                environment = pojo.apiKey.environment
+                service = apiKey.service,
+                keyValue = toEncryptedDomain(apiKey.keyValue),
+                keySecret = apiKey.keySecret?.let { toEncryptedDomain(it) },
+                environment = apiKey.environment
             )
-            pojo.sshKey != null -> SSHKey(
+            sshKey != null -> SSHKey(
                 metadata = metadata,
-                keyType = pojo.sshKey.keyType,
-                privateKey = toEncryptedDomain(pojo.sshKey.privateKey),
-                publicKey = pojo.sshKey.publicKey,
-                passphrase = pojo.sshKey.passphrase?.let { toEncryptedDomain(it) },
-                hostAddress = pojo.sshKey.hostAddress
+                keyType = sshKey.keyType,
+                privateKey = toEncryptedDomain(sshKey.privateKey),
+                publicKey = sshKey.publicKey,
+                passphrase = sshKey.passphrase?.let { toEncryptedDomain(it) },
+                hostAddress = sshKey.hostAddress
             )
-            pojo.recoveryCode != null -> RecoveryCode(
+            recoveryCode != null -> RecoveryCode(
                 metadata = metadata,
-                service = pojo.recoveryCode.service,
-                codes = pojo.recoveryCodeValues.sortedBy { it.sortOrder }
+                service = recoveryCode.service,
+                codes = recoveryCodeValues.sortedBy { it.sortOrder }
                     .map { toEncryptedDomain(it.code) },
                 // L13: never throw on malformed CSV — drop unparseable tokens.
-                usedCodeIndices = if (pojo.recoveryCode.usedIndicesCsv.isEmpty()) emptySet()
-                else pojo.recoveryCode.usedIndicesCsv.split(",").mapNotNull { it.toIntOrNull() }.toSet()
+                usedCodeIndices = if (recoveryCode.usedIndicesCsv.isEmpty()) emptySet()
+                else recoveryCode.usedIndicesCsv.split(",").mapNotNull { it.toIntOrNull() }.toSet()
             )
-            pojo.totpSeed != null -> TOTPSeed(
+            totpSeed != null -> TOTPSeed(
                 metadata = metadata,
-                config = toTotpDomain(pojo.totpSeed.config)
+                config = toTotpDomain(totpSeed.config)
             )
             else -> throw IllegalStateException("FullItemPojo with ID ${pojo.item.id} has no type-specific details")
         }
