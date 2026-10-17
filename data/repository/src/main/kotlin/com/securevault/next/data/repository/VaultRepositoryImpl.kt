@@ -7,6 +7,7 @@ import com.securevault.next.core.domain.model.VaultMetadata
 import com.securevault.next.core.domain.model.VaultSecurityPolicy
 import com.securevault.next.core.domain.model.VaultSettings
 import com.securevault.next.core.domain.model.VaultStatistics
+import com.securevault.next.core.domain.model.valueobject.SecurityScore
 import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.repository.VaultRepository
 import com.securevault.next.core.domain.result.DomainResult
@@ -52,10 +53,14 @@ class VaultRepositoryImpl @Inject constructor(
                     settings = VaultMapper.toSettings(entity),
                     securityPolicy = VaultMapper.toSecurityPolicy(entity),
                     statistics = VaultStatistics(
-                        totalItems = items.size,
-                        passwordCount = items.count { item -> item.type == com.securevault.next.core.domain.model.enums.ItemType.PASSWORD },
+                        itemCount = items.size,
+                        categoryCount = categories.size,
+                        favoriteCount = 0,
                         weakPasswordCount = 0, // Requires audit engine
-                        reusedPasswordCount = 0 // Requires audit engine
+                        reusedPasswordCount = 0, // Requires audit engine
+                        oldPasswordCount = 0,
+                        breachedPasswordCount = 0,
+                        securityScore = SecurityScore(100)
                     )
                 )
             }
@@ -86,10 +91,14 @@ class VaultRepositoryImpl @Inject constructor(
                 settings = VaultMapper.toSettings(entity),
                 securityPolicy = VaultMapper.toSecurityPolicy(entity),
                 statistics = VaultStatistics(
-                    totalItems = items.size,
-                    passwordCount = items.count { item -> item.type == com.securevault.next.core.domain.model.enums.ItemType.PASSWORD },
+                    itemCount = items.size,
+                    categoryCount = categories.size,
+                    favoriteCount = 0,
                     weakPasswordCount = 0,
-                    reusedPasswordCount = 0
+                    reusedPasswordCount = 0,
+                    oldPasswordCount = 0,
+                    breachedPasswordCount = 0,
+                    securityScore = SecurityScore(100)
                 )
             )
         )
@@ -132,7 +141,16 @@ class VaultRepositoryImpl @Inject constructor(
                 tags = emptyList(),
                 settings = settings,
                 securityPolicy = securityPolicy,
-                statistics = VaultStatistics(0, 0, 0, 0)
+                statistics = VaultStatistics(
+                    itemCount = 0,
+                    categoryCount = 0,
+                    favoriteCount = 0,
+                    weakPasswordCount = 0,
+                    reusedPasswordCount = 0,
+                    oldPasswordCount = 0,
+                    breachedPasswordCount = 0,
+                    securityScore = SecurityScore(100)
+                )
             )
         )
     }
