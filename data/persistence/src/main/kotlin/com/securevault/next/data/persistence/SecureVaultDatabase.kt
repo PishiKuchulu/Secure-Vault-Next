@@ -38,6 +38,25 @@ import com.securevault.next.data.persistence.entity.VaultEntity
 @Database(
     entities = [
         VaultEntity::class,
+        ItemEntity::class,
+        ItemFtsEntity::class,
+        CategoryEntity::class,
+        TagEntity::class,
+        ItemTagCrossRef::class,
+        PasswordEntity::class,
+        PasswordHistoryEntity::class,
+        CreditCardEntity::class,
+        SecureNoteEntity::class,
+        BankAccountEntity::class,
+        IdentityDocumentEntity::class,
+        SoftwareLicenseEntity::class,
+        ApiKeyEntity::class,
+        SshKeyEntity::class,
+        RecoveryCodeEntity::class,
+        RecoveryCodeValueEntity::class,
+        TotpSeedEntity::class,
+        AuditResultEntity::class,
+        BackupMetadataEntity::class,
     ],
     version = 3,
     exportSchema = true
@@ -45,12 +64,12 @@ import com.securevault.next.data.persistence.entity.VaultEntity
 @TypeConverters(VaultTypeConverters::class)
 abstract class SecureVaultDatabase : RoomDatabase(), TransactionRunner {
     abstract fun vaultDao(): VaultDao
-    // BISECT3: abstract fun categoryDao(): CategoryDao
-    // BISECT3: abstract fun tagDao(): TagDao
-    // BISECT3: abstract fun itemDao(): ItemDao
-    // BISECT3: abstract fun searchDao(): SearchDao
-    // BISECT3: abstract fun auditDao(): AuditDao
-    // BISECT3: abstract fun backupDao(): BackupDao
+    abstract fun categoryDao(): CategoryDao
+    abstract fun tagDao(): TagDao
+    abstract fun itemDao(): ItemDao
+    abstract fun searchDao(): SearchDao
+    abstract fun auditDao(): AuditDao
+    abstract fun backupDao(): BackupDao
 
     override suspend fun <R> runInTransaction(block: suspend () -> R): R =
         withTransaction { block() }
