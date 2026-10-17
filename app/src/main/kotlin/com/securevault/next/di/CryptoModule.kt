@@ -102,14 +102,17 @@ abstract class CryptoModule {
 
     companion object {
         @Provides
+        @JvmStatic
         @Singleton
         fun provideSessionKeyHolder(): SessionKeyHolder = SessionKeyHolder()
 
         @Provides
+        @JvmStatic
         @Singleton
         fun provideSessionListeners(): Set<SessionListener> = emptySet()
 
         @Provides
+        @JvmStatic
         @Singleton
         fun provideFailedAttemptTracker(clock: SessionClock): FailedAttemptTracker =
             FailedAttemptTracker(
@@ -121,6 +124,7 @@ abstract class CryptoModule {
         // constructor, so it is bound here — the crypto layer's Hilt
         // module — rather than by annotation.
         @Provides
+        @JvmStatic
         @Singleton
         fun provideKeyRotationManager(
             keyDerivationEngine: KeyDerivationEngine,
