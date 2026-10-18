@@ -30,10 +30,7 @@ fun interface UpdateItemUseCase {
  * rather than being immediately and irreversibly removed.
  */
 fun interface DeleteItemUseCase {
-    suspend operator fun invoke(
-        itemId: ItemId,
-        permanent: Boolean,
-    ): DomainResult<Unit>
+    suspend operator fun invoke(itemId: ItemId, permanent: Boolean): DomainResult<Unit>
 }
 
 /** Restores a previously soft-deleted item out of trash. */
@@ -43,8 +40,5 @@ fun interface RestoreItemUseCase {
 
 /** Runs a [SearchFilter] against a specific vault's items. */
 fun interface SearchItemsUseCase {
-    suspend operator fun invoke(
-        vaultId: VaultId,
-        filter: SearchFilter,
-    ): DomainResult<SearchResult>
+    suspend operator fun invoke(vaultId: VaultId, filter: SearchFilter): DomainResult<SearchResult>
 }

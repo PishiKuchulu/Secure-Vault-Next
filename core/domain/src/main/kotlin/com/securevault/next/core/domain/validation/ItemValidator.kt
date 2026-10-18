@@ -25,7 +25,7 @@ class ItemValidator : Validator<String> {
                 DomainError.ValidationError.TooLong(
                     field = FIELD_NAME,
                     maxLength = VaultItemMetadata.MAX_TITLE_LENGTH,
-                    actualLength = value.length,
+                    actualLength = value.length
                 )
         }
 

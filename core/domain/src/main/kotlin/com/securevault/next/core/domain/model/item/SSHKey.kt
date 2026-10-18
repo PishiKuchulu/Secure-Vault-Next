@@ -15,7 +15,7 @@ data class SSHKey(
     val privateKey: EncryptedField,
     val publicKey: String? = null,
     val passphrase: EncryptedField? = null,
-    val hostAddress: String? = null,
+    val hostAddress: String? = null
 ) : VaultItem {
     override val type: ItemType get() = ItemType.SSH_KEY
 

@@ -20,7 +20,7 @@ data class VaultStatistics(
     val oldPasswordCount: Int,
     val breachedPasswordCount: Int,
     val securityScore: SecurityScore,
-    val lastAuditAt: Instant? = null,
+    val lastAuditAt: Instant? = null
 ) {
     init {
         require(itemCount >= 0) { "VaultStatistics.itemCount must not be negative" }

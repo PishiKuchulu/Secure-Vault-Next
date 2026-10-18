@@ -29,10 +29,7 @@ interface AuditRepository {
 interface SettingsRepository {
     fun observeSettings(vaultId: VaultId): Flow<VaultSettings>
 
-    suspend fun updateSettings(
-        vaultId: VaultId,
-        settings: VaultSettings,
-    ): DomainResult<Unit>
+    suspend fun updateSettings(vaultId: VaultId, settings: VaultSettings): DomainResult<Unit>
 }
 
 /** Tracks the active [VaultSession] for whichever vaults are currently unlocked. */

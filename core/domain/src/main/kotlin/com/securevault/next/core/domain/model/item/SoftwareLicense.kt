@@ -13,7 +13,7 @@ data class SoftwareLicense(
     val licensedTo: String? = null,
     val purchaseDate: Instant? = null,
     val expiryDate: Instant? = null,
-    val vendor: String? = null,
+    val vendor: String? = null
 ) : VaultItem {
     override val type: ItemType get() = ItemType.SOFTWARE_LICENSE
 

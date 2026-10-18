@@ -21,7 +21,7 @@ class MasterPasswordValidatorTest {
 
         require(result is ValidationResult.Invalid)
         assertThat(result.errors).contains(
-            DomainError.ValidationError.TooShort(field = "masterPassword", minLength = 12, actualLength = 7),
+            DomainError.ValidationError.TooShort(field = "masterPassword", minLength = 12, actualLength = 7)
         )
     }
 

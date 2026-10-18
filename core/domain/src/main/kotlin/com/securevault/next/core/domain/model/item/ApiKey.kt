@@ -10,7 +10,7 @@ data class ApiKey(
     val service: String,
     val keyValue: EncryptedField,
     val keySecret: EncryptedField? = null,
-    val environment: String? = null,
+    val environment: String? = null
 ) : VaultItem {
     override val type: ItemType get() = ItemType.API_KEY
 

@@ -12,9 +12,7 @@ import android.os.Looper
  *
  * Part 7: "Security Hardening... Clipboard clearing".
  */
-class SecureClipboardManager(
-    private val context: Context,
-) {
+class SecureClipboardManager(private val context: Context) {
     private val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     private val handler = Handler(Looper.getMainLooper())
     private var clearRunnable: Runnable? = null
@@ -25,11 +23,7 @@ class SecureClipboardManager(
      * On Android 13+, it also marks the content as sensitive so it
      * isn't shown in the clipboard preview.
      */
-    fun copyToClipboard(
-        label: String,
-        text: String,
-        timeoutMillis: Long = 30_000L,
-    ) {
+    fun copyToClipboard(label: String, text: String, timeoutMillis: Long = 30_000L) {
         val clip = ClipData.newPlainText(label, text)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

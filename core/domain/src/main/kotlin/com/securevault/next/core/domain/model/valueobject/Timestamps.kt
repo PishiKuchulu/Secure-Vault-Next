@@ -13,11 +13,7 @@ import java.time.Instant
  * 8.0 / API 26 introduced `java.time` support).
  */
 @JvmInline
-value class CreatedAt(
-    val value: Instant,
-)
+value class CreatedAt(val value: Instant)
 
 @JvmInline
-value class UpdatedAt(
-    val value: Instant,
-)
+value class UpdatedAt(val value: Instant)

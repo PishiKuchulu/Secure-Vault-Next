@@ -15,7 +15,7 @@ data class RecoveryCode(
     override val metadata: VaultItemMetadata,
     val service: String,
     val codes: List<EncryptedField>,
-    val usedCodeIndices: Set<Int> = emptySet(),
+    val usedCodeIndices: Set<Int> = emptySet()
 ) : VaultItem {
     override val type: ItemType get() = ItemType.RECOVERY_CODE
 

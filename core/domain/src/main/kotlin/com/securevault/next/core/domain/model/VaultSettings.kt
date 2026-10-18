@@ -15,5 +15,5 @@ data class VaultSettings(
     val defaultSortField: SortField = SortField.TITLE,
     val defaultSortOrder: SortOrder = SortOrder.ASCENDING,
     val showPasswordStrengthIndicator: Boolean = true,
-    val showRecentlyUsed: Boolean = true,
+    val showRecentlyUsed: Boolean = true
 )

@@ -15,7 +15,7 @@ data class PasswordGenerationOptions(
     val includeLowercase: Boolean = true,
     val includeDigits: Boolean = true,
     val includeSymbols: Boolean = true,
-    val excludeAmbiguousCharacters: Boolean = false,
+    val excludeAmbiguousCharacters: Boolean = false
 ) {
     init {
         require(length in MIN_LENGTH..MAX_LENGTH) {
@@ -34,10 +34,7 @@ data class PasswordGenerationOptions(
 }
 
 /** A freshly generated password value together with its evaluated strength. */
-data class GeneratedPassword(
-    val value: String,
-    val strength: PasswordStrength,
-)
+data class GeneratedPassword(val value: String, val strength: PasswordStrength)
 
 /**
  * Generates a new random password.

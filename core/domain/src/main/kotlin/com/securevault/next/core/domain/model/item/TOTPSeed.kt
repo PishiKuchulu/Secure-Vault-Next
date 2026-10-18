@@ -9,9 +9,6 @@ import com.securevault.next.core.domain.model.enums.ItemType
  * service where the password lives elsewhere). See [PasswordItem.totp]
  * for the more common case of a TOTP config attached to a password.
  */
-data class TOTPSeed(
-    override val metadata: VaultItemMetadata,
-    val config: TOTPConfig,
-) : VaultItem {
+data class TOTPSeed(override val metadata: VaultItemMetadata, val config: TOTPConfig) : VaultItem {
     override val type: ItemType get() = ItemType.TOTP_SEED
 }

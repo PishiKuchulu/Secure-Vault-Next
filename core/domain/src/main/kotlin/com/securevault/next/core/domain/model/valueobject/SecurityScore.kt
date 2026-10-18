@@ -8,9 +8,7 @@ package com.securevault.next.core.domain.model.valueobject
  * or display a score that has drifted out of range.
  */
 @JvmInline
-value class SecurityScore(
-    val value: Int,
-) {
+value class SecurityScore(val value: Int) {
     init {
         require(value in MIN..MAX) { "SecurityScore must be between $MIN and $MAX, was $value" }
     }

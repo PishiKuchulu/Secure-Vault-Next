@@ -16,7 +16,7 @@ enum class ItemType {
     API_KEY,
     SSH_KEY,
     RECOVERY_CODE,
-    TOTP_SEED,
+    TOTP_SEED
 }
 
 /**
@@ -30,7 +30,7 @@ enum class SecurityLevel {
     LOW,
     MEDIUM,
     HIGH,
-    CRITICAL,
+    CRITICAL
 }
 
 /** A human-facing categorization of password strength. */
@@ -39,5 +39,5 @@ enum class PasswordStrengthLevel {
     WEAK,
     FAIR,
     STRONG,
-    VERY_STRONG,
+    VERY_STRONG
 }

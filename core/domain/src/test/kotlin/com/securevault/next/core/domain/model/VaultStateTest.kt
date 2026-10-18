@@ -3,8 +3,8 @@ package com.securevault.next.core.domain.model
 import com.google.common.truth.Truth.assertThat
 import com.securevault.next.core.domain.model.enums.AuthenticationMethod
 import com.securevault.next.core.domain.model.valueobject.VaultId
-import org.junit.Test
 import java.time.Instant
+import org.junit.Test
 
 class VaultStateTest {
     private val vaultId = VaultId("vault-1")
@@ -17,7 +17,7 @@ class VaultStateTest {
                 sessionId = "session-1",
                 authenticationMethod = AuthenticationMethod.MASTER_PASSWORD,
                 unlockedAt = Instant.EPOCH,
-                lastActivityAt = Instant.EPOCH,
+                lastActivityAt = Instant.EPOCH
             )
 
         val states: List<VaultState> =
@@ -29,7 +29,7 @@ class VaultStateTest {
                 VaultState.Importing(vaultId, progress = 0.5f),
                 VaultState.Exporting(vaultId, progress = 0.5f),
                 VaultState.BackingUp(vaultId, progress = 0.5f),
-                VaultState.Restoring(vaultId, progress = 0.5f),
+                VaultState.Restoring(vaultId, progress = 0.5f)
             )
 
         states.forEach { state ->

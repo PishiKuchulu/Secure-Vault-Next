@@ -37,10 +37,7 @@ interface PasswordRepository {
 
     suspend fun updatePasswordItem(item: PasswordItem): DomainResult<PasswordItem>
 
-    suspend fun deletePasswordItem(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deletePasswordItem(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted password out of trash.
@@ -65,10 +62,7 @@ interface NotesRepository {
 
     suspend fun updateNote(note: SecureNote): DomainResult<SecureNote>
 
-    suspend fun deleteNote(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deleteNote(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted note out of trash.
@@ -91,10 +85,7 @@ interface CreditCardRepository {
 
     suspend fun updateCreditCard(card: CreditCard): DomainResult<CreditCard>
 
-    suspend fun deleteCreditCard(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deleteCreditCard(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted creditcard out of trash.
@@ -117,10 +108,7 @@ interface BankAccountRepository {
 
     suspend fun updateBankAccount(account: BankAccount): DomainResult<BankAccount>
 
-    suspend fun deleteBankAccount(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deleteBankAccount(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted bankaccount out of trash.
@@ -143,10 +131,7 @@ interface IdentityRepository {
 
     suspend fun updateIdentity(identity: IdentityDocument): DomainResult<IdentityDocument>
 
-    suspend fun deleteIdentity(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deleteIdentity(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted identity out of trash.
@@ -169,10 +154,7 @@ interface SoftwareLicenseRepository {
 
     suspend fun updateLicense(license: SoftwareLicense): DomainResult<SoftwareLicense>
 
-    suspend fun deleteLicense(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deleteLicense(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted license out of trash.
@@ -195,10 +177,7 @@ interface ApiKeyRepository {
 
     suspend fun updateApiKey(apiKey: ApiKey): DomainResult<ApiKey>
 
-    suspend fun deleteApiKey(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deleteApiKey(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted apikey out of trash.
@@ -221,10 +200,7 @@ interface SshKeyRepository {
 
     suspend fun updateSshKey(sshKey: SSHKey): DomainResult<SSHKey>
 
-    suspend fun deleteSshKey(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deleteSshKey(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted sshkey out of trash.
@@ -247,10 +223,7 @@ interface RecoveryCodeRepository {
 
     suspend fun updateRecoveryCode(recoveryCode: RecoveryCode): DomainResult<RecoveryCode>
 
-    suspend fun deleteRecoveryCode(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deleteRecoveryCode(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted recoverycode out of trash.
@@ -273,10 +246,7 @@ interface TotpRepository {
 
     suspend fun updateTotp(totp: TOTPSeed): DomainResult<TOTPSeed>
 
-    suspend fun deleteTotp(
-        itemId: ItemId,
-        permanent: Boolean = false,
-    ): DomainResult<Unit>
+    suspend fun deleteTotp(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted totp out of trash.

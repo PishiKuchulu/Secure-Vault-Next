@@ -25,7 +25,7 @@ import com.securevault.next.core.domain.model.ValidationResult
  */
 class MasterPasswordValidator(
     private val minLength: Int = DEFAULT_MIN_LENGTH,
-    private val maxLength: Int = DEFAULT_MAX_LENGTH,
+    private val maxLength: Int = DEFAULT_MAX_LENGTH
 ) : Validator<CharArray> {
     init {
         require(minLength >= 1) { "MasterPasswordValidator.minLength must be positive, was $minLength" }
@@ -42,7 +42,7 @@ class MasterPasswordValidator(
                 DomainError.ValidationError.TooShort(
                     field = FIELD_NAME,
                     minLength = minLength,
-                    actualLength = value.size,
+                    actualLength = value.size
                 )
         }
 
@@ -51,7 +51,7 @@ class MasterPasswordValidator(
                 DomainError.ValidationError.TooLong(
                     field = FIELD_NAME,
                     maxLength = maxLength,
-                    actualLength = value.size,
+                    actualLength = value.size
                 )
         }
 

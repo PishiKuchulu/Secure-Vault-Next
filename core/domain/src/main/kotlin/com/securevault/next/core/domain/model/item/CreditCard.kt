@@ -17,7 +17,7 @@ data class CreditCard(
     val expiryMonth: Int,
     val expiryYear: Int,
     val cvv: EncryptedField,
-    val pin: EncryptedField? = null,
+    val pin: EncryptedField? = null
 ) : VaultItem {
     override val type: ItemType get() = ItemType.CREDIT_CARD
 

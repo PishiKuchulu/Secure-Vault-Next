@@ -33,7 +33,7 @@ fun interface CreateVaultUseCase {
         name: VaultName,
         masterPassword: CharArray,
         securityPolicy: VaultSecurityPolicy,
-        settings: VaultSettings,
+        settings: VaultSettings
     ): DomainResult<Vault>
 }
 
@@ -57,7 +57,7 @@ fun interface UnlockVaultUseCase {
     suspend operator fun invoke(
         vaultId: VaultId,
         masterPassword: CharArray,
-        method: AuthenticationMethod,
+        method: AuthenticationMethod
     ): DomainResult<VaultSession>
 }
 
@@ -72,6 +72,6 @@ fun interface ChangeMasterPasswordUseCase {
     suspend operator fun invoke(
         vaultId: VaultId,
         currentPassword: CharArray,
-        newPassword: CharArray,
+        newPassword: CharArray
     ): DomainResult<Unit>
 }

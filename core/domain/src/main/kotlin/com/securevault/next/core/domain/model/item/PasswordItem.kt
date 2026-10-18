@@ -15,7 +15,7 @@ data class PasswordItem(
     val username: String? = null,
     val password: EncryptedField,
     val url: UrlValue? = null,
-    val totp: TOTPConfig? = null,
+    val totp: TOTPConfig? = null
 ) : VaultItem {
     override val type: ItemType get() = ItemType.PASSWORD
 }

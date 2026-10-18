@@ -18,7 +18,7 @@ data class TOTPConfig(
     val accountName: String? = null,
     val algorithm: String = DEFAULT_ALGORITHM,
     val digits: Int = DEFAULT_DIGITS,
-    val periodSeconds: Int = DEFAULT_PERIOD_SECONDS,
+    val periodSeconds: Int = DEFAULT_PERIOD_SECONDS
 ) {
     init {
         require(digits in MIN_DIGITS..MAX_DIGITS) {

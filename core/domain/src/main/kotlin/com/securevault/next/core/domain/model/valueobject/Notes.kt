@@ -7,9 +7,7 @@ package com.securevault.next.core.domain.model.valueobject
  * ceiling.
  */
 @JvmInline
-value class Notes(
-    val value: String,
-) {
+value class Notes(val value: String) {
     init {
         require(value.length <= MAX_LENGTH) { "Notes must be at most $MAX_LENGTH characters" }
     }

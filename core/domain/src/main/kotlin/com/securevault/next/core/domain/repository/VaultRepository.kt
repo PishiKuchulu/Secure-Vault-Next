@@ -35,7 +35,7 @@ interface VaultRepository {
         metadata: VaultMetadata,
         securityPolicy: VaultSecurityPolicy,
         settings: VaultSettings,
-        envelopeJson: String?,
+        envelopeJson: String?
     ): DomainResult<Vault>
 
     /**
@@ -53,20 +53,11 @@ interface VaultRepository {
      * alone. Fails with `RepositoryError.NotFound` when the vault id is
      * unknown.
      */
-    suspend fun updateEnvelopeJson(
-        vaultId: VaultId,
-        envelopeJson: String,
-    ): DomainResult<Unit>
+    suspend fun updateEnvelopeJson(vaultId: VaultId, envelopeJson: String): DomainResult<Unit>
 
-    suspend fun updateVaultSettings(
-        vaultId: VaultId,
-        settings: VaultSettings,
-    ): DomainResult<Unit>
+    suspend fun updateVaultSettings(vaultId: VaultId, settings: VaultSettings): DomainResult<Unit>
 
-    suspend fun updateVaultSecurityPolicy(
-        vaultId: VaultId,
-        policy: VaultSecurityPolicy,
-    ): DomainResult<Unit>
+    suspend fun updateVaultSecurityPolicy(vaultId: VaultId, policy: VaultSecurityPolicy): DomainResult<Unit>
 
     suspend fun deleteVault(vaultId: VaultId): DomainResult<Unit>
 }

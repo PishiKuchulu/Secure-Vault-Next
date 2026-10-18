@@ -29,8 +29,5 @@ interface CategoryRepository {
  * contract for [com.securevault.next.core.domain.usecase.SearchItemsUseCase].
  */
 interface SearchRepository {
-    suspend fun search(
-        vaultId: VaultId,
-        filter: SearchFilter,
-    ): DomainResult<SearchResult>
+    suspend fun search(vaultId: VaultId, filter: SearchFilter): DomainResult<SearchResult>
 }

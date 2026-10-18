@@ -12,7 +12,7 @@ data class BankAccount(
     val accountNumber: EncryptedField,
     val routingNumber: EncryptedField? = null,
     val iban: EncryptedField? = null,
-    val swiftCode: String? = null,
+    val swiftCode: String? = null
 ) : VaultItem {
     override val type: ItemType get() = ItemType.BANK_ACCOUNT
 

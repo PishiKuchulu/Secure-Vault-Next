@@ -21,7 +21,7 @@ data class VaultSecurityPolicy(
     val requireBiometric: Boolean = false,
     val maxFailedUnlockAttempts: Int = 5,
     val authenticationMethods: Set<AuthenticationMethod> = setOf(AuthenticationMethod.MASTER_PASSWORD),
-    val minMasterPasswordLength: Int = 12,
+    val minMasterPasswordLength: Int = 12
 ) {
     init {
         require(maxFailedUnlockAttempts > 0) {

@@ -16,5 +16,5 @@ import com.securevault.next.core.domain.model.enums.PasswordStrengthLevel
 data class PasswordStrength(
     val score: SecurityScore,
     val level: PasswordStrengthLevel,
-    val feedback: List<String> = emptyList(),
+    val feedback: List<String> = emptyList()
 )

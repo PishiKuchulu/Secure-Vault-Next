@@ -18,53 +18,33 @@ import com.securevault.next.core.domain.model.valueobject.VaultId
  * unlocked) that an enum constant cannot hold.
  */
 sealed interface VaultState {
-    data class Locked(
-        val vaultId: VaultId,
-    ) : VaultState
+    data class Locked(val vaultId: VaultId) : VaultState
 
-    data class Opening(
-        val vaultId: VaultId,
-    ) : VaultState
+    data class Opening(val vaultId: VaultId) : VaultState
 
-    data class Unlocked(
-        val session: VaultSession,
-    ) : VaultState
+    data class Unlocked(val session: VaultSession) : VaultState
 
-    data class Closing(
-        val vaultId: VaultId,
-    ) : VaultState
+    data class Closing(val vaultId: VaultId) : VaultState
 
-    data class Importing(
-        val vaultId: VaultId,
-        val progress: Float,
-    ) : VaultState {
+    data class Importing(val vaultId: VaultId, val progress: Float) : VaultState {
         init {
             require(progress in 0f..1f) { "Importing.progress must be between 0 and 1, was $progress" }
         }
     }
 
-    data class Exporting(
-        val vaultId: VaultId,
-        val progress: Float,
-    ) : VaultState {
+    data class Exporting(val vaultId: VaultId, val progress: Float) : VaultState {
         init {
             require(progress in 0f..1f) { "Exporting.progress must be between 0 and 1, was $progress" }
         }
     }
 
-    data class BackingUp(
-        val vaultId: VaultId,
-        val progress: Float,
-    ) : VaultState {
+    data class BackingUp(val vaultId: VaultId, val progress: Float) : VaultState {
         init {
             require(progress in 0f..1f) { "BackingUp.progress must be between 0 and 1, was $progress" }
         }
     }
 
-    data class Restoring(
-        val vaultId: VaultId,
-        val progress: Float,
-    ) : VaultState {
+    data class Restoring(val vaultId: VaultId, val progress: Float) : VaultState {
         init {
             require(progress in 0f..1f) { "Restoring.progress must be between 0 and 1, was $progress" }
         }

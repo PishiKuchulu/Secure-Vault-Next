@@ -11,8 +11,8 @@ import com.securevault.next.core.domain.model.valueobject.UpdatedAt
 import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.model.valueobject.VaultName
 import com.securevault.next.core.domain.model.valueobject.Version
-import org.junit.Test
 import java.time.Instant
+import org.junit.Test
 
 class VaultAggregateTest {
     @Test
@@ -23,15 +23,15 @@ class VaultAggregateTest {
         val item =
             PasswordItem(
                 metadata =
-                    VaultItemMetadata(
-                        id = ItemId("item-1"),
-                        vaultId = vaultId,
-                        title = "GitHub",
-                        createdAt = CreatedAt(now),
-                        updatedAt = UpdatedAt(now),
-                    ),
+                VaultItemMetadata(
+                    id = ItemId("item-1"),
+                    vaultId = vaultId,
+                    title = "GitHub",
+                    createdAt = CreatedAt(now),
+                    updatedAt = UpdatedAt(now)
+                ),
                 username = "octocat",
-                password = EncryptedField(ciphertext = "cipher", nonce = "nonce"),
+                password = EncryptedField(ciphertext = "cipher", nonce = "nonce")
             )
 
         assertThat(item.type).isEqualTo(ItemType.PASSWORD)
@@ -49,7 +49,7 @@ class VaultAggregateTest {
                 name = VaultName("Personal"),
                 version = Version(1),
                 createdAt = CreatedAt(now),
-                updatedAt = UpdatedAt(now),
+                updatedAt = UpdatedAt(now)
             )
 
         val statistics =
@@ -61,7 +61,7 @@ class VaultAggregateTest {
                 reusedPasswordCount = 0,
                 oldPasswordCount = 0,
                 breachedPasswordCount = 0,
-                securityScore = SecurityScore(100),
+                securityScore = SecurityScore(100)
             )
 
         val vault =
@@ -72,7 +72,7 @@ class VaultAggregateTest {
                 tags = emptyList(),
                 settings = VaultSettings(),
                 securityPolicy = VaultSecurityPolicy(),
-                statistics = statistics,
+                statistics = statistics
             )
 
         assertThat(vault.metadata.name.value).isEqualTo("Personal")

@@ -16,7 +16,7 @@ import com.securevault.next.core.domain.model.ValidationResult
 class FieldValidator(
     private val fieldName: String,
     private val required: Boolean = false,
-    private val maxLength: Int = DEFAULT_MAX_LENGTH,
+    private val maxLength: Int = DEFAULT_MAX_LENGTH
 ) : Validator<String> {
     override fun validate(value: String): ValidationResult {
         val errors = mutableListOf<DomainError.ValidationError>()

@@ -25,5 +25,5 @@ data class VaultMetadata(
     val version: Version,
     val revision: Revision = Revision.INITIAL,
     val createdAt: CreatedAt,
-    val updatedAt: UpdatedAt,
+    val updatedAt: UpdatedAt
 )

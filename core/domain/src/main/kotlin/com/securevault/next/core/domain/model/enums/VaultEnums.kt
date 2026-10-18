@@ -13,7 +13,7 @@ enum class VaultStatus {
     ARCHIVED,
     LOCKED_OUT,
     CORRUPTED,
-    PENDING_DELETION,
+    PENDING_DELETION
 }
 
 /** The synchronization status of an entity, for a future multi-device sync feature. */
@@ -22,5 +22,5 @@ enum class SyncState {
     SYNCING,
     SYNCED,
     CONFLICT,
-    FAILED,
+    FAILED
 }

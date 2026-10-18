@@ -18,7 +18,7 @@ data class VaultSession(
     val authenticationMethod: AuthenticationMethod,
     val unlockedAt: Instant,
     val lastActivityAt: Instant,
-    val expiresAt: Instant? = null,
+    val expiresAt: Instant? = null
 ) {
     init {
         require(sessionId.isNotBlank()) { "VaultSession.sessionId must not be blank" }

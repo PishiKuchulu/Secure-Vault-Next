@@ -3,7 +3,7 @@ package com.securevault.next.core.domain.model.enums
 /** Sort direction for any sortable list. */
 enum class SortOrder {
     ASCENDING,
-    DESCENDING,
+    DESCENDING
 }
 
 /** The field a list of items can be sorted by. */
@@ -12,14 +12,14 @@ enum class SortField {
     CREATED_AT,
     UPDATED_AT,
     LAST_USED,
-    SECURITY_SCORE,
+    SECURITY_SCORE
 }
 
 /** The app's color scheme preference. */
 enum class ThemeMode {
     LIGHT,
     DARK,
-    SYSTEM,
+    SYSTEM
 }
 
 /**
@@ -29,14 +29,12 @@ enum class ThemeMode {
  * synchronous option because the OS clipboard write itself is
  * asynchronous.
  */
-enum class ClipboardTimeout(
-    val seconds: Int,
-) {
+enum class ClipboardTimeout(val seconds: Int) {
     SECONDS_15(15),
     SECONDS_30(30),
     SECONDS_60(60),
     MINUTES_2(120),
-    NEVER(0),
+    NEVER(0)
 }
 
 /**
@@ -55,15 +53,13 @@ enum class ClipboardTimeout(
  * Note: *when* the evaluator runs is the app layer's decision (e.g. on
  * backgrounding or on a timer); this type only carries the threshold.
  */
-enum class AutoLockPolicy(
-    val minutes: Int,
-) {
+enum class AutoLockPolicy(val minutes: Int) {
     IMMEDIATELY(0),
     MINUTE_1(1),
     MINUTES_5(5),
     MINUTES_15(15),
     MINUTES_30(30),
-    NEVER(-1),
+    NEVER(-1)
 }
 
 /** A method by which a user can authenticate into a vault. */
@@ -71,5 +67,5 @@ enum class AuthenticationMethod {
     MASTER_PASSWORD,
     BIOMETRIC,
     PIN,
-    HARDWARE_KEY,
+    HARDWARE_KEY
 }

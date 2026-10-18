@@ -19,7 +19,7 @@ data class IdentityDocument(
     val documentNumber: EncryptedField,
     val issueDate: Instant? = null,
     val expiryDate: Instant? = null,
-    val issuingCountry: String? = null,
+    val issuingCountry: String? = null
 ) : VaultItem {
     override val type: ItemType get() = ItemType.IDENTITY_DOCUMENT
 

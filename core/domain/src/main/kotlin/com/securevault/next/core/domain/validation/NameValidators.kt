@@ -26,7 +26,7 @@ class VaultNameValidator : Validator<String> {
                 DomainError.ValidationError.TooLong(
                     field = FIELD_NAME,
                     maxLength = VaultName.MAX_LENGTH,
-                    actualLength = value.length,
+                    actualLength = value.length
                 )
         }
 
@@ -39,9 +39,7 @@ class VaultNameValidator : Validator<String> {
 }
 
 /** Validates a candidate [com.securevault.next.core.domain.model.Category] name. */
-class CategoryValidator(
-    private val maxLength: Int = DEFAULT_MAX_LENGTH,
-) : Validator<String> {
+class CategoryValidator(private val maxLength: Int = DEFAULT_MAX_LENGTH) : Validator<String> {
     override fun validate(value: String): ValidationResult {
         val errors = mutableListOf<DomainError.ValidationError>()
 
@@ -61,9 +59,7 @@ class CategoryValidator(
 }
 
 /** Validates a candidate [com.securevault.next.core.domain.model.Tag] name. */
-class TagValidator(
-    private val maxLength: Int = DEFAULT_MAX_LENGTH,
-) : Validator<String> {
+class TagValidator(private val maxLength: Int = DEFAULT_MAX_LENGTH) : Validator<String> {
     override fun validate(value: String): ValidationResult {
         val errors = mutableListOf<DomainError.ValidationError>()
 

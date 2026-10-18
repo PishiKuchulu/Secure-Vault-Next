@@ -21,11 +21,7 @@ import kotlinx.serialization.Serializable
  * which `data:repository` persists as JSON via kotlinx.serialization.
  */
 @Serializable
-data class EncryptedField(
-    val ciphertext: String,
-    val nonce: String,
-    val algorithm: String = DEFAULT_ALGORITHM,
-) {
+data class EncryptedField(val ciphertext: String, val nonce: String, val algorithm: String = DEFAULT_ALGORITHM) {
     init {
         require(ciphertext.isNotBlank()) { "EncryptedField.ciphertext must not be blank" }
         require(nonce.isNotBlank()) { "EncryptedField.nonce must not be blank" }

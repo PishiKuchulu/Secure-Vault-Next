@@ -21,15 +21,11 @@ data class SearchFilter(
     val favoritesOnly: Boolean = false,
     val includeTrash: Boolean = false,
     val sortField: SortField = SortField.TITLE,
-    val sortOrder: SortOrder = SortOrder.ASCENDING,
+    val sortOrder: SortOrder = SortOrder.ASCENDING
 )
 
 /** The result of running a [SearchFilter] against a vault's items. */
-data class SearchResult(
-    val items: List<VaultItem>,
-    val totalCount: Int,
-    val filter: SearchFilter,
-) {
+data class SearchResult(val items: List<VaultItem>, val totalCount: Int, val filter: SearchFilter) {
     init {
         require(totalCount >= 0) { "SearchResult.totalCount must not be negative" }
         require(totalCount >= items.size) {
