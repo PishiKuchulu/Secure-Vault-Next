@@ -14,9 +14,7 @@ import com.securevault.next.core.domain.error.DomainError
 sealed interface ValidationResult {
     data object Valid : ValidationResult
 
-    data class Invalid(
-        val errors: List<DomainError.ValidationError>,
-    ) : ValidationResult {
+    data class Invalid(val errors: List<DomainError.ValidationError>) : ValidationResult {
         init {
             require(errors.isNotEmpty()) { "ValidationResult.Invalid must carry at least one error" }
         }

@@ -30,7 +30,7 @@ class DefaultVaultEncryptionEngineTest {
             memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
             iterations = 1,
             parallelism = 1,
-            outputLengthBytes = 64,
+            outputLengthBytes = 64
         )
 
     private val strongerKdfParameters = fastKdfParameters.copy(iterations = 2)
@@ -43,7 +43,7 @@ class DefaultVaultEncryptionEngineTest {
                 keyDerivationEngine = Argon2idKeyDerivationEngine(),
                 cipherEngine = AesGcmCipherEngine(randomProvider),
                 integrityVerifier = HmacSha256IntegrityVerifier(),
-                secureRandomProvider = randomProvider,
+                secureRandomProvider = randomProvider
             )
     }
 
@@ -66,7 +66,7 @@ class DefaultVaultEncryptionEngineTest {
                 .createVault(
                     bytesOf("correct horse battery staple"),
                     bytesOf("my secret vault contents"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val vaultKey = engine.unlockVault(creation.envelope, bytesOf("correct horse battery staple")).successValue()
@@ -82,7 +82,7 @@ class DefaultVaultEncryptionEngineTest {
                 .createVault(
                     bytesOf("correct horse battery staple"),
                     bytesOf("contents"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val result = engine.unlockVault(creation.envelope, bytesOf("wrong password entirely"))
@@ -97,7 +97,7 @@ class DefaultVaultEncryptionEngineTest {
                 .createVault(
                     bytesOf("correct horse battery staple"),
                     bytesOf("contents"),
-                    strongerKdfParameters,
+                    strongerKdfParameters
                 ).successValue()
         check(creation.envelope.kdfMetadata.iterations == 2)
 
@@ -106,7 +106,7 @@ class DefaultVaultEncryptionEngineTest {
         // wrapped key.
         val tamperedEnvelope =
             creation.envelope.copy(
-                kdfMetadata = creation.envelope.kdfMetadata.copy(iterations = 1),
+                kdfMetadata = creation.envelope.kdfMetadata.copy(iterations = 1)
             )
 
         val result = engine.unlockVault(tamperedEnvelope, bytesOf("correct horse battery staple"))
@@ -121,18 +121,18 @@ class DefaultVaultEncryptionEngineTest {
                 .createVault(
                     bytesOf("correct horse battery staple"),
                     bytesOf("contents"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val tamperedEnvelope =
             creation.envelope.copy(
                 encryptionMetadata =
-                    creation.envelope.encryptionMetadata.copy(
-                        wrappedVaultKey =
-                            creation.envelope.encryptionMetadata.wrappedVaultKey.copy(
-                                ciphertext = "dGFtcGVyZWQtY2lwaGVydGV4dC1ieXRlcw==",
-                            ),
-                    ),
+                creation.envelope.encryptionMetadata.copy(
+                    wrappedVaultKey =
+                    creation.envelope.encryptionMetadata.wrappedVaultKey.copy(
+                        ciphertext = "dGFtcGVyZWQtY2lwaGVydGV4dC1ieXRlcw=="
+                    )
+                )
             )
 
         val result = engine.unlockVault(tamperedEnvelope, bytesOf("correct horse battery staple"))
@@ -147,7 +147,7 @@ class DefaultVaultEncryptionEngineTest {
                 .createVault(
                     bytesOf("correct horse battery staple"),
                     bytesOf("contents"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val vaultKey = engine.unlockVault(creation.envelope, bytesOf("correct horse battery staple")).successValue()
@@ -155,9 +155,9 @@ class DefaultVaultEncryptionEngineTest {
         val tamperedEnvelope =
             creation.envelope.copy(
                 encryptedContent =
-                    creation.envelope.encryptedContent.copy(
-                        ciphertext = "dGFtcGVyZWQtY29udGVudC1ieXRlcw==",
-                    ),
+                creation.envelope.encryptedContent.copy(
+                    ciphertext = "dGFtcGVyZWQtY29udGVudC1ieXRlcw=="
+                )
             )
 
         val result = engine.decryptContent(tamperedEnvelope, vaultKey)
@@ -172,7 +172,7 @@ class DefaultVaultEncryptionEngineTest {
                 .createVault(
                     bytesOf("correct horse battery staple"),
                     bytesOf("contents"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val futureVersionEnvelope = creation.envelope.copy(formatVersion = VaultFormatVersion(999))
@@ -180,7 +180,7 @@ class DefaultVaultEncryptionEngineTest {
         val result = engine.unlockVault(futureVersionEnvelope, bytesOf("correct horse battery staple"))
 
         assertThat(result.failureError()).isEqualTo(
-            CryptoError.UnsupportedVersion(found = 999, supportedRange = VaultFormatVersion.SUPPORTED_RANGE),
+            CryptoError.UnsupportedVersion(found = 999, supportedRange = VaultFormatVersion.SUPPORTED_RANGE)
         )
     }
 
@@ -191,7 +191,7 @@ class DefaultVaultEncryptionEngineTest {
                 .createVault(
                     bytesOf("correct horse battery staple"),
                     bytesOf("original contents"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val updatedEnvelope =
@@ -199,7 +199,7 @@ class DefaultVaultEncryptionEngineTest {
                 .reEncryptContent(
                     creation.envelope,
                     creation.vaultKey,
-                    bytesOf("updated contents"),
+                    bytesOf("updated contents")
                 ).successValue()
 
         // The key wrapping and KDF metadata are untouched by a content-only re-encryption.

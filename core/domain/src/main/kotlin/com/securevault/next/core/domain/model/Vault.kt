@@ -22,5 +22,5 @@ data class Vault(
     val tags: List<Tag>,
     val settings: VaultSettings,
     val securityPolicy: VaultSecurityPolicy,
-    val statistics: VaultStatistics,
+    val statistics: VaultStatistics
 )

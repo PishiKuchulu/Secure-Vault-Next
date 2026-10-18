@@ -19,7 +19,7 @@ class Argon2idKeyDerivationEngineTest {
             memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
             iterations = 1,
             parallelism = 1,
-            outputLengthBytes = 64,
+            outputLengthBytes = 64
         )
 
     private fun bytesOf(text: String) = SecureBytes.wrap(text.toByteArray(Charsets.UTF_8))
@@ -79,7 +79,7 @@ class Argon2idKeyDerivationEngineTest {
                 .derive(
                     bytesOf("password"),
                     bytesOf("fixed-salt-16by"),
-                    fastTestParameters.copy(outputLengthBytes = 96),
+                    fastTestParameters.copy(outputLengthBytes = 96)
                 ).successValue()
 
         assertThat(output.size).isEqualTo(96)

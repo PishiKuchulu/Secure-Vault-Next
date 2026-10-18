@@ -18,7 +18,7 @@ class KdfParametersTest {
         val belowRecommendation =
             KdfParameters(
                 memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
-                iterations = 1,
+                iterations = 1
             )
 
         assertThat(belowRecommendation.meetsOwaspMinimumRecommendation()).isFalse()
@@ -29,7 +29,7 @@ class KdfParametersTest {
         val atRecommendation =
             KdfParameters(
                 memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
-                iterations = 2,
+                iterations = 2
             )
 
         assertThat(atRecommendation.meetsOwaspMinimumRecommendation()).isTrue()
@@ -40,7 +40,7 @@ class KdfParametersTest {
         val highMemoryLowIterations =
             KdfParameters(
                 memoryCostKib = KdfParameters.DEFAULT_MEMORY_COST_KIB,
-                iterations = 1,
+                iterations = 1
             )
 
         assertThat(highMemoryLowIterations.meetsOwaspMinimumRecommendation()).isTrue()

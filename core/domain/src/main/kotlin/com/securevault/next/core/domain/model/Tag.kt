@@ -15,7 +15,7 @@ data class Tag(
     val vaultId: VaultId,
     val name: String,
     val colorHex: String? = null,
-    val createdAt: CreatedAt,
+    val createdAt: CreatedAt
 ) {
     init {
         require(name.isNotBlank()) { "Tag.name must not be blank" }

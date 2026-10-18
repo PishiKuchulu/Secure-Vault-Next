@@ -19,11 +19,7 @@ import kotlinx.serialization.Serializable
  * persists `List<CustomField>` as JSON via kotlinx.serialization.
  */
 @Serializable
-data class CustomField(
-    val label: String,
-    val value: EncryptedField,
-    val isSensitive: Boolean = true,
-) {
+data class CustomField(val label: String, val value: EncryptedField, val isSensitive: Boolean = true) {
     init {
         require(label.isNotBlank()) { "CustomField.label must not be blank" }
     }

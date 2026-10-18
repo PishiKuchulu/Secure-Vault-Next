@@ -13,12 +13,7 @@ import java.time.Instant
  * display order for a dedicated Favorites screen (Part 5), which a
  * boolean alone cannot represent.
  */
-data class Favorite(
-    val itemId: ItemId,
-    val vaultId: VaultId,
-    val position: Int,
-    val addedAt: Instant,
-) {
+data class Favorite(val itemId: ItemId, val vaultId: VaultId, val position: Int, val addedAt: Instant) {
     init {
         require(position >= 0) { "Favorite.position must not be negative, was $position" }
     }

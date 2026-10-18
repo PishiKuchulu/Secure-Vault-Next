@@ -32,7 +32,7 @@ data class VaultItemMetadata(
     val notes: Notes? = null,
     val createdAt: CreatedAt,
     val updatedAt: UpdatedAt,
-    val revision: Revision = Revision.INITIAL,
+    val revision: Revision = Revision.INITIAL
 ) {
     init {
         require(title.isNotBlank()) { "VaultItemMetadata.title must not be blank" }

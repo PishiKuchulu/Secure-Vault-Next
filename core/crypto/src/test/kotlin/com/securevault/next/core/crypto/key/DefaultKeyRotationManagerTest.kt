@@ -23,7 +23,7 @@ class DefaultKeyRotationManagerTest {
             memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
             iterations = 1,
             parallelism = 1,
-            outputLengthBytes = 64,
+            outputLengthBytes = 64
         )
 
     @Before
@@ -57,7 +57,7 @@ class DefaultKeyRotationManagerTest {
                     creation.envelope,
                     creation.vaultKey,
                     bytesOf("new-password"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val result = vaultEngine.unlockVault(rotated, bytesOf("old-password"))
@@ -79,7 +79,7 @@ class DefaultKeyRotationManagerTest {
                     creation.envelope,
                     creation.vaultKey,
                     bytesOf("new-password"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val vaultKeyAfterRotation = vaultEngine.unlockVault(rotated, bytesOf("new-password")).successValue()
@@ -101,7 +101,7 @@ class DefaultKeyRotationManagerTest {
                     creation.envelope,
                     creation.vaultKey,
                     bytesOf("new-password"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         assertThat(rotated.kdfMetadata.salt).isNotEqualTo(creation.envelope.kdfMetadata.salt)
@@ -121,7 +121,7 @@ class DefaultKeyRotationManagerTest {
                 creation.envelope,
                 creation.vaultKey,
                 bytesOf("new-password"),
-                fastKdfParameters,
+                fastKdfParameters
             ).successValue()
 
         // Rotation must not have wiped the caller's own copy of the vault key.

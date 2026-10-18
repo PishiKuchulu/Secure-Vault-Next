@@ -6,28 +6,27 @@ import com.securevault.next.core.domain.model.valueobject.EncryptedField
 import org.junit.Test
 
 class EncryptedVaultEnvelopeIntegrityPayloadTest {
-    private fun envelope(futureFields: Map<String, String>): EncryptedVaultEnvelope =
-        EncryptedVaultEnvelope(
-            formatVersion = VaultFormatVersion.CURRENT,
-            kdfMetadata =
-                KdfMetadata(
-                    algorithm = KdfAlgorithm.ARGON2ID,
-                    parameterVersion = 1,
-                    memoryCostKib = 65536,
-                    iterations = 3,
-                    parallelism = 4,
-                    outputLengthBytes = 64,
-                    salt = "c2FsdA==",
-                ),
-            cipherMetadata = CipherMetadata(),
-            encryptionMetadata =
-                EncryptionMetadata(
-                    wrappedVaultKey = EncryptedField(ciphertext = "Y2lwaGVy", nonce = "bm9uY2U="),
-                ),
-            integrityMetadata = IntegrityMetadata(mac = "cGxhY2Vob2xkZXI="),
-            encryptedContent = EncryptedField(ciphertext = "Y29udGVudA==", nonce = "bm9uY2Uy"),
-            futureCompatibilityFields = futureFields,
-        )
+    private fun envelope(futureFields: Map<String, String>): EncryptedVaultEnvelope = EncryptedVaultEnvelope(
+        formatVersion = VaultFormatVersion.CURRENT,
+        kdfMetadata =
+        KdfMetadata(
+            algorithm = KdfAlgorithm.ARGON2ID,
+            parameterVersion = 1,
+            memoryCostKib = 65536,
+            iterations = 3,
+            parallelism = 4,
+            outputLengthBytes = 64,
+            salt = "c2FsdA=="
+        ),
+        cipherMetadata = CipherMetadata(),
+        encryptionMetadata =
+        EncryptionMetadata(
+            wrappedVaultKey = EncryptedField(ciphertext = "Y2lwaGVy", nonce = "bm9uY2U=")
+        ),
+        integrityMetadata = IntegrityMetadata(mac = "cGxhY2Vob2xkZXI="),
+        encryptedContent = EncryptedField(ciphertext = "Y29udGVudA==", nonce = "bm9uY2Uy"),
+        futureCompatibilityFields = futureFields
+    )
 
     @Test
     fun `identical envelopes produce identical canonical payloads`() {
@@ -47,12 +46,12 @@ class EncryptedVaultEnvelopeIntegrityPayloadTest {
         // matter what characters appear inside the values.
         val singleFieldWithEmbeddedDelimiters =
             envelope(
-                mapOf("a" to "1;future.b=2"),
+                mapOf("a" to "1;future.b=2")
             ).canonicalIntegrityPayload()
 
         val twoSeparateFields =
             envelope(
-                mapOf("a" to "1", "b" to "2"),
+                mapOf("a" to "1", "b" to "2")
             ).canonicalIntegrityPayload()
 
         assertThat(singleFieldWithEmbeddedDelimiters).isNotEqualTo(twoSeparateFields)
@@ -71,11 +70,11 @@ class EncryptedVaultEnvelopeIntegrityPayloadTest {
         val base = envelope(emptyMap())
         val tamperedIterations =
             base.copy(
-                kdfMetadata = base.kdfMetadata.copy(iterations = base.kdfMetadata.iterations + 1),
+                kdfMetadata = base.kdfMetadata.copy(iterations = base.kdfMetadata.iterations + 1)
             )
         val tamperedMemory =
             base.copy(
-                kdfMetadata = base.kdfMetadata.copy(memoryCostKib = base.kdfMetadata.memoryCostKib + 1),
+                kdfMetadata = base.kdfMetadata.copy(memoryCostKib = base.kdfMetadata.memoryCostKib + 1)
             )
         val tamperedSalt = base.copy(kdfMetadata = base.kdfMetadata.copy(salt = "ZGlmZmVyZW50"))
 
@@ -103,7 +102,7 @@ class EncryptedVaultEnvelopeIntegrityPayloadTest {
         val base = envelope(emptyMap())
         val differentContent =
             base.copy(
-                encryptedContent = EncryptedField(ciphertext = "ZGlmZmVyZW50Y29udGVudA==", nonce = "bm9uY2Uz"),
+                encryptedContent = EncryptedField(ciphertext = "ZGlmZmVyZW50Y29udGVudA==", nonce = "bm9uY2Uz")
             )
 
         assertThat(differentContent.canonicalIntegrityPayload()).isEqualTo(base.canonicalIntegrityPayload())

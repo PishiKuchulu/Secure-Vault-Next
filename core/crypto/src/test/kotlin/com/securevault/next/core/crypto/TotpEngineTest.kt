@@ -51,8 +51,8 @@ class TotpEngineTest {
                 secretBase32sha256,
                 timeMillis = 1_111_111_109_000,
                 digits = 8,
-                algorithm = "SHA256",
-            ),
+                algorithm = "SHA256"
+            )
         ).isEqualTo("68084774")
     }
 
@@ -63,8 +63,8 @@ class TotpEngineTest {
                 secretBase32sha512,
                 timeMillis = 1_111_111_109_000,
                 digits = 8,
-                algorithm = "SHA512",
-            ),
+                algorithm = "SHA512"
+            )
         ).isEqualTo("25091201")
     }
 
@@ -112,8 +112,8 @@ class TotpEngineTest {
                 secretBase32sha256,
                 timeMillis = 59_000,
                 digits = 8,
-                algorithm = "hmacsha256",
-            ),
+                algorithm = "hmacsha256"
+            )
         ).isEqualTo("46119246")
     }
 

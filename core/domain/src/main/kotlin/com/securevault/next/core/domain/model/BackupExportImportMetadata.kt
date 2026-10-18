@@ -15,7 +15,7 @@ data class BackupMetadata(
     val createdAt: Instant,
     val sizeBytes: Long,
     val itemCount: Int,
-    val appVersion: String,
+    val appVersion: String
 ) {
     init {
         require(id.isNotBlank()) { "BackupMetadata.id must not be blank" }
@@ -40,7 +40,7 @@ data class ImportMetadata(
     val itemsImported: Int,
     val itemsSkipped: Int = 0,
     val itemsFailed: Int = 0,
-    val warnings: List<String> = emptyList(),
+    val warnings: List<String> = emptyList()
 ) {
     init {
         require(source.isNotBlank()) { "ImportMetadata.source must not be blank" }
@@ -56,7 +56,7 @@ data class ExportMetadata(
     val destination: String,
     val format: String,
     val exportedAt: Instant,
-    val itemsExported: Int,
+    val itemsExported: Int
 ) {
     init {
         require(destination.isNotBlank()) { "ExportMetadata.destination must not be blank" }

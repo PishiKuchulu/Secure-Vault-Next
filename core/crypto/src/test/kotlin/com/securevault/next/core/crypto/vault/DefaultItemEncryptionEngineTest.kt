@@ -16,7 +16,7 @@ class DefaultItemEncryptionEngineTest {
     private val engine =
         DefaultItemEncryptionEngine(
             sessionKeyHolder = holder,
-            cipherEngine = AesGcmCipherEngine(SystemSecureRandomProvider()),
+            cipherEngine = AesGcmCipherEngine(SystemSecureRandomProvider())
         )
 
     private fun installSessionKey() {

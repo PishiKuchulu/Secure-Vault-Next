@@ -20,7 +20,7 @@ data class Category(
     val colorHex: String? = null,
     val parentCategoryId: CategoryId? = null,
     val createdAt: CreatedAt,
-    val updatedAt: UpdatedAt,
+    val updatedAt: UpdatedAt
 ) {
     init {
         require(name.isNotBlank()) { "Category.name must not be blank" }

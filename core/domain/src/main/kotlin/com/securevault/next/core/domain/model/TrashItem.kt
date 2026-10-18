@@ -19,5 +19,5 @@ data class TrashItem(
     val itemType: ItemType,
     val deletedAt: Instant,
     val originalCategoryId: CategoryId? = null,
-    val expiresAt: Instant? = null,
+    val expiresAt: Instant? = null
 )

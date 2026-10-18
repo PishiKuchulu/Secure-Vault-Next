@@ -20,7 +20,7 @@ data class AuditResult(
     val reusedPasswordGroups: List<List<ItemId>> = emptyList(),
     val oldItems: List<ItemId> = emptyList(),
     val breachedItems: List<ItemId> = emptyList(),
-    val recommendations: List<String> = emptyList(),
+    val recommendations: List<String> = emptyList()
 ) {
     init {
         require(reusedPasswordGroups.all { it.size >= 2 }) {

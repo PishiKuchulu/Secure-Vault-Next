@@ -23,7 +23,7 @@ class DefaultBackupEncryptionEngineTest {
             memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
             iterations = 1,
             parallelism = 1,
-            outputLengthBytes = 64,
+            outputLengthBytes = 64
         )
 
     @Before
@@ -34,7 +34,7 @@ class DefaultBackupEncryptionEngineTest {
                 keyDerivationEngine = Argon2idKeyDerivationEngine(),
                 cipherEngine = AesGcmCipherEngine(randomProvider),
                 integrityVerifier = HmacSha256IntegrityVerifier(),
-                secureRandomProvider = randomProvider,
+                secureRandomProvider = randomProvider
             )
         backupEngine = DefaultBackupEncryptionEngine(vaultEngine)
     }
@@ -53,7 +53,7 @@ class DefaultBackupEncryptionEngineTest {
                 .createBackup(
                     bytesOf("backup-export-passphrase"),
                     bytesOf("vault contents to back up"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val backupKey =
@@ -75,7 +75,7 @@ class DefaultBackupEncryptionEngineTest {
                 .createBackup(
                     bytesOf("totally-different-export-passphrase"),
                     bytesOf("contents"),
-                    fastKdfParameters,
+                    fastKdfParameters
                 ).successValue()
 
         val result = backupEngine.restoreBackup(creation.envelope, bytesOf("totally-different-export-passphrase"))
@@ -105,7 +105,7 @@ class DefaultBackupEncryptionEngineTest {
 
         val corrupted =
             creation.envelope.copy(
-                integrityMetadata = creation.envelope.integrityMetadata.copy(mac = "not-valid-base64-!!!"),
+                integrityMetadata = creation.envelope.integrityMetadata.copy(mac = "not-valid-base64-!!!")
             )
 
         val result = backupEngine.restoreBackup(corrupted, bytesOf("correct-passphrase"))

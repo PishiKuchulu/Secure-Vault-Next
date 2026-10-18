@@ -38,7 +38,7 @@ interface VaultEncryptionEngine {
     fun createVault(
         masterPassword: SecureBytes,
         plaintextContent: SecureBytes,
-        kdfParameters: KdfParameters = KdfParameters.CURRENT,
+        kdfParameters: KdfParameters = KdfParameters.CURRENT
     ): CryptoResult<VaultCreationResult>
 
     /**
@@ -56,16 +56,10 @@ interface VaultEncryptionEngine {
      * password (e.g. before a destructive action) without paying the
      * cost of decrypting the entire vault content.
      */
-    fun unlockVault(
-        envelope: EncryptedVaultEnvelope,
-        masterPassword: SecureBytes,
-    ): CryptoResult<VaultKey>
+    fun unlockVault(envelope: EncryptedVaultEnvelope, masterPassword: SecureBytes): CryptoResult<VaultKey>
 
     /** Decrypts [envelope]'s content using an already-unwrapped [vaultKey] (from [unlockVault]). */
-    fun decryptContent(
-        envelope: EncryptedVaultEnvelope,
-        vaultKey: VaultKey,
-    ): CryptoResult<SecureBytes>
+    fun decryptContent(envelope: EncryptedVaultEnvelope, vaultKey: VaultKey): CryptoResult<SecureBytes>
 
     /**
      * Re-encrypts [plaintextContent] under [vaultKey] and produces an
@@ -78,7 +72,7 @@ interface VaultEncryptionEngine {
     fun reEncryptContent(
         envelope: EncryptedVaultEnvelope,
         vaultKey: VaultKey,
-        plaintextContent: SecureBytes,
+        plaintextContent: SecureBytes
     ): CryptoResult<EncryptedVaultEnvelope>
 }
 
@@ -86,7 +80,4 @@ interface VaultEncryptionEngine {
  * The result of [VaultEncryptionEngine.createVault]: the persistable
  * envelope, plus the vault key ready for immediate use.
  */
-data class VaultCreationResult(
-    val envelope: EncryptedVaultEnvelope,
-    val vaultKey: VaultKey,
-)
+data class VaultCreationResult(val envelope: EncryptedVaultEnvelope, val vaultKey: VaultKey)

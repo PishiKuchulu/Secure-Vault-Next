@@ -20,5 +20,5 @@ data class PasswordHistory(
     val itemId: ItemId,
     val password: EncryptedField,
     val changedAt: Instant,
-    val strength: PasswordStrength? = null,
+    val strength: PasswordStrength? = null
 )
