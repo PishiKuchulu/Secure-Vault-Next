@@ -18,11 +18,11 @@ import com.securevault.next.data.persistence.dao.VaultDao
 import com.securevault.next.data.repository.mapper.CategoryTagMapper
 import com.securevault.next.data.repository.mapper.ItemMapper
 import com.securevault.next.data.repository.mapper.VaultMapper
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class VaultRepositoryImpl @Inject constructor(

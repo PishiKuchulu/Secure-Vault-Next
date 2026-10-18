@@ -24,12 +24,12 @@ import com.securevault.next.data.persistence.dao.SearchDao
 import com.securevault.next.data.persistence.entity.AuditResultEntity
 import com.securevault.next.data.repository.mapper.CategoryTagMapper
 import com.securevault.next.data.repository.mapper.ItemMapper
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class CategoryRepositoryImpl @Inject constructor(
@@ -210,7 +210,10 @@ class BackupRepositoryImpl @Inject constructor(
         return DomainResult.failure(DomainError.UnexpectedError("Backup creation not implemented"))
     }
 
-    override suspend fun restoreBackup(backupId: String, masterPassword: CharArray): DomainResult<com.securevault.next.core.domain.model.Vault> {
+    override suspend fun restoreBackup(
+        backupId: String,
+        masterPassword: CharArray,
+    ): DomainResult<com.securevault.next.core.domain.model.Vault> {
         return DomainResult.failure(DomainError.UnexpectedError("Backup restoration not implemented"))
     }
 

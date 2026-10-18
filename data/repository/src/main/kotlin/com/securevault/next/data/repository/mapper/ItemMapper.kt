@@ -1,12 +1,11 @@
 package com.securevault.next.data.repository.mapper
 
+import com.securevault.next.core.common.result.getOrNull
 import com.securevault.next.core.domain.crypto.ItemEncryptionEngine
 import com.securevault.next.core.domain.error.DomainError
 import com.securevault.next.core.domain.model.CustomField
 import com.securevault.next.core.domain.model.PasswordHistory
 import com.securevault.next.core.domain.model.VaultItemMetadata
-import com.securevault.next.core.domain.result.DomainResult
-import com.securevault.next.core.common.result.getOrNull
 import com.securevault.next.core.domain.model.item.ApiKey
 import com.securevault.next.core.domain.model.item.BankAccount
 import com.securevault.next.core.domain.model.item.CreditCard
@@ -26,6 +25,7 @@ import com.securevault.next.core.domain.model.valueobject.Notes
 import com.securevault.next.core.domain.model.valueobject.Revision
 import com.securevault.next.core.domain.model.valueobject.UpdatedAt
 import com.securevault.next.core.domain.model.valueobject.UrlValue
+import com.securevault.next.core.domain.result.DomainResult
 import com.securevault.next.data.persistence.TransactionRunner
 import com.securevault.next.data.persistence.dao.ItemDao
 import com.securevault.next.data.persistence.entity.ApiKeyEntity

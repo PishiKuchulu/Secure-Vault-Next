@@ -27,11 +27,11 @@ import com.securevault.next.data.persistence.TransactionRunner
 import com.securevault.next.data.persistence.dao.ItemDao
 import com.securevault.next.data.persistence.entity.ItemTagCrossRef
 import com.securevault.next.data.repository.mapper.ItemMapper
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import java.time.Instant
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * Conventions shared by the item repositories below:
@@ -54,10 +54,16 @@ class CreditCardRepositoryImpl @Inject constructor(
             if (pojo == null) null
             else ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? CreditCard
         }
-    override fun observeCreditCards(vaultId: VaultId): Flow<List<CreditCard>> = itemDao.observeFullItemsByType(vaultId, ItemType.CREDIT_CARD).map { list -> ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
-                .mapNotNull { it as? CreditCard } }
+    override fun observeCreditCards(vaultId: VaultId): Flow<List<CreditCard>> =
+        itemDao.observeFullItemsByType(vaultId, ItemType.CREDIT_CARD)
+            .map { list ->
+                ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
+                    .mapNotNull { it as? CreditCard }
+            }
     override suspend fun getCreditCard(itemId: ItemId): DomainResult<CreditCard> {
-        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(itemId.value, "CreditCard"))
+        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(
+            DomainError.RepositoryError.NotFound(itemId.value, "CreditCard"),
+        )
         val item = ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? CreditCard
             ?: return DomainResult.failure(DomainError.RepositoryError.ReadFailed("Item $itemId is not a CreditCard"))
         return DomainResult.success(item)
@@ -73,7 +79,9 @@ class CreditCardRepositoryImpl @Inject constructor(
             .getOrElse { return DomainResult.failure(it) }
         val existing = if (isUpdate) {
             itemDao.getFullItem(card.metadata.id)?.item
-                ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(card.metadata.id.value, "CreditCard"))
+                ?: return DomainResult.failure(
+                    DomainError.RepositoryError.NotFound(card.metadata.id.value, "CreditCard"),
+                )
         } else null
         txRunner.runInTransaction {
             if (isUpdate) {
@@ -108,10 +116,16 @@ class BankAccountRepositoryImpl @Inject constructor(
             if (pojo == null) null
             else ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? BankAccount
         }
-    override fun observeBankAccounts(vaultId: VaultId): Flow<List<BankAccount>> = itemDao.observeFullItemsByType(vaultId, ItemType.BANK_ACCOUNT).map { list -> ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
-                .mapNotNull { it as? BankAccount } }
+    override fun observeBankAccounts(vaultId: VaultId): Flow<List<BankAccount>> =
+        itemDao.observeFullItemsByType(vaultId, ItemType.BANK_ACCOUNT)
+            .map { list ->
+                ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
+                    .mapNotNull { it as? BankAccount }
+            }
     override suspend fun getBankAccount(itemId: ItemId): DomainResult<BankAccount> {
-        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(itemId.value, "BankAccount"))
+        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(
+            DomainError.RepositoryError.NotFound(itemId.value, "BankAccount"),
+        )
         val item = ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? BankAccount
             ?: return DomainResult.failure(DomainError.RepositoryError.ReadFailed("Item $itemId is not a BankAccount"))
         return DomainResult.success(item)
@@ -127,7 +141,9 @@ class BankAccountRepositoryImpl @Inject constructor(
             .getOrElse { return DomainResult.failure(it) }
         val existing = if (isUpdate) {
             itemDao.getFullItem(account.metadata.id)?.item
-                ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(account.metadata.id.value, "BankAccount"))
+                ?: return DomainResult.failure(
+                    DomainError.RepositoryError.NotFound(account.metadata.id.value, "BankAccount"),
+                )
         } else null
         txRunner.runInTransaction {
             if (isUpdate) {
@@ -158,16 +174,25 @@ class IdentityRepositoryImpl @Inject constructor(
     private val encryptionEngine: ItemEncryptionEngine,
     private val txRunner: TransactionRunner,
 ) : IdentityRepository {
-    override fun observeIdentity(itemId: ItemId): Flow<IdentityDocument?> = itemDao.observeFullItem(itemId).map { pojo ->
+    override fun observeIdentity(itemId: ItemId): Flow<IdentityDocument?> =
+        itemDao.observeFullItem(itemId).map { pojo ->
             if (pojo == null) null
             else ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? IdentityDocument
         }
-    override fun observeIdentities(vaultId: VaultId): Flow<List<IdentityDocument>> = itemDao.observeFullItemsByType(vaultId, ItemType.IDENTITY_DOCUMENT).map { list -> ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
-                .mapNotNull { it as? IdentityDocument } }
+    override fun observeIdentities(vaultId: VaultId): Flow<List<IdentityDocument>> =
+        itemDao.observeFullItemsByType(vaultId, ItemType.IDENTITY_DOCUMENT)
+            .map { list ->
+                ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
+                    .mapNotNull { it as? IdentityDocument }
+            }
     override suspend fun getIdentity(itemId: ItemId): DomainResult<IdentityDocument> {
-        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(itemId.value, "IdentityDocument"))
+        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(
+            DomainError.RepositoryError.NotFound(itemId.value, "IdentityDocument"),
+        )
         val item = ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? IdentityDocument
-            ?: return DomainResult.failure(DomainError.RepositoryError.ReadFailed("Item $itemId is not an IdentityDocument"))
+            ?: return DomainResult.failure(
+                DomainError.RepositoryError.ReadFailed("Item $itemId is not an IdentityDocument"),
+            )
         return DomainResult.success(item)
     }
     override suspend fun createIdentity(identity: IdentityDocument): DomainResult<IdentityDocument> {
@@ -181,7 +206,9 @@ class IdentityRepositoryImpl @Inject constructor(
             .getOrElse { return DomainResult.failure(it) }
         val existing = if (isUpdate) {
             itemDao.getFullItem(identity.metadata.id)?.item
-                ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(identity.metadata.id.value, "IdentityDocument"))
+                ?: return DomainResult.failure(
+                    DomainError.RepositoryError.NotFound(identity.metadata.id.value, "IdentityDocument"),
+                )
         } else null
         txRunner.runInTransaction {
             if (isUpdate) {
@@ -216,12 +243,20 @@ class SoftwareLicenseRepositoryImpl @Inject constructor(
             if (pojo == null) null
             else ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? SoftwareLicense
         }
-    override fun observeLicenses(vaultId: VaultId): Flow<List<SoftwareLicense>> = itemDao.observeFullItemsByType(vaultId, ItemType.SOFTWARE_LICENSE).map { list -> ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
-                .mapNotNull { it as? SoftwareLicense } }
+    override fun observeLicenses(vaultId: VaultId): Flow<List<SoftwareLicense>> =
+        itemDao.observeFullItemsByType(vaultId, ItemType.SOFTWARE_LICENSE)
+            .map { list ->
+                ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
+                    .mapNotNull { it as? SoftwareLicense }
+            }
     override suspend fun getLicense(itemId: ItemId): DomainResult<SoftwareLicense> {
-        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(itemId.value, "SoftwareLicense"))
+        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(
+            DomainError.RepositoryError.NotFound(itemId.value, "SoftwareLicense"),
+        )
         val item = ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? SoftwareLicense
-            ?: return DomainResult.failure(DomainError.RepositoryError.ReadFailed("Item $itemId is not a SoftwareLicense"))
+            ?: return DomainResult.failure(
+                DomainError.RepositoryError.ReadFailed("Item $itemId is not a SoftwareLicense"),
+            )
         return DomainResult.success(item)
     }
     override suspend fun createLicense(license: SoftwareLicense): DomainResult<SoftwareLicense> {
@@ -235,7 +270,9 @@ class SoftwareLicenseRepositoryImpl @Inject constructor(
             .getOrElse { return DomainResult.failure(it) }
         val existing = if (isUpdate) {
             itemDao.getFullItem(license.metadata.id)?.item
-                ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(license.metadata.id.value, "SoftwareLicense"))
+                ?: return DomainResult.failure(
+                    DomainError.RepositoryError.NotFound(license.metadata.id.value, "SoftwareLicense"),
+                )
         } else null
         txRunner.runInTransaction {
             if (isUpdate) {
@@ -270,10 +307,16 @@ class ApiKeyRepositoryImpl @Inject constructor(
             if (pojo == null) null
             else ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? ApiKey
         }
-    override fun observeApiKeys(vaultId: VaultId): Flow<List<ApiKey>> = itemDao.observeFullItemsByType(vaultId, ItemType.API_KEY).map { list -> ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
-                .mapNotNull { it as? ApiKey } }
+    override fun observeApiKeys(vaultId: VaultId): Flow<List<ApiKey>> =
+        itemDao.observeFullItemsByType(vaultId, ItemType.API_KEY)
+            .map { list ->
+                ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
+                    .mapNotNull { it as? ApiKey }
+            }
     override suspend fun getApiKey(itemId: ItemId): DomainResult<ApiKey> {
-        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(itemId.value, "ApiKey"))
+        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(
+            DomainError.RepositoryError.NotFound(itemId.value, "ApiKey"),
+        )
         val item = ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? ApiKey
             ?: return DomainResult.failure(DomainError.RepositoryError.ReadFailed("Item $itemId is not an ApiKey"))
         return DomainResult.success(item)
@@ -324,10 +367,16 @@ class SshKeyRepositoryImpl @Inject constructor(
             if (pojo == null) null
             else ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? SSHKey
         }
-    override fun observeSshKeys(vaultId: VaultId): Flow<List<SSHKey>> = itemDao.observeFullItemsByType(vaultId, ItemType.SSH_KEY).map { list -> ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
-                .mapNotNull { it as? SSHKey } }
+    override fun observeSshKeys(vaultId: VaultId): Flow<List<SSHKey>> =
+        itemDao.observeFullItemsByType(vaultId, ItemType.SSH_KEY)
+            .map { list ->
+                ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
+                    .mapNotNull { it as? SSHKey }
+            }
     override suspend fun getSshKey(itemId: ItemId): DomainResult<SSHKey> {
-        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(itemId.value, "SSHKey"))
+        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(
+            DomainError.RepositoryError.NotFound(itemId.value, "SSHKey"),
+        )
         val item = ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? SSHKey
             ?: return DomainResult.failure(DomainError.RepositoryError.ReadFailed("Item $itemId is not an SSHKey"))
         return DomainResult.success(item)
@@ -374,14 +423,21 @@ class RecoveryCodeRepositoryImpl @Inject constructor(
     private val encryptionEngine: ItemEncryptionEngine,
     private val txRunner: TransactionRunner,
 ) : RecoveryCodeRepository {
-    override fun observeRecoveryCode(itemId: ItemId): Flow<RecoveryCode?> = itemDao.observeFullItem(itemId).map { pojo ->
+    override fun observeRecoveryCode(itemId: ItemId): Flow<RecoveryCode?> =
+        itemDao.observeFullItem(itemId).map { pojo ->
             if (pojo == null) null
             else ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? RecoveryCode
         }
-    override fun observeRecoveryCodes(vaultId: VaultId): Flow<List<RecoveryCode>> = itemDao.observeFullItemsByType(vaultId, ItemType.RECOVERY_CODE).map { list -> ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
-                .mapNotNull { it as? RecoveryCode } }
+    override fun observeRecoveryCodes(vaultId: VaultId): Flow<List<RecoveryCode>> =
+        itemDao.observeFullItemsByType(vaultId, ItemType.RECOVERY_CODE)
+            .map { list ->
+                ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
+                    .mapNotNull { it as? RecoveryCode }
+            }
     override suspend fun getRecoveryCode(itemId: ItemId): DomainResult<RecoveryCode> {
-        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(itemId.value, "RecoveryCode"))
+        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(
+            DomainError.RepositoryError.NotFound(itemId.value, "RecoveryCode"),
+        )
         val item = ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? RecoveryCode
             ?: return DomainResult.failure(DomainError.RepositoryError.ReadFailed("Item $itemId is not a RecoveryCode"))
         return DomainResult.success(item)
@@ -397,7 +453,9 @@ class RecoveryCodeRepositoryImpl @Inject constructor(
             .getOrElse { return DomainResult.failure(it) }
         val existing = if (isUpdate) {
             itemDao.getFullItem(recoveryCode.metadata.id)?.item
-                ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(recoveryCode.metadata.id.value, "RecoveryCode"))
+                ?: return DomainResult.failure(
+                    DomainError.RepositoryError.NotFound(recoveryCode.metadata.id.value, "RecoveryCode"),
+                )
         } else null
         txRunner.runInTransaction {
             if (isUpdate) {
@@ -413,7 +471,9 @@ class RecoveryCodeRepositoryImpl @Inject constructor(
             if (isUpdate) {
                 itemDao.deleteItemTagCrossRefs(recoveryCode.metadata.id)
             }
-            itemDao.insertItemTagCrossRefs(recoveryCode.metadata.tagIds.map { ItemTagCrossRef(recoveryCode.metadata.id, it) })
+            itemDao.insertItemTagCrossRefs(
+                recoveryCode.metadata.tagIds.map { ItemTagCrossRef(recoveryCode.metadata.id, it) },
+            )
         }
         return DomainResult.success(recoveryCode)
     }
@@ -436,10 +496,16 @@ class TotpRepositoryImpl @Inject constructor(
             if (pojo == null) null
             else ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? TOTPSeed
         }
-    override fun observeTotps(vaultId: VaultId): Flow<List<TOTPSeed>> = itemDao.observeFullItemsByType(vaultId, ItemType.TOTP_SEED).map { list -> ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
-                .mapNotNull { it as? TOTPSeed } }
+    override fun observeTotps(vaultId: VaultId): Flow<List<TOTPSeed>> =
+        itemDao.observeFullItemsByType(vaultId, ItemType.TOTP_SEED)
+            .map { list ->
+                ItemMapper.toDomainItems(list, encryptionEngine, itemDao)
+                    .mapNotNull { it as? TOTPSeed }
+            }
     override suspend fun getTotp(itemId: ItemId): DomainResult<TOTPSeed> {
-        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(DomainError.RepositoryError.NotFound(itemId.value, "TOTPSeed"))
+        val pojo = itemDao.getFullItem(itemId) ?: return DomainResult.failure(
+            DomainError.RepositoryError.NotFound(itemId.value, "TOTPSeed"),
+        )
         val item = ItemMapper.toDomain(pojo, encryptionEngine, itemDao) as? TOTPSeed
             ?: return DomainResult.failure(DomainError.RepositoryError.ReadFailed("Item $itemId is not a TOTPSeed"))
         return DomainResult.success(item)
