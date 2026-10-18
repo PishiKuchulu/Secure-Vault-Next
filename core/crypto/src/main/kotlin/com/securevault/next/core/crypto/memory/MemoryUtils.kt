@@ -17,7 +17,6 @@ import java.util.Arrays
  * [wipe] or [SecureBytes.close].
  */
 object MemoryUtils {
-
     /** Overwrites [chars] with `'\u0000'` in place. Safe to call on an already-wiped or empty array. */
     fun wipe(chars: CharArray) {
         Arrays.fill(chars, '\u0000')

@@ -24,7 +24,6 @@ import com.securevault.next.core.crypto.result.CryptoResult
  * as `masterPassword` after either call returns.
  */
 interface VaultEncryptionEngine {
-
     /**
      * Creates a brand-new encrypted vault: derives a master key from
      * [masterPassword] under [kdfParameters], generates a fresh random
@@ -57,10 +56,16 @@ interface VaultEncryptionEngine {
      * password (e.g. before a destructive action) without paying the
      * cost of decrypting the entire vault content.
      */
-    fun unlockVault(envelope: EncryptedVaultEnvelope, masterPassword: SecureBytes): CryptoResult<VaultKey>
+    fun unlockVault(
+        envelope: EncryptedVaultEnvelope,
+        masterPassword: SecureBytes,
+    ): CryptoResult<VaultKey>
 
     /** Decrypts [envelope]'s content using an already-unwrapped [vaultKey] (from [unlockVault]). */
-    fun decryptContent(envelope: EncryptedVaultEnvelope, vaultKey: VaultKey): CryptoResult<SecureBytes>
+    fun decryptContent(
+        envelope: EncryptedVaultEnvelope,
+        vaultKey: VaultKey,
+    ): CryptoResult<SecureBytes>
 
     /**
      * Re-encrypts [plaintextContent] under [vaultKey] and produces an

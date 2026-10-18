@@ -47,7 +47,6 @@ import java.util.Arrays
 class SecureBytes private constructor(
     private var backing: ByteArray?,
 ) : AutoCloseable {
-
     /** The size of the wrapped array. Throws [IllegalStateException] once wiped. */
     val size: Int
         get() = current().size
@@ -87,8 +86,7 @@ class SecureBytes private constructor(
         backing = null
     }
 
-    private fun current(): ByteArray =
-        backing ?: error("SecureBytes has already been wiped and cannot be used again")
+    private fun current(): ByteArray = backing ?: error("SecureBytes has already been wiped and cannot be used again")
 
     companion object {
         /**

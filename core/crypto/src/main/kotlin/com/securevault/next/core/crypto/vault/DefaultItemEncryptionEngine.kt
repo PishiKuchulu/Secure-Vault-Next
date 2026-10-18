@@ -14,66 +14,72 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DefaultItemEncryptionEngine @Inject constructor(
-    private val sessionKeyHolder: SessionKeyHolder,
-    private val cipherEngine: CipherEngine,
-) : ItemEncryptionEngine {
+class DefaultItemEncryptionEngine
+    @Inject
+    constructor(
+        private val sessionKeyHolder: SessionKeyHolder,
+        private val cipherEngine: CipherEngine,
+    ) : ItemEncryptionEngine {
+        override suspend fun decryptField(field: EncryptedField): DomainResult<CharArray> {
+            val sessionKey =
+                sessionKeyHolder.get()
+                    ?: return DomainResult.failure(DomainError.CryptoRequiredError.KeyDerivationRequired)
 
-    override suspend fun decryptField(field: EncryptedField): DomainResult<CharArray> {
-        val sessionKey = sessionKeyHolder.get()
-            ?: return DomainResult.failure(DomainError.CryptoRequiredError.KeyDerivationRequired)
+            return try {
+                val decryptedResult =
+                    cipherEngine.decrypt(
+                        encryptedField = field,
+                        key = sessionKey.bytes,
+                    )
 
-        return try {
-            val decryptedResult = cipherEngine.decrypt(
-                encryptedField = field,
-                key = sessionKey.bytes
-            )
+                if (decryptedResult.isSuccess) {
+                    val decrypted = decryptedResult.getOrNull()!!
+                    // Finding L6: decode with the same explicit UTF-8 the
+                    // encrypt path uses (never the platform default), and
+                    // keep the transient String confined to this peek block
+                    // so it becomes unreachable as soon as the CharArray
+                    // copy is made.
+                    val result =
+                        decrypted.peek { revealed ->
+                            String(revealed, Charsets.UTF_8).toCharArray()
+                        }
 
-            if (decryptedResult.isSuccess) {
-                val decrypted = decryptedResult.getOrNull()!!
-                // Finding L6: decode with the same explicit UTF-8 the
-                // encrypt path uses (never the platform default), and
-                // keep the transient String confined to this peek block
-                // so it becomes unreachable as soon as the CharArray
-                // copy is made.
-                val result = decrypted.peek { revealed ->
-                    String(revealed, Charsets.UTF_8).toCharArray()
+                    // Production Hardening: Wipe sensitive raw bytes immediately
+                    decrypted.close()
+
+                    DomainResult.success(result)
+                } else {
+                    DomainResult.failure(DomainError.CryptoRequiredError.DecryptionFailed)
                 }
-
-                // Production Hardening: Wipe sensitive raw bytes immediately
-                decrypted.close()
-
-                DomainResult.success(result)
-            } else {
+            } catch (e: Exception) {
                 DomainResult.failure(DomainError.CryptoRequiredError.DecryptionFailed)
             }
-        } catch (e: Exception) {
-            DomainResult.failure(DomainError.CryptoRequiredError.DecryptionFailed)
         }
-    }
 
-    override suspend fun encryptField(plaintext: CharArray): DomainResult<EncryptedField> {
-        val sessionKey = sessionKeyHolder.get()
-            ?: return DomainResult.failure(DomainError.CryptoRequiredError.KeyDerivationRequired)
+        override suspend fun encryptField(plaintext: CharArray): DomainResult<EncryptedField> {
+            val sessionKey =
+                sessionKeyHolder.get()
+                    ?: return DomainResult.failure(DomainError.CryptoRequiredError.KeyDerivationRequired)
 
-        // plaintext is encrypted as a SecureBytes view so it is never
-        // materialized as a String. MemoryUtils.charsToSecureBytes encodes
-        // UTF-8 without allocating a String; the resulting SecureBytes is
-        // wiped as soon as encryption has consumed it (see use {} below).
-        MemoryUtils.charsToSecureBytes(plaintext).use { plaintextBytes ->
-            val result = cipherEngine.encrypt(
-                plaintext = plaintextBytes,
-                key = sessionKey.bytes,
-                associatedData = ByteArray(0),
-            )
-            return when (result) {
-                is com.securevault.next.core.common.result.Result.Success -> {
-                    DomainResult.success(result.value)
-                }
-                is com.securevault.next.core.common.result.Result.Failure -> {
-                    DomainError.CryptoRequiredError.EncryptionUnavailable.asDomainFailure()
+            // plaintext is encrypted as a SecureBytes view so it is never
+            // materialized as a String. MemoryUtils.charsToSecureBytes encodes
+            // UTF-8 without allocating a String; the resulting SecureBytes is
+            // wiped as soon as encryption has consumed it (see use {} below).
+            MemoryUtils.charsToSecureBytes(plaintext).use { plaintextBytes ->
+                val result =
+                    cipherEngine.encrypt(
+                        plaintext = plaintextBytes,
+                        key = sessionKey.bytes,
+                        associatedData = ByteArray(0),
+                    )
+                return when (result) {
+                    is com.securevault.next.core.common.result.Result.Success -> {
+                        DomainResult.success(result.value)
+                    }
+                    is com.securevault.next.core.common.result.Result.Failure -> {
+                        DomainError.CryptoRequiredError.EncryptionUnavailable.asDomainFailure()
+                    }
                 }
             }
         }
     }
-}

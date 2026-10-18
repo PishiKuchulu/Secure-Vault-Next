@@ -19,7 +19,6 @@ package com.securevault.next.core.crypto.key
  * the held key from different threads.
  */
 class SessionKeyHolder {
-
     @Volatile
     private var current: SessionKey? = null
 

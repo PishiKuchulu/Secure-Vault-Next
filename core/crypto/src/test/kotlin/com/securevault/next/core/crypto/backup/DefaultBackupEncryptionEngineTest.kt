@@ -16,25 +16,26 @@ import org.junit.Before
 import org.junit.Test
 
 class DefaultBackupEncryptionEngineTest {
-
     private lateinit var backupEngine: DefaultBackupEncryptionEngine
 
-    private val fastKdfParameters = KdfParameters(
-        memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
-        iterations = 1,
-        parallelism = 1,
-        outputLengthBytes = 64,
-    )
+    private val fastKdfParameters =
+        KdfParameters(
+            memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
+            iterations = 1,
+            parallelism = 1,
+            outputLengthBytes = 64,
+        )
 
     @Before
     fun setUp() {
         val randomProvider = SystemSecureRandomProvider()
-        val vaultEngine = DefaultVaultEncryptionEngine(
-            keyDerivationEngine = Argon2idKeyDerivationEngine(),
-            cipherEngine = AesGcmCipherEngine(randomProvider),
-            integrityVerifier = HmacSha256IntegrityVerifier(),
-            secureRandomProvider = randomProvider,
-        )
+        val vaultEngine =
+            DefaultVaultEncryptionEngine(
+                keyDerivationEngine = Argon2idKeyDerivationEngine(),
+                cipherEngine = AesGcmCipherEngine(randomProvider),
+                integrityVerifier = HmacSha256IntegrityVerifier(),
+                secureRandomProvider = randomProvider,
+            )
         backupEngine = DefaultBackupEncryptionEngine(vaultEngine)
     }
 
@@ -47,14 +48,18 @@ class DefaultBackupEncryptionEngineTest {
 
     @Test
     fun `creating a backup and restoring it with the correct passphrase recovers the content`() {
-        val creation = backupEngine.createBackup(
-            bytesOf("backup-export-passphrase"),
-            bytesOf("vault contents to back up"),
-            fastKdfParameters,
-        ).successValue()
+        val creation =
+            backupEngine
+                .createBackup(
+                    bytesOf("backup-export-passphrase"),
+                    bytesOf("vault contents to back up"),
+                    fastKdfParameters,
+                ).successValue()
 
-        val backupKey = backupEngine.restoreBackup(creation.envelope, bytesOf("backup-export-passphrase"))
-            .successValue()
+        val backupKey =
+            backupEngine
+                .restoreBackup(creation.envelope, bytesOf("backup-export-passphrase"))
+                .successValue()
         val decrypted = backupEngine.decryptBackupContent(creation.envelope, backupKey).successValue()
 
         assertThat(decrypted.peek { it.toString(Charsets.UTF_8) }).isEqualTo("vault contents to back up")
@@ -65,11 +70,13 @@ class DefaultBackupEncryptionEngineTest {
         // The whole point of a separate BackupKey type: the export
         // passphrase need not match — and here deliberately does not
         // match — anything used to protect the live vault.
-        val creation = backupEngine.createBackup(
-            bytesOf("totally-different-export-passphrase"),
-            bytesOf("contents"),
-            fastKdfParameters,
-        ).successValue()
+        val creation =
+            backupEngine
+                .createBackup(
+                    bytesOf("totally-different-export-passphrase"),
+                    bytesOf("contents"),
+                    fastKdfParameters,
+                ).successValue()
 
         val result = backupEngine.restoreBackup(creation.envelope, bytesOf("totally-different-export-passphrase"))
 
@@ -78,8 +85,10 @@ class DefaultBackupEncryptionEngineTest {
 
     @Test
     fun `restoring a backup with the wrong passphrase fails as InvalidPassword`() {
-        val creation = backupEngine.createBackup(bytesOf("correct-passphrase"), bytesOf("contents"), fastKdfParameters)
-            .successValue()
+        val creation =
+            backupEngine
+                .createBackup(bytesOf("correct-passphrase"), bytesOf("contents"), fastKdfParameters)
+                .successValue()
 
         val result = backupEngine.restoreBackup(creation.envelope, bytesOf("wrong-passphrase"))
 
@@ -89,12 +98,15 @@ class DefaultBackupEncryptionEngineTest {
 
     @Test
     fun `a corrupted backup envelope fails restoration`() {
-        val creation = backupEngine.createBackup(bytesOf("correct-passphrase"), bytesOf("contents"), fastKdfParameters)
-            .successValue()
+        val creation =
+            backupEngine
+                .createBackup(bytesOf("correct-passphrase"), bytesOf("contents"), fastKdfParameters)
+                .successValue()
 
-        val corrupted = creation.envelope.copy(
-            integrityMetadata = creation.envelope.integrityMetadata.copy(mac = "not-valid-base64-!!!"),
-        )
+        val corrupted =
+            creation.envelope.copy(
+                integrityMetadata = creation.envelope.integrityMetadata.copy(mac = "not-valid-base64-!!!"),
+            )
 
         val result = backupEngine.restoreBackup(corrupted, bytesOf("correct-passphrase"))
 

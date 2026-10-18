@@ -16,7 +16,6 @@ import javax.inject.Inject
  * given enough output).
  */
 interface SecureRandomProvider {
-
     /** Generates [size] cryptographically secure random bytes. */
     fun nextBytes(size: Int): SecureBytes
 
@@ -44,14 +43,15 @@ interface SecureRandomProvider {
  * choice for cryptographic randomness on the JVM/Android and requires no
  * additional configuration to be secure.
  */
-class SystemSecureRandomProvider @Inject constructor() : SecureRandomProvider {
+class SystemSecureRandomProvider
+    @Inject
+    constructor() : SecureRandomProvider {
+        private val secureRandom = SecureRandom()
 
-    private val secureRandom = SecureRandom()
-
-    override fun nextBytes(size: Int): SecureBytes {
-        require(size > 0) { "SecureRandomProvider.nextBytes size must be positive, was $size" }
-        val bytes = ByteArray(size)
-        secureRandom.nextBytes(bytes)
-        return SecureBytes.wrap(bytes)
+        override fun nextBytes(size: Int): SecureBytes {
+            require(size > 0) { "SecureRandomProvider.nextBytes size must be positive, was $size" }
+            val bytes = ByteArray(size)
+            secureRandom.nextBytes(bytes)
+            return SecureBytes.wrap(bytes)
+        }
     }
-}

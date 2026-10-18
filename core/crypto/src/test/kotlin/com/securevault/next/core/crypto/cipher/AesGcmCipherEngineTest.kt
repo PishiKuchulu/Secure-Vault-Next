@@ -8,11 +8,10 @@ import com.securevault.next.core.crypto.memory.SecureBytes
 import com.securevault.next.core.crypto.random.SystemSecureRandomProvider
 import com.securevault.next.core.crypto.result.CryptoResult
 import com.securevault.next.core.domain.model.valueobject.EncryptedField
-import java.util.Base64
 import org.junit.Test
+import java.util.Base64
 
 class AesGcmCipherEngineTest {
-
     private val engine = AesGcmCipherEngine(SystemSecureRandomProvider())
 
     private fun randomKey(): SecureBytes = SystemSecureRandomProvider().nextBytes(32)

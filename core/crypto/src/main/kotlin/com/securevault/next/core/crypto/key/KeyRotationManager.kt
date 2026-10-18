@@ -39,7 +39,6 @@ import java.util.Base64
  * needs it to keep working with vault content after rotation.
  */
 interface KeyRotationManager {
-
     /**
      * Re-derives a master key from [newPassword] under [newKdfParameters]
      * and re-wraps [currentVaultKey] under it, producing an updated
@@ -61,34 +60,35 @@ class DefaultKeyRotationManager(
     private val integrityVerifier: IntegrityVerifier,
     private val secureRandomProvider: SecureRandomProvider,
 ) : KeyRotationManager {
-
     override fun rotateMasterKey(
         envelope: EncryptedVaultEnvelope,
         currentVaultKey: VaultKey,
         newPassword: SecureBytes,
         newKdfParameters: KdfParameters,
-    ): CryptoResult<EncryptedVaultEnvelope> = newPassword.use {
-        val newSalt = secureRandomProvider.nextSalt(SALT_LENGTH_BYTES)
+    ): CryptoResult<EncryptedVaultEnvelope> =
+        newPassword.use {
+            val newSalt = secureRandomProvider.nextSalt(SALT_LENGTH_BYTES)
 
-        newSalt.use {
-            keyDerivationEngine.derive(newPassword, newSalt, newKdfParameters)
-                .flatMap { derived -> DerivedKeySplitter.split(derived) }
-                .flatMap { (newMasterKeyBytes, newMacKeyBytes) ->
-                    newMasterKeyBytes.use {
-                        newMacKeyBytes.use {
-                            buildRotatedEnvelope(
-                                envelope = envelope,
-                                currentVaultKey = currentVaultKey,
-                                newMasterKeyBytes = newMasterKeyBytes,
-                                newMacKeyBytes = newMacKeyBytes,
-                                newSalt = newSalt,
-                                newKdfParameters = newKdfParameters,
-                            )
+            newSalt.use {
+                keyDerivationEngine
+                    .derive(newPassword, newSalt, newKdfParameters)
+                    .flatMap { derived -> DerivedKeySplitter.split(derived) }
+                    .flatMap { (newMasterKeyBytes, newMacKeyBytes) ->
+                        newMasterKeyBytes.use {
+                            newMacKeyBytes.use {
+                                buildRotatedEnvelope(
+                                    envelope = envelope,
+                                    currentVaultKey = currentVaultKey,
+                                    newMasterKeyBytes = newMasterKeyBytes,
+                                    newMacKeyBytes = newMacKeyBytes,
+                                    newSalt = newSalt,
+                                    newKdfParameters = newKdfParameters,
+                                )
+                            }
                         }
                     }
-                }
+            }
         }
-    }
 
     private fun buildRotatedEnvelope(
         envelope: EncryptedVaultEnvelope,
@@ -104,15 +104,18 @@ class DefaultKeyRotationManager(
         // copy handed to encrypt() is wiped via use{} as soon as encrypt()
         // has consumed it (Finding M2 — encrypt only peeks, never wipes).
         return currentVaultKey.bytes.copy().use { vaultKeyCopy ->
-            cipherEngine.encrypt(vaultKeyCopy, newMasterKeyBytes)
+            cipherEngine
+                .encrypt(vaultKeyCopy, newMasterKeyBytes)
                 .flatMap { newWrappedVaultKey ->
                     val newSaltBase64 = newSalt.peek { Base64.getEncoder().encodeToString(it) }
-                    val envelopeWithoutMac = envelope.copy(
-                        kdfMetadata = KdfMetadata.from(newKdfParameters, newSaltBase64),
-                        encryptionMetadata = EncryptionMetadata(newWrappedVaultKey),
-                    )
+                    val envelopeWithoutMac =
+                        envelope.copy(
+                            kdfMetadata = KdfMetadata.from(newKdfParameters, newSaltBase64),
+                            encryptionMetadata = EncryptionMetadata(newWrappedVaultKey),
+                        )
 
-                    integrityVerifier.computeMac(newMacKeyBytes, envelopeWithoutMac.canonicalIntegrityPayload())
+                    integrityVerifier
+                        .computeMac(newMacKeyBytes, envelopeWithoutMac.canonicalIntegrityPayload())
                         .map { mac ->
                             envelopeWithoutMac.copy(
                                 integrityMetadata = IntegrityMetadata(Base64.getEncoder().encodeToString(mac)),

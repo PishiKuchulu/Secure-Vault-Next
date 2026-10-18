@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class TotpEngineTest {
-
     // The RFC 6238 Appendix B test seed: the ASCII bytes of the string
     // "12345678901234567890", Base32-encoded (RFC 4648). Appendix B uses
     // algorithm-specific seed lengths (20/32/64 bytes for SHA1/SHA256/SHA512,
@@ -53,7 +52,7 @@ class TotpEngineTest {
                 timeMillis = 1_111_111_109_000,
                 digits = 8,
                 algorithm = "SHA256",
-            )
+            ),
         ).isEqualTo("68084774")
     }
 
@@ -65,7 +64,7 @@ class TotpEngineTest {
                 timeMillis = 1_111_111_109_000,
                 digits = 8,
                 algorithm = "SHA512",
-            )
+            ),
         ).isEqualTo("25091201")
     }
 
@@ -115,8 +114,7 @@ class TotpEngineTest {
                 digits = 8,
                 algorithm = "hmacsha256",
             ),
-        )
-            .isEqualTo("46119246")
+        ).isEqualTo("46119246")
     }
 
     @Test
