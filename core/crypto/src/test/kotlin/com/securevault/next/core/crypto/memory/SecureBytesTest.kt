@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class SecureBytesTest {
-
     @Test
     fun `peek reads bytes without wiping them`() {
         val bytes = SecureBytes.wrap(byteArrayOf(1, 2, 3))

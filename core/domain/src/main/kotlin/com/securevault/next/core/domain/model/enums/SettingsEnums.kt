@@ -29,7 +29,9 @@ enum class ThemeMode {
  * synchronous option because the OS clipboard write itself is
  * asynchronous.
  */
-enum class ClipboardTimeout(val seconds: Int) {
+enum class ClipboardTimeout(
+    val seconds: Int,
+) {
     SECONDS_15(15),
     SECONDS_30(30),
     SECONDS_60(60),
@@ -53,7 +55,9 @@ enum class ClipboardTimeout(val seconds: Int) {
  * Note: *when* the evaluator runs is the app layer's decision (e.g. on
  * backgrounding or on a timer); this type only carries the threshold.
  */
-enum class AutoLockPolicy(val minutes: Int) {
+enum class AutoLockPolicy(
+    val minutes: Int,
+) {
     IMMEDIATELY(0),
     MINUTE_1(1),
     MINUTES_5(5),

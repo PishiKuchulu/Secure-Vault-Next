@@ -7,7 +7,9 @@ package com.securevault.next.core.domain.model.valueobject
  * brand-new entity starts at revision 0.
  */
 @JvmInline
-value class Revision(val value: Long) {
+value class Revision(
+    val value: Long,
+) {
     init {
         require(value >= 0) { "Revision must not be negative, was $value" }
     }
@@ -27,7 +29,9 @@ value class Revision(val value: Long) {
  * ordinary write and never requires migration.
  */
 @JvmInline
-value class Version(val value: Int) {
+value class Version(
+    val value: Int,
+) {
     init {
         require(value >= 1) { "Version must be at least 1, was $value" }
     }

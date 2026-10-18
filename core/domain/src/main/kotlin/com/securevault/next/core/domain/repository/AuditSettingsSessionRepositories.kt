@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 /** Runs and retrieves security audits for a vault. */
 interface AuditRepository {
-
     fun observeLatestAuditResult(vaultId: VaultId): Flow<AuditResult?>
 
     suspend fun runAudit(vaultId: VaultId): DomainResult<AuditResult>
@@ -28,15 +27,16 @@ interface AuditRepository {
 
 /** Persists a vault's [VaultSettings] (user preferences, not security policy — see [VaultSettings]'s own docs). */
 interface SettingsRepository {
-
     fun observeSettings(vaultId: VaultId): Flow<VaultSettings>
 
-    suspend fun updateSettings(vaultId: VaultId, settings: VaultSettings): DomainResult<Unit>
+    suspend fun updateSettings(
+        vaultId: VaultId,
+        settings: VaultSettings,
+    ): DomainResult<Unit>
 }
 
 /** Tracks the active [VaultSession] for whichever vaults are currently unlocked. */
 interface SessionRepository {
-
     fun observeSession(vaultId: VaultId): Flow<VaultSession?>
 
     suspend fun startSession(session: VaultSession): DomainResult<Unit>

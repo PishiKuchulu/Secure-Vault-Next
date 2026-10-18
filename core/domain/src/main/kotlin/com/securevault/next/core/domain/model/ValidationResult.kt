@@ -12,10 +12,11 @@ import com.securevault.next.core.domain.error.DomainError
  * user every problem in one pass rather than one at a time.
  */
 sealed interface ValidationResult {
-
     data object Valid : ValidationResult
 
-    data class Invalid(val errors: List<DomainError.ValidationError>) : ValidationResult {
+    data class Invalid(
+        val errors: List<DomainError.ValidationError>,
+    ) : ValidationResult {
         init {
             require(errors.isNotEmpty()) { "ValidationResult.Invalid must carry at least one error" }
         }
@@ -34,7 +35,8 @@ val ValidationResult.isValid: Boolean
 
 /** The errors carried by a [ValidationResult.Invalid], or an empty list for [ValidationResult.Valid]. */
 val ValidationResult.validationErrors: List<DomainError.ValidationError>
-    get() = when (this) {
-        is ValidationResult.Valid -> emptyList()
-        is ValidationResult.Invalid -> errors
-    }
+    get() =
+        when (this) {
+            is ValidationResult.Valid -> emptyList()
+            is ValidationResult.Invalid -> errors
+        }

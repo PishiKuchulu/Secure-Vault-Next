@@ -8,7 +8,6 @@ import com.securevault.next.core.crypto.random.SystemSecureRandomProvider
 import org.junit.Test
 
 class HmacSha256IntegrityVerifierTest {
-
     private val verifier = HmacSha256IntegrityVerifier()
 
     private fun randomMacKey() = SystemSecureRandomProvider().nextBytes(32)

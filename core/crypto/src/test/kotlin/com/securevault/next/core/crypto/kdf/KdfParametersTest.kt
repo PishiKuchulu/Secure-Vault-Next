@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class KdfParametersTest {
-
     @Test
     fun `the production default parameters meet the OWASP recommended floor`() {
         // This is the regression guard the audit's finding asked for:
@@ -16,30 +15,33 @@ class KdfParametersTest {
 
     @Test
     fun `a configuration at the memory floor with only 1 iteration does not meet the recommendation`() {
-        val belowRecommendation = KdfParameters(
-            memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
-            iterations = 1,
-        )
+        val belowRecommendation =
+            KdfParameters(
+                memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
+                iterations = 1,
+            )
 
         assertThat(belowRecommendation.meetsOwaspMinimumRecommendation()).isFalse()
     }
 
     @Test
     fun `a configuration at the memory floor with 2 or more iterations meets the recommendation`() {
-        val atRecommendation = KdfParameters(
-            memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
-            iterations = 2,
-        )
+        val atRecommendation =
+            KdfParameters(
+                memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
+                iterations = 2,
+            )
 
         assertThat(atRecommendation.meetsOwaspMinimumRecommendation()).isTrue()
     }
 
     @Test
     fun `above-floor memory meets the recommendation regardless of iteration count`() {
-        val highMemoryLowIterations = KdfParameters(
-            memoryCostKib = KdfParameters.DEFAULT_MEMORY_COST_KIB,
-            iterations = 1,
-        )
+        val highMemoryLowIterations =
+            KdfParameters(
+                memoryCostKib = KdfParameters.DEFAULT_MEMORY_COST_KIB,
+                iterations = 1,
+            )
 
         assertThat(highMemoryLowIterations.meetsOwaspMinimumRecommendation()).isTrue()
     }

@@ -2,11 +2,10 @@ package com.securevault.next.core.crypto.key
 
 import com.google.common.truth.Truth.assertThat
 import com.securevault.next.core.crypto.memory.SecureBytes
-import java.util.Collections
 import org.junit.Test
+import java.util.Collections
 
 class SessionKeyHolderTest {
-
     private fun keyOf(vararg bytes: Byte) = SessionKey(SecureBytes.wrap(bytes))
 
     @Test
@@ -78,15 +77,16 @@ class SessionKeyHolderTest {
         val setsPerThread = 200
         val installedKeys = Collections.synchronizedList(mutableListOf<SessionKey>())
 
-        val threads = (0 until threadCount).map { threadIndex ->
-            Thread {
-                repeat(setsPerThread) { iteration ->
-                    val key = keyOf(threadIndex.toByte(), iteration.toByte())
-                    installedKeys.add(key)
-                    holder.set(key)
+        val threads =
+            (0 until threadCount).map { threadIndex ->
+                Thread {
+                    repeat(setsPerThread) { iteration ->
+                        val key = keyOf(threadIndex.toByte(), iteration.toByte())
+                        installedKeys.add(key)
+                        holder.set(key)
+                    }
                 }
             }
-        }
 
         threads.forEach(Thread::start)
         threads.forEach(Thread::join)

@@ -15,16 +15,16 @@ import org.junit.Before
 import org.junit.Test
 
 class DefaultKeyRotationManagerTest {
-
     private lateinit var vaultEngine: DefaultVaultEncryptionEngine
     private lateinit var rotationManager: DefaultKeyRotationManager
 
-    private val fastKdfParameters = KdfParameters(
-        memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
-        iterations = 1,
-        parallelism = 1,
-        outputLengthBytes = 64,
-    )
+    private val fastKdfParameters =
+        KdfParameters(
+            memoryCostKib = KdfParameters.MIN_MEMORY_COST_KIB,
+            iterations = 1,
+            parallelism = 1,
+            outputLengthBytes = 64,
+        )
 
     @Before
     fun setUp() {
@@ -46,15 +46,19 @@ class DefaultKeyRotationManagerTest {
 
     @Test
     fun `after rotating the master password, the old password no longer unlocks the vault`() {
-        val creation = vaultEngine.createVault(bytesOf("old-password"), bytesOf("contents"), fastKdfParameters)
-            .successValue()
+        val creation =
+            vaultEngine
+                .createVault(bytesOf("old-password"), bytesOf("contents"), fastKdfParameters)
+                .successValue()
 
-        val rotated = rotationManager.rotateMasterKey(
-            creation.envelope,
-            creation.vaultKey,
-            bytesOf("new-password"),
-            fastKdfParameters,
-        ).successValue()
+        val rotated =
+            rotationManager
+                .rotateMasterKey(
+                    creation.envelope,
+                    creation.vaultKey,
+                    bytesOf("new-password"),
+                    fastKdfParameters,
+                ).successValue()
 
         val result = vaultEngine.unlockVault(rotated, bytesOf("old-password"))
 
@@ -64,15 +68,19 @@ class DefaultKeyRotationManagerTest {
 
     @Test
     fun `after rotating the master password, the new password unlocks the vault and recovers the same content`() {
-        val creation = vaultEngine.createVault(bytesOf("old-password"), bytesOf("original contents"), fastKdfParameters)
-            .successValue()
+        val creation =
+            vaultEngine
+                .createVault(bytesOf("old-password"), bytesOf("original contents"), fastKdfParameters)
+                .successValue()
 
-        val rotated = rotationManager.rotateMasterKey(
-            creation.envelope,
-            creation.vaultKey,
-            bytesOf("new-password"),
-            fastKdfParameters,
-        ).successValue()
+        val rotated =
+            rotationManager
+                .rotateMasterKey(
+                    creation.envelope,
+                    creation.vaultKey,
+                    bytesOf("new-password"),
+                    fastKdfParameters,
+                ).successValue()
 
         val vaultKeyAfterRotation = vaultEngine.unlockVault(rotated, bytesOf("new-password")).successValue()
         val decrypted = vaultEngine.decryptContent(rotated, vaultKeyAfterRotation).successValue()
@@ -82,15 +90,19 @@ class DefaultKeyRotationManagerTest {
 
     @Test
     fun `rotation changes the salt but not the encrypted content`() {
-        val creation = vaultEngine.createVault(bytesOf("old-password"), bytesOf("contents"), fastKdfParameters)
-            .successValue()
+        val creation =
+            vaultEngine
+                .createVault(bytesOf("old-password"), bytesOf("contents"), fastKdfParameters)
+                .successValue()
 
-        val rotated = rotationManager.rotateMasterKey(
-            creation.envelope,
-            creation.vaultKey,
-            bytesOf("new-password"),
-            fastKdfParameters,
-        ).successValue()
+        val rotated =
+            rotationManager
+                .rotateMasterKey(
+                    creation.envelope,
+                    creation.vaultKey,
+                    bytesOf("new-password"),
+                    fastKdfParameters,
+                ).successValue()
 
         assertThat(rotated.kdfMetadata.salt).isNotEqualTo(creation.envelope.kdfMetadata.salt)
         // The content ciphertext is untouched — rotation never re-encrypts vault content.
@@ -99,15 +111,18 @@ class DefaultKeyRotationManagerTest {
 
     @Test
     fun `the original vault key held by the caller remains usable after rotation`() {
-        val creation = vaultEngine.createVault(bytesOf("old-password"), bytesOf("contents"), fastKdfParameters)
-            .successValue()
+        val creation =
+            vaultEngine
+                .createVault(bytesOf("old-password"), bytesOf("contents"), fastKdfParameters)
+                .successValue()
 
-        rotationManager.rotateMasterKey(
-            creation.envelope,
-            creation.vaultKey,
-            bytesOf("new-password"),
-            fastKdfParameters,
-        ).successValue()
+        rotationManager
+            .rotateMasterKey(
+                creation.envelope,
+                creation.vaultKey,
+                bytesOf("new-password"),
+                fastKdfParameters,
+            ).successValue()
 
         // Rotation must not have wiped the caller's own copy of the vault key.
         val decrypted = vaultEngine.decryptContent(creation.envelope, creation.vaultKey).successValue()

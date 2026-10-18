@@ -12,12 +12,12 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class DefaultItemEncryptionEngineTest {
-
     private val holder = SessionKeyHolder()
-    private val engine = DefaultItemEncryptionEngine(
-        sessionKeyHolder = holder,
-        cipherEngine = AesGcmCipherEngine(SystemSecureRandomProvider()),
-    )
+    private val engine =
+        DefaultItemEncryptionEngine(
+            sessionKeyHolder = holder,
+            cipherEngine = AesGcmCipherEngine(SystemSecureRandomProvider()),
+        )
 
     private fun installSessionKey() {
         holder.set(SessionKey(SystemSecureRandomProvider().nextBytes(32)))

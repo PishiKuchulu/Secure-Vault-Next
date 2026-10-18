@@ -11,7 +11,6 @@ import com.securevault.next.core.domain.result.DomainResult
  * `core:crypto`.
  */
 interface ItemEncryptionEngine {
-
     /** Decrypts an [EncryptedField] into a plaintext [CharArray]. */
     suspend fun decryptField(field: EncryptedField): DomainResult<CharArray>
 

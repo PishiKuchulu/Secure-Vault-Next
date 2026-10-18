@@ -5,7 +5,6 @@ import com.securevault.next.core.crypto.memory.SecureBytes
 import org.junit.Test
 
 class SessionKeyHolderStoreTest {
-
     @Test
     fun `install makes the store active and readable through the holder`() {
         val holder = SessionKeyHolder()

@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.Flow
 
 /** Persists and retrieves a vault's [Category] tree. */
 interface CategoryRepository {
-
     fun observeCategories(vaultId: VaultId): Flow<List<Category>>
 
     suspend fun getCategory(categoryId: CategoryId): DomainResult<Category>
@@ -30,5 +29,8 @@ interface CategoryRepository {
  * contract for [com.securevault.next.core.domain.usecase.SearchItemsUseCase].
  */
 interface SearchRepository {
-    suspend fun search(vaultId: VaultId, filter: SearchFilter): DomainResult<SearchResult>
+    suspend fun search(
+        vaultId: VaultId,
+        filter: SearchFilter,
+    ): DomainResult<SearchResult>
 }

@@ -11,7 +11,9 @@ package com.securevault.next.core.domain.model.valueobject
  * [EmailAddress] (blank, or missing `@` entirely) unrepresentable.
  */
 @JvmInline
-value class EmailAddress(val value: String) {
+value class EmailAddress(
+    val value: String,
+) {
     init {
         require(value.isNotBlank()) { "EmailAddress must not be blank" }
         require(value.contains("@")) { "EmailAddress must contain '@'" }
@@ -23,7 +25,9 @@ value class EmailAddress(val value: String) {
  * [com.securevault.next.core.domain.model.item.PasswordItem]).
  */
 @JvmInline
-value class UrlValue(val value: String) {
+value class UrlValue(
+    val value: String,
+) {
     init {
         require(value.isNotBlank()) { "UrlValue must not be blank" }
     }
@@ -31,7 +35,9 @@ value class UrlValue(val value: String) {
 
 /** A phone number, stored as entered rather than normalized to a specific regional format. */
 @JvmInline
-value class PhoneNumber(val value: String) {
+value class PhoneNumber(
+    val value: String,
+) {
     init {
         require(value.isNotBlank()) { "PhoneNumber must not be blank" }
     }

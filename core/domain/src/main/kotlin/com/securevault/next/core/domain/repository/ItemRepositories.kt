@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.Flow
  * [NotesRepository].
  */
 interface PasswordRepository {
-
     fun observePasswordItem(itemId: ItemId): Flow<PasswordItem?>
 
     fun observePasswordItems(vaultId: VaultId): Flow<List<PasswordItem>>
@@ -38,7 +37,10 @@ interface PasswordRepository {
 
     suspend fun updatePasswordItem(item: PasswordItem): DomainResult<PasswordItem>
 
-    suspend fun deletePasswordItem(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deletePasswordItem(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted password out of trash.
@@ -53,7 +55,6 @@ interface PasswordRepository {
 
 /** Persists and retrieves [SecureNote]s specifically. */
 interface NotesRepository {
-
     fun observeNote(itemId: ItemId): Flow<SecureNote?>
 
     fun observeNotes(vaultId: VaultId): Flow<List<SecureNote>>
@@ -64,7 +65,10 @@ interface NotesRepository {
 
     suspend fun updateNote(note: SecureNote): DomainResult<SecureNote>
 
-    suspend fun deleteNote(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deleteNote(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted note out of trash.
@@ -77,7 +81,6 @@ interface NotesRepository {
 
 /** Persists and retrieves [CreditCard]s specifically. */
 interface CreditCardRepository {
-
     fun observeCreditCard(itemId: ItemId): Flow<CreditCard?>
 
     fun observeCreditCards(vaultId: VaultId): Flow<List<CreditCard>>
@@ -88,7 +91,10 @@ interface CreditCardRepository {
 
     suspend fun updateCreditCard(card: CreditCard): DomainResult<CreditCard>
 
-    suspend fun deleteCreditCard(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deleteCreditCard(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted creditcard out of trash.
@@ -101,7 +107,6 @@ interface CreditCardRepository {
 
 /** Persists and retrieves [BankAccount]s specifically. */
 interface BankAccountRepository {
-
     fun observeBankAccount(itemId: ItemId): Flow<BankAccount?>
 
     fun observeBankAccounts(vaultId: VaultId): Flow<List<BankAccount>>
@@ -112,7 +117,10 @@ interface BankAccountRepository {
 
     suspend fun updateBankAccount(account: BankAccount): DomainResult<BankAccount>
 
-    suspend fun deleteBankAccount(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deleteBankAccount(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted bankaccount out of trash.
@@ -125,7 +133,6 @@ interface BankAccountRepository {
 
 /** Persists and retrieves [IdentityDocument]s specifically. */
 interface IdentityRepository {
-
     fun observeIdentity(itemId: ItemId): Flow<IdentityDocument?>
 
     fun observeIdentities(vaultId: VaultId): Flow<List<IdentityDocument>>
@@ -136,7 +143,10 @@ interface IdentityRepository {
 
     suspend fun updateIdentity(identity: IdentityDocument): DomainResult<IdentityDocument>
 
-    suspend fun deleteIdentity(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deleteIdentity(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted identity out of trash.
@@ -149,7 +159,6 @@ interface IdentityRepository {
 
 /** Persists and retrieves [SoftwareLicense]s specifically. */
 interface SoftwareLicenseRepository {
-
     fun observeLicense(itemId: ItemId): Flow<SoftwareLicense?>
 
     fun observeLicenses(vaultId: VaultId): Flow<List<SoftwareLicense>>
@@ -160,7 +169,10 @@ interface SoftwareLicenseRepository {
 
     suspend fun updateLicense(license: SoftwareLicense): DomainResult<SoftwareLicense>
 
-    suspend fun deleteLicense(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deleteLicense(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted license out of trash.
@@ -173,7 +185,6 @@ interface SoftwareLicenseRepository {
 
 /** Persists and retrieves [ApiKey]s specifically. */
 interface ApiKeyRepository {
-
     fun observeApiKey(itemId: ItemId): Flow<ApiKey?>
 
     fun observeApiKeys(vaultId: VaultId): Flow<List<ApiKey>>
@@ -184,7 +195,10 @@ interface ApiKeyRepository {
 
     suspend fun updateApiKey(apiKey: ApiKey): DomainResult<ApiKey>
 
-    suspend fun deleteApiKey(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deleteApiKey(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted apikey out of trash.
@@ -197,7 +211,6 @@ interface ApiKeyRepository {
 
 /** Persists and retrieves [SSHKey]s specifically. */
 interface SshKeyRepository {
-
     fun observeSshKey(itemId: ItemId): Flow<SSHKey?>
 
     fun observeSshKeys(vaultId: VaultId): Flow<List<SSHKey>>
@@ -208,7 +221,10 @@ interface SshKeyRepository {
 
     suspend fun updateSshKey(sshKey: SSHKey): DomainResult<SSHKey>
 
-    suspend fun deleteSshKey(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deleteSshKey(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted sshkey out of trash.
@@ -221,7 +237,6 @@ interface SshKeyRepository {
 
 /** Persists and retrieves [RecoveryCode] sets specifically. */
 interface RecoveryCodeRepository {
-
     fun observeRecoveryCode(itemId: ItemId): Flow<RecoveryCode?>
 
     fun observeRecoveryCodes(vaultId: VaultId): Flow<List<RecoveryCode>>
@@ -232,7 +247,10 @@ interface RecoveryCodeRepository {
 
     suspend fun updateRecoveryCode(recoveryCode: RecoveryCode): DomainResult<RecoveryCode>
 
-    suspend fun deleteRecoveryCode(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deleteRecoveryCode(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted recoverycode out of trash.
@@ -245,7 +263,6 @@ interface RecoveryCodeRepository {
 
 /** Persists and retrieves [TOTPSeed]s specifically. */
 interface TotpRepository {
-
     fun observeTotp(itemId: ItemId): Flow<TOTPSeed?>
 
     fun observeTotps(vaultId: VaultId): Flow<List<TOTPSeed>>
@@ -256,7 +273,10 @@ interface TotpRepository {
 
     suspend fun updateTotp(totp: TOTPSeed): DomainResult<TOTPSeed>
 
-    suspend fun deleteTotp(itemId: ItemId, permanent: Boolean = false): DomainResult<Unit>
+    suspend fun deleteTotp(
+        itemId: ItemId,
+        permanent: Boolean = false,
+    ): DomainResult<Unit>
 
     /**
      * Restores a previously soft-deleted totp out of trash.

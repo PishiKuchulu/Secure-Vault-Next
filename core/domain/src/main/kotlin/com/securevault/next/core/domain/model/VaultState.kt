@@ -18,34 +18,53 @@ import com.securevault.next.core.domain.model.valueobject.VaultId
  * unlocked) that an enum constant cannot hold.
  */
 sealed interface VaultState {
+    data class Locked(
+        val vaultId: VaultId,
+    ) : VaultState
 
-    data class Locked(val vaultId: VaultId) : VaultState
+    data class Opening(
+        val vaultId: VaultId,
+    ) : VaultState
 
-    data class Opening(val vaultId: VaultId) : VaultState
+    data class Unlocked(
+        val session: VaultSession,
+    ) : VaultState
 
-    data class Unlocked(val session: VaultSession) : VaultState
+    data class Closing(
+        val vaultId: VaultId,
+    ) : VaultState
 
-    data class Closing(val vaultId: VaultId) : VaultState
-
-    data class Importing(val vaultId: VaultId, val progress: Float) : VaultState {
+    data class Importing(
+        val vaultId: VaultId,
+        val progress: Float,
+    ) : VaultState {
         init {
             require(progress in 0f..1f) { "Importing.progress must be between 0 and 1, was $progress" }
         }
     }
 
-    data class Exporting(val vaultId: VaultId, val progress: Float) : VaultState {
+    data class Exporting(
+        val vaultId: VaultId,
+        val progress: Float,
+    ) : VaultState {
         init {
             require(progress in 0f..1f) { "Exporting.progress must be between 0 and 1, was $progress" }
         }
     }
 
-    data class BackingUp(val vaultId: VaultId, val progress: Float) : VaultState {
+    data class BackingUp(
+        val vaultId: VaultId,
+        val progress: Float,
+    ) : VaultState {
         init {
             require(progress in 0f..1f) { "BackingUp.progress must be between 0 and 1, was $progress" }
         }
     }
 
-    data class Restoring(val vaultId: VaultId, val progress: Float) : VaultState {
+    data class Restoring(
+        val vaultId: VaultId,
+        val progress: Float,
+    ) : VaultState {
         init {
             require(progress in 0f..1f) { "Restoring.progress must be between 0 and 1, was $progress" }
         }
@@ -54,13 +73,14 @@ sealed interface VaultState {
 
 /** The [VaultId] a [VaultState] pertains to, regardless of which state it is. */
 val VaultState.vaultId: VaultId
-    get() = when (val state = this) {
-        is VaultState.Locked -> state.vaultId
-        is VaultState.Opening -> state.vaultId
-        is VaultState.Unlocked -> state.session.vaultId
-        is VaultState.Closing -> state.vaultId
-        is VaultState.Importing -> state.vaultId
-        is VaultState.Exporting -> state.vaultId
-        is VaultState.BackingUp -> state.vaultId
-        is VaultState.Restoring -> state.vaultId
-    }
+    get() =
+        when (val state = this) {
+            is VaultState.Locked -> state.vaultId
+            is VaultState.Opening -> state.vaultId
+            is VaultState.Unlocked -> state.session.vaultId
+            is VaultState.Closing -> state.vaultId
+            is VaultState.Importing -> state.vaultId
+            is VaultState.Exporting -> state.vaultId
+            is VaultState.BackingUp -> state.vaultId
+            is VaultState.Restoring -> state.vaultId
+        }

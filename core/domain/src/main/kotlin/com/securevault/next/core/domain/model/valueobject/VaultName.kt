@@ -14,7 +14,9 @@ package com.securevault.next.core.domain.model.valueobject
  * path constructed it.
  */
 @JvmInline
-value class VaultName(val value: String) {
+value class VaultName(
+    val value: String,
+) {
     init {
         require(value.isNotBlank()) { "VaultName must not be blank" }
         require(value.length <= MAX_LENGTH) { "VaultName must be at most $MAX_LENGTH characters" }
