@@ -2,8 +2,8 @@ package com.securevault.next.autolock
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.SharedFlow
 
 /**
  * Exposes the app-scoped [AutoLockManager]'s events to the Compose
@@ -13,9 +13,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class AutoLockViewModel
-    @Inject
-    constructor(
-        autoLockManager: AutoLockManager,
-    ) : ViewModel() {
-        val events: SharedFlow<AutoLockEvent> = autoLockManager.events
-    }
+@Inject
+constructor(autoLockManager: AutoLockManager) : ViewModel() {
+    val events: SharedFlow<AutoLockEvent> = autoLockManager.events
+}

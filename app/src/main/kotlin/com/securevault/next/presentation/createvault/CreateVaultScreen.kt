@@ -56,7 +56,7 @@ import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 fun CreateVaultScreen(
     onNavigateBack: () -> Unit,
     onVaultCreated: (vaultId: String) -> Unit,
-    viewModel: CreateVaultViewModel = hiltViewModel(),
+    viewModel: CreateVaultViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val colors = SecureVaultColorsScope.colors
@@ -77,39 +77,39 @@ fun CreateVaultScreen(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
+                            contentDescription = stringResource(R.string.action_back)
                         )
                     }
                 },
                 colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = colors.baseBackground,
-                        titleContentColor = colors.label,
-                        navigationIconContentColor = colors.label,
-                    ),
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = colors.baseBackground,
+                    titleContentColor = colors.label,
+                    navigationIconContentColor = colors.label
+                )
             )
         },
-        containerColor = colors.baseBackground,
+        containerColor = colors.baseBackground
     ) { padding ->
         Column(
             modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-                    .imePadding(),
+            Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .imePadding()
         ) {
             Column(
                 modifier =
-                    Modifier
-                        .weight(1f)
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = spacing.large),
-                verticalArrangement = Arrangement.spacedBy(spacing.medium),
+                Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = spacing.large),
+                verticalArrangement = Arrangement.spacedBy(spacing.medium)
             ) {
                 Text(
                     text = stringResource(R.string.create_vault_subtitle),
                     style = MaterialTheme.typography.bodyLarge,
-                    color = colors.secondaryLabel,
+                    color = colors.secondaryLabel
                 )
 
                 VaultTextField(
@@ -118,7 +118,7 @@ fun CreateVaultScreen(
                     label = stringResource(R.string.create_vault_name_label),
                     modifier = Modifier.fillMaxWidth(),
                     error = uiState.nameError?.resolve(),
-                    supporting = stringResource(R.string.create_vault_name_supporting),
+                    supporting = stringResource(R.string.create_vault_name_supporting)
                 )
 
                 VaultPasswordTextField(
@@ -126,16 +126,16 @@ fun CreateVaultScreen(
                     onValueChange = viewModel::onPasswordChange,
                     label = stringResource(R.string.create_vault_password_label),
                     modifier = Modifier.fillMaxWidth(),
-                    error = uiState.passwordError?.resolve(),
+                    error = uiState.passwordError?.resolve()
                 )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
+                    horizontalArrangement = Arrangement.End
                 ) {
                     VaultTextButton(
                         text = stringResource(R.string.create_vault_generate),
-                        onClick = viewModel::onOpenGenerator,
+                        onClick = viewModel::onOpenGenerator
                     )
                 }
 
@@ -144,7 +144,7 @@ fun CreateVaultScreen(
                     StrengthMeter(
                         score = strength.score.value / 100f,
                         label = stringResource(strength.level.labelResId()),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
@@ -153,7 +153,7 @@ fun CreateVaultScreen(
                     onValueChange = viewModel::onConfirmPasswordChange,
                     label = stringResource(R.string.create_vault_confirm_label),
                     modifier = Modifier.fillMaxWidth(),
-                    error = uiState.confirmError?.resolve(),
+                    error = uiState.confirmError?.resolve()
                 )
 
                 if (uiState.formError != null) {
@@ -165,10 +165,10 @@ fun CreateVaultScreen(
                 text = stringResource(R.string.create_vault_submit),
                 onClick = viewModel::onCreateClick,
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = spacing.large),
-                loading = uiState.isLoading,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.large),
+                loading = uiState.isLoading
             )
 
             Spacer(modifier = Modifier.height(spacing.large))
@@ -180,17 +180,16 @@ fun CreateVaultScreen(
             generatedPassword = uiState.generatedPassword,
             onRegenerate = viewModel::regeneratePassword,
             onUsePassword = viewModel::onUseGeneratedPassword,
-            onDismiss = viewModel::onDismissGenerator,
+            onDismiss = viewModel::onDismissGenerator
         )
     }
 }
 
 @Composable
-private fun CreateVaultFieldError.resolve(): String =
-    when (this) {
-        is CreateVaultFieldError.Resource -> stringResource(resId)
-        is CreateVaultFieldError.EngineMessage -> message
-    }
+private fun CreateVaultFieldError.resolve(): String = when (this) {
+    is CreateVaultFieldError.Resource -> stringResource(resId)
+    is CreateVaultFieldError.EngineMessage -> message
+}
 
 /**
  * The embedded password generator: a short interruption with one way
@@ -203,7 +202,7 @@ private fun GeneratorSheet(
     generatedPassword: String,
     onRegenerate: () -> Unit,
     onUsePassword: () -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     val spacing = SecureVaultSpacingScope.spacing
     val colors = SecureVaultColorsScope.colors
@@ -216,14 +215,14 @@ private fun GeneratorSheet(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large,
-            color = colors.fill,
+            color = colors.fill
         ) {
             SelectionContainer {
                 Text(
                     text = generatedPassword,
                     style = MaterialTheme.typography.titleMedium,
                     color = colors.label,
-                    modifier = Modifier.padding(spacing.medium),
+                    modifier = Modifier.padding(spacing.medium)
                 )
             }
         }
@@ -233,15 +232,15 @@ private fun GeneratorSheet(
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(spacing.small, Alignment.End),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             VaultSecondaryButton(
                 text = stringResource(R.string.generator_regenerate),
-                onClick = onRegenerate,
+                onClick = onRegenerate
             )
             VaultButton(
                 text = stringResource(R.string.generator_use_password),
-                onClick = onUsePassword,
+                onClick = onUsePassword
             )
         }
 

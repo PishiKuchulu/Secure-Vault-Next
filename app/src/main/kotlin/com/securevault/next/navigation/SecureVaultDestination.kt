@@ -10,9 +10,7 @@ package com.securevault.next.navigation
  * signatures in the navigation contract; this file only names their
  * routes.
  */
-sealed class SecureVaultDestination(
-    val route: String,
-) {
+sealed class SecureVaultDestination(val route: String) {
     // --- Onboarding & Auth ---
     data object Splash : SecureVaultDestination("splash")
 

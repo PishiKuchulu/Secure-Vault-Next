@@ -113,11 +113,10 @@ abstract class CryptoModule {
         @Provides
         @JvmStatic
         @Singleton
-        fun provideFailedAttemptTracker(clock: SessionClock): FailedAttemptTracker =
-            FailedAttemptTracker(
-                clock = clock,
-                maxAttempts = VaultSecurityPolicy().maxFailedUnlockAttempts,
-            )
+        fun provideFailedAttemptTracker(clock: SessionClock): FailedAttemptTracker = FailedAttemptTracker(
+            clock = clock,
+            maxAttempts = VaultSecurityPolicy().maxFailedUnlockAttempts
+        )
 
         // Finding 16c: DefaultKeyRotationManager has no @Inject
         // constructor, so it is bound here — the crypto layer's Hilt
@@ -129,13 +128,12 @@ abstract class CryptoModule {
             keyDerivationEngine: KeyDerivationEngine,
             cipherEngine: CipherEngine,
             integrityVerifier: IntegrityVerifier,
-            secureRandomProvider: SecureRandomProvider,
-        ): KeyRotationManager =
-            DefaultKeyRotationManager(
-                keyDerivationEngine = keyDerivationEngine,
-                cipherEngine = cipherEngine,
-                integrityVerifier = integrityVerifier,
-                secureRandomProvider = secureRandomProvider,
-            )
+            secureRandomProvider: SecureRandomProvider
+        ): KeyRotationManager = DefaultKeyRotationManager(
+            keyDerivationEngine = keyDerivationEngine,
+            cipherEngine = cipherEngine,
+            integrityVerifier = integrityVerifier,
+            secureRandomProvider = secureRandomProvider
+        )
     }
 }

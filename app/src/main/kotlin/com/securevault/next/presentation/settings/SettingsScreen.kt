@@ -51,7 +51,7 @@ private val AutoLockOptions =
         AutoLockPolicy.MINUTES_5,
         AutoLockPolicy.MINUTES_15,
         AutoLockPolicy.MINUTES_30,
-        AutoLockPolicy.NEVER,
+        AutoLockPolicy.NEVER
     )
 
 /**
@@ -61,11 +61,7 @@ private val AutoLockOptions =
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(
-    onBack: () -> Unit,
-    onLockNow: () -> Unit,
-    viewModel: SettingsViewModel = hiltViewModel(),
-) {
+fun SettingsScreen(onBack: () -> Unit, onLockNow: () -> Unit, viewModel: SettingsViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -84,36 +80,36 @@ fun SettingsScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.action_back),
+                            contentDescription = stringResource(R.string.action_back)
                         )
                     }
                 },
                 colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = colors.baseBackground,
-                        titleContentColor = colors.label,
-                        navigationIconContentColor = colors.label,
-                    ),
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = colors.baseBackground,
+                    titleContentColor = colors.label,
+                    navigationIconContentColor = colors.label
+                )
             )
         },
-        containerColor = colors.baseBackground,
+        containerColor = colors.baseBackground
     ) { padding ->
         Column(
             modifier =
-                Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
+            Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             SectionHeader(title = stringResource(R.string.settings_section_security))
 
             Surface(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = spacing.medium),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.medium),
                 shape = MaterialTheme.shapes.large,
-                color = colors.surface,
+                color = colors.surface
             ) {
                 Column {
                     SettingsRow(
@@ -121,22 +117,22 @@ fun SettingsScreen(
                         subtitle = stringResource(uiState.autoLockPolicy.labelResId()),
                         onClick = viewModel::onOpenAutoLockSheet,
                         onClickLabel = stringResource(R.string.settings_auto_lock),
-                        showDivider = true,
+                        showDivider = true
                     )
                     SettingsRow(
                         title = stringResource(R.string.settings_biometric),
                         subtitle =
-                            if (uiState.biometricAvailable) {
-                                stringResource(
-                                    if (uiState.biometricEnabled) {
-                                        R.string.settings_biometric_subtitle_on
-                                    } else {
-                                        R.string.settings_biometric_subtitle_off
-                                    },
-                                )
-                            } else {
-                                stringResource(R.string.settings_biometric_unavailable)
-                            },
+                        if (uiState.biometricAvailable) {
+                            stringResource(
+                                if (uiState.biometricEnabled) {
+                                    R.string.settings_biometric_subtitle_on
+                                } else {
+                                    R.string.settings_biometric_subtitle_off
+                                }
+                            )
+                        } else {
+                            stringResource(R.string.settings_biometric_unavailable)
+                        },
                         showChevron = false,
                         showDivider = true,
                         trailing = {
@@ -149,29 +145,29 @@ fun SettingsScreen(
                                             enable = enable,
                                             promptTitle = promptTitle,
                                             promptSubtitle = promptSubtitle,
-                                            promptNegative = promptNegative,
+                                            promptNegative = promptNegative
                                         )
                                     }
                                 },
                                 enabled =
-                                    uiState.biometricAvailable &&
-                                        !uiState.biometricBusy &&
-                                        activity != null,
+                                uiState.biometricAvailable &&
+                                    !uiState.biometricBusy &&
+                                    activity != null
                             )
-                        },
+                        }
                     )
                     SettingsRow(
                         title = stringResource(R.string.settings_change_password),
                         subtitle = stringResource(R.string.settings_change_password_subtitle),
                         onClick = viewModel::onOpenChangePassword,
                         onClickLabel = stringResource(R.string.settings_change_password),
-                        showDivider = true,
+                        showDivider = true
                     )
                     SettingsRow(
                         title = stringResource(R.string.settings_lock_now),
                         subtitle = stringResource(R.string.settings_lock_now_subtitle),
                         onClick = onLockNow,
-                        onClickLabel = stringResource(R.string.settings_lock_now),
+                        onClickLabel = stringResource(R.string.settings_lock_now)
                     )
                 }
             }
@@ -180,10 +176,10 @@ fun SettingsScreen(
                 InlineError(
                     message = uiState.biometricError!!,
                     modifier =
-                        Modifier.padding(
-                            horizontal = spacing.medium,
-                            vertical = spacing.small,
-                        ),
+                    Modifier.padding(
+                        horizontal = spacing.medium,
+                        vertical = spacing.small
+                    )
                 )
             }
 
@@ -191,11 +187,11 @@ fun SettingsScreen(
 
             Surface(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = spacing.medium),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.medium),
                 shape = MaterialTheme.shapes.large,
-                color = colors.surface,
+                color = colors.surface
             ) {
                 SettingsRow(
                     title = stringResource(R.string.settings_version),
@@ -204,9 +200,9 @@ fun SettingsScreen(
                         Text(
                             text = stringResource(R.string.settings_version_value),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = colors.secondaryLabel,
+                            color = colors.secondaryLabel
                         )
-                    },
+                    }
                 )
             }
 
@@ -218,7 +214,7 @@ fun SettingsScreen(
         AutoLockSheet(
             selected = uiState.autoLockPolicy,
             onSelect = viewModel::onAutoLockSelected,
-            onDismiss = viewModel::onDismissAutoLockSheet,
+            onDismiss = viewModel::onDismissAutoLockSheet
         )
     }
 
@@ -228,7 +224,7 @@ fun SettingsScreen(
             error = uiState.changePasswordError,
             success = uiState.changePasswordSuccess,
             onSubmit = viewModel::onChangePassword,
-            onDismiss = viewModel::onDismissChangePassword,
+            onDismiss = viewModel::onDismissChangePassword
         )
     }
 }
@@ -239,11 +235,7 @@ fun SettingsScreen(
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AutoLockSheet(
-    selected: AutoLockPolicy,
-    onSelect: (AutoLockPolicy) -> Unit,
-    onDismiss: () -> Unit,
-) {
+private fun AutoLockSheet(selected: AutoLockPolicy, onSelect: (AutoLockPolicy) -> Unit, onDismiss: () -> Unit) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
@@ -264,10 +256,10 @@ private fun AutoLockSheet(
                         Icon(
                             imageVector = Icons.Filled.Check,
                             contentDescription = null,
-                            tint = colors.accent,
+                            tint = colors.accent
                         )
                     }
-                },
+                }
             )
         }
 
@@ -275,15 +267,14 @@ private fun AutoLockSheet(
     }
 }
 
-private fun AutoLockPolicy.labelResId(): Int =
-    when (this) {
-        AutoLockPolicy.IMMEDIATELY -> R.string.settings_auto_lock_immediately
-        AutoLockPolicy.MINUTE_1 -> R.string.settings_auto_lock_1_min
-        AutoLockPolicy.MINUTES_5 -> R.string.settings_auto_lock_5_min
-        AutoLockPolicy.MINUTES_15 -> R.string.settings_auto_lock_15_min
-        AutoLockPolicy.MINUTES_30 -> R.string.settings_auto_lock_30_min
-        AutoLockPolicy.NEVER -> R.string.settings_auto_lock_never
-    }
+private fun AutoLockPolicy.labelResId(): Int = when (this) {
+    AutoLockPolicy.IMMEDIATELY -> R.string.settings_auto_lock_immediately
+    AutoLockPolicy.MINUTE_1 -> R.string.settings_auto_lock_1_min
+    AutoLockPolicy.MINUTES_5 -> R.string.settings_auto_lock_5_min
+    AutoLockPolicy.MINUTES_15 -> R.string.settings_auto_lock_15_min
+    AutoLockPolicy.MINUTES_30 -> R.string.settings_auto_lock_30_min
+    AutoLockPolicy.NEVER -> R.string.settings_auto_lock_never
+}
 
 /**
  * Change-master-password sheet: current password (verified by the
@@ -299,7 +290,7 @@ private fun ChangePasswordSheet(
     error: String?,
     success: Boolean,
     onSubmit: (current: String, new: String, confirm: String) -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     var current by remember { mutableStateOf("") }
     var newPassword by remember { mutableStateOf("") }
@@ -316,16 +307,16 @@ private fun ChangePasswordSheet(
                 text = stringResource(R.string.settings_change_password_success_body),
                 style = MaterialTheme.typography.bodyMedium,
                 color = SecureVaultColorsScope.colors.secondaryLabel,
-                modifier = Modifier.padding(horizontal = spacing.medium),
+                modifier = Modifier.padding(horizontal = spacing.medium)
             )
             Spacer(modifier = Modifier.height(spacing.medium))
             VaultButton(
                 text = stringResource(R.string.action_done),
                 onClick = onDismiss,
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = spacing.medium),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.medium)
             )
         } else {
             VaultPasswordTextField(
@@ -333,9 +324,9 @@ private fun ChangePasswordSheet(
                 onValueChange = { current = it },
                 label = stringResource(R.string.settings_change_password_current),
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = spacing.medium),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.medium)
             )
             Spacer(modifier = Modifier.height(spacing.small))
             VaultPasswordTextField(
@@ -344,9 +335,9 @@ private fun ChangePasswordSheet(
                 label = stringResource(R.string.settings_change_password_new),
                 supporting = stringResource(R.string.settings_change_password_requirements),
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = spacing.medium),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.medium)
             )
             Spacer(modifier = Modifier.height(spacing.small))
             VaultPasswordTextField(
@@ -354,19 +345,19 @@ private fun ChangePasswordSheet(
                 onValueChange = { confirm = it },
                 label = stringResource(R.string.settings_change_password_confirm),
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = spacing.medium),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.medium)
             )
 
             if (error != null) {
                 InlineError(
                     message = error,
                     modifier =
-                        Modifier.padding(
-                            horizontal = spacing.medium,
-                            vertical = spacing.small,
-                        ),
+                    Modifier.padding(
+                        horizontal = spacing.medium,
+                        vertical = spacing.small
+                    )
                 )
             }
 
@@ -376,13 +367,13 @@ private fun ChangePasswordSheet(
                 onClick = { onSubmit(current, newPassword, confirm) },
                 loading = busy,
                 enabled =
-                    current.isNotBlank() &&
-                        newPassword.isNotBlank() &&
-                        confirm.isNotBlank(),
+                current.isNotBlank() &&
+                    newPassword.isNotBlank() &&
+                    confirm.isNotBlank(),
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = spacing.medium),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.medium)
             )
         }
 

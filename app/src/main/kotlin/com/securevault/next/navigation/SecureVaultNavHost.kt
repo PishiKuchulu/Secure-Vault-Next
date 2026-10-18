@@ -39,7 +39,7 @@ import com.securevault.next.presentation.welcome.WelcomeScreen
 fun SecureVaultNavHost(
     navController: NavHostController = rememberNavController(),
     autoLockViewModel: AutoLockViewModel = hiltViewModel(),
-    lockActionViewModel: LockActionViewModel = hiltViewModel(),
+    lockActionViewModel: LockActionViewModel = hiltViewModel()
 ) {
     // Auto-lock fires while the user is away: land on the unlock screen
     // with the home cleared, exactly like a manual lock.
@@ -61,7 +61,7 @@ fun SecureVaultNavHost(
 
     NavHost(
         navController = navController,
-        startDestination = SecureVaultDestination.Splash.route,
+        startDestination = SecureVaultDestination.Splash.route
     ) {
         composable(route = SecureVaultDestination.Splash.route) {
             SplashScreen(
@@ -74,7 +74,7 @@ fun SecureVaultNavHost(
                     navController.navigate(SecureVaultDestination.Welcome.route) {
                         popUpTo(SecureVaultDestination.Splash.route) { inclusive = true }
                     }
-                },
+                }
             )
         }
 
@@ -87,7 +87,7 @@ fun SecureVaultNavHost(
                     navController.navigate(SecureVaultDestination.VaultUnlock.createRoute(vaultId)) {
                         popUpTo(SecureVaultDestination.Welcome.route) { inclusive = true }
                     }
-                },
+                }
             )
         }
 
@@ -99,13 +99,13 @@ fun SecureVaultNavHost(
                     navController.navigate(SecureVaultDestination.VaultHome.route) {
                         popUpTo(SecureVaultDestination.Welcome.route) { inclusive = true }
                     }
-                },
+                }
             )
         }
 
         composable(
             route = SecureVaultDestination.VaultUnlock.route,
-            arguments = listOf(navArgument("vaultId") { type = NavType.StringType }),
+            arguments = listOf(navArgument("vaultId") { type = NavType.StringType })
         ) { backStackEntry ->
             val vaultId = backStackEntry.arguments?.getString("vaultId").orEmpty()
             UnlockScreen(
@@ -114,7 +114,7 @@ fun SecureVaultNavHost(
                     navController.navigate(SecureVaultDestination.VaultHome.route) {
                         popUpTo(SecureVaultDestination.VaultUnlock.route) { inclusive = true }
                     }
-                },
+                }
             )
         }
 
@@ -123,7 +123,7 @@ fun SecureVaultNavHost(
             VaultHomeContent(
                 navController = navController,
                 lockActionViewModel = lockActionViewModel,
-                homeRoute = SecureVaultDestination.VaultHome.route,
+                homeRoute = SecureVaultDestination.VaultHome.route
             )
         }
 
@@ -133,13 +133,13 @@ fun SecureVaultNavHost(
             VaultHomeContent(
                 navController = navController,
                 lockActionViewModel = lockActionViewModel,
-                homeRoute = SecureVaultDestination.Dashboard.route,
+                homeRoute = SecureVaultDestination.Dashboard.route
             )
         }
 
         composable(
             route = SecureVaultDestination.ItemDetail.route,
-            arguments = listOf(navArgument("itemId") { type = NavType.StringType }),
+            arguments = listOf(navArgument("itemId") { type = NavType.StringType })
         ) { backStackEntry ->
             val itemId = backStackEntry.arguments?.getString("itemId").orEmpty()
             ItemDetailScreen(
@@ -147,31 +147,31 @@ fun SecureVaultNavHost(
                 onEdit = { id ->
                     navController.navigate(SecureVaultDestination.ItemEditor.createRoute(id))
                 },
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
             )
         }
 
         composable(
             route = SecureVaultDestination.ItemEditor.route,
             arguments =
-                listOf(
-                    navArgument("itemId") {
-                        type = NavType.StringType
-                        nullable = true
-                        defaultValue = null
-                    },
-                ),
+            listOf(
+                navArgument("itemId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
         ) { backStackEntry ->
             ItemEditorScreen(
                 itemId = backStackEntry.arguments?.getString("itemId"),
                 onDone = { navController.popBackStack() },
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
             )
         }
 
         composable(route = SecureVaultDestination.PasswordGenerator.route) {
             GeneratorScreen(
-                onBack = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
             )
         }
 
@@ -182,7 +182,7 @@ fun SecureVaultNavHost(
                     lockActionViewModel.lockNow { vaultId ->
                         navController.navigateToUnlockClearingHome(vaultId)
                     }
-                },
+                }
             )
         }
     }
@@ -200,7 +200,7 @@ fun SecureVaultNavHost(
 private fun VaultHomeContent(
     navController: NavHostController,
     lockActionViewModel: LockActionViewModel,
-    homeRoute: String,
+    homeRoute: String
 ) {
     VaultHomeScreen(
         onOpenItem = { itemId ->
@@ -221,7 +221,7 @@ private fun VaultHomeContent(
                     popUpTo(homeRoute) { inclusive = true }
                 }
             }
-        },
+        }
     )
 }
 

@@ -18,7 +18,6 @@ import javax.inject.Singleton
 object PlatformModule {
     @Provides
     @Singleton
-    fun provideSecureClipboardManager(
-        @ApplicationContext context: Context,
-    ): SecureClipboardManager = SecureClipboardManager(context)
+    fun provideSecureClipboardManager(@ApplicationContext context: Context): SecureClipboardManager =
+        SecureClipboardManager(context)
 }
