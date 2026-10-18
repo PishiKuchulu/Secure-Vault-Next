@@ -7,13 +7,13 @@ import com.securevault.next.core.crypto.result.CryptoResult
 import com.securevault.next.core.crypto.result.asCryptoFailure
 import com.securevault.next.core.crypto.result.asCryptoSuccess
 import com.securevault.next.core.domain.model.valueobject.EncryptedField
-import kotlinx.coroutines.CancellationException
 import java.util.Base64
 import javax.crypto.AEADBadTagException
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 
 /**
  * The production [CipherEngine], implementing AES-256-GCM via

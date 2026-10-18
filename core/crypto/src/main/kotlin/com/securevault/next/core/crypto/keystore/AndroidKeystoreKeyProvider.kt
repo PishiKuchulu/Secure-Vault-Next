@@ -12,7 +12,6 @@ import com.securevault.next.core.crypto.result.CryptoResult
 import com.securevault.next.core.crypto.result.asCryptoFailure
 import com.securevault.next.core.crypto.result.asCryptoSuccess
 import com.securevault.next.core.domain.model.valueobject.EncryptedField
-import kotlinx.coroutines.CancellationException
 import java.security.KeyStore
 import java.util.Base64
 import javax.crypto.AEADBadTagException
@@ -21,6 +20,7 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.GCMParameterSpec
+import kotlinx.coroutines.CancellationException
 
 /**
  * Generates, stores and uses hardware-backed AES keys via the Android

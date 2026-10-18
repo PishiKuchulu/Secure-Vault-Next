@@ -7,11 +7,11 @@ import com.securevault.next.core.crypto.memory.SecureBytes
 import com.securevault.next.core.crypto.result.CryptoResult
 import com.securevault.next.core.crypto.result.asCryptoFailure
 import com.securevault.next.core.crypto.result.asCryptoSuccess
-import kotlinx.coroutines.CancellationException
-import javax.inject.Inject
 import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
+import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 
 /**
  * Computes and verifies HMAC-SHA256 message authentication codes.

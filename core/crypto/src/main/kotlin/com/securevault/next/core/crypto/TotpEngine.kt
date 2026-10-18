@@ -82,7 +82,9 @@ object TotpEngine {
         "SHA1", "HMACSHA1" -> "HmacSHA1"
         "SHA256", "HMACSHA256" -> "HmacSHA256"
         "SHA512", "HMACSHA512" -> "HmacSHA512"
-        else -> throw IllegalArgumentException("Unsupported TOTP algorithm '$algorithm'; expected SHA1, SHA256 or SHA512")
+        else -> throw IllegalArgumentException(
+            "Unsupported TOTP algorithm '$algorithm'; expected SHA1, SHA256 or SHA512",
+        )
     }
 
     private const val DEFAULT_ALGORITHM = "SHA1"

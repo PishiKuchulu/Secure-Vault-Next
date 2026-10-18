@@ -5,10 +5,10 @@ import com.securevault.next.core.crypto.memory.SecureBytes
 import com.securevault.next.core.crypto.result.CryptoResult
 import com.securevault.next.core.crypto.result.asCryptoFailure
 import com.securevault.next.core.crypto.result.asCryptoSuccess
+import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
 import org.bouncycastle.crypto.generators.Argon2BytesGenerator
 import org.bouncycastle.crypto.params.Argon2Parameters
-import javax.inject.Inject
 
 /**
  * The production [KeyDerivationEngine], implementing Argon2id via

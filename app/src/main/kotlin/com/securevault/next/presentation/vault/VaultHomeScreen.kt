@@ -1,6 +1,7 @@
 package com.securevault.next.presentation.vault
 
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
@@ -56,15 +57,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.animation.core.animateFloat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.securevault.next.R
 import com.securevault.next.core.common.result.Result
+import com.securevault.next.core.domain.model.VaultItemMetadata
 import com.securevault.next.core.domain.model.enums.SortField
 import com.securevault.next.core.domain.model.enums.SortOrder
-import com.securevault.next.core.domain.model.VaultItemMetadata
 import com.securevault.next.core.domain.model.item.PasswordItem
 import com.securevault.next.core.domain.model.item.SecureNote
 import com.securevault.next.core.domain.model.item.VaultItem
@@ -376,7 +376,12 @@ private fun VaultHomeContent(
                 )
                 else -> {
                     SectionHeader(
-                        title = if (query.isBlank()) stringResource(R.string.vault_home_section_recent) else stringResource(R.string.vault_home_section_results),
+                        title =
+                            if (query.isBlank()) {
+                                stringResource(R.string.vault_home_section_recent)
+                            } else {
+                                stringResource(R.string.vault_home_section_results)
+                            },
                     )
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),

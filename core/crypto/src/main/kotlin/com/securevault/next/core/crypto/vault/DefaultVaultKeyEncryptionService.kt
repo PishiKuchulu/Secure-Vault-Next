@@ -1,20 +1,20 @@
 package com.securevault.next.core.crypto.vault
 
 import com.securevault.next.core.common.result.fold
-import com.securevault.next.core.crypto.error.CryptoError
-import com.securevault.next.core.crypto.format.EncryptedVaultEnvelope
-import com.securevault.next.core.crypto.key.VaultKey
-import com.securevault.next.core.crypto.key.KeyRotationManager
-import com.securevault.next.core.crypto.memory.MemoryUtils
-import com.securevault.next.core.crypto.memory.SecureBytes
 import com.securevault.next.core.contracts.EnvelopeAndKey
 import com.securevault.next.core.contracts.VaultKeyEncryptionService
+import com.securevault.next.core.crypto.error.CryptoError
+import com.securevault.next.core.crypto.format.EncryptedVaultEnvelope
+import com.securevault.next.core.crypto.key.KeyRotationManager
+import com.securevault.next.core.crypto.key.VaultKey
+import com.securevault.next.core.crypto.memory.MemoryUtils
+import com.securevault.next.core.crypto.memory.SecureBytes
 import com.securevault.next.core.domain.error.DomainError
 import com.securevault.next.core.domain.result.DomainResult
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 /**
  * The `core:crypto` adapter that lets the pure-JVM vault orchestration

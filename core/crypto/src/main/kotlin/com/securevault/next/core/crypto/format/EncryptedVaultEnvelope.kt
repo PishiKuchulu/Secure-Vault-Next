@@ -1,6 +1,8 @@
 package com.securevault.next.core.crypto.format
 
 import com.securevault.next.core.domain.model.valueobject.EncryptedField
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -10,9 +12,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
-import kotlinx.serialization.json.Json
-import java.io.ByteArrayOutputStream
-import java.io.DataOutputStream
 
 /**
  * Serializer for the envelope's embedded [EncryptedField] (the wrapped
