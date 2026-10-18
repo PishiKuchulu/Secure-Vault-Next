@@ -10,12 +10,16 @@ package com.securevault.next.navigation
  * signatures in the navigation contract; this file only names their
  * routes.
  */
-sealed class SecureVaultDestination(val route: String) {
-
+sealed class SecureVaultDestination(
+    val route: String,
+) {
     // --- Onboarding & Auth ---
     data object Splash : SecureVaultDestination("splash")
+
     data object Welcome : SecureVaultDestination("welcome")
+
     data object CreateVault : SecureVaultDestination("create_vault")
+
     data object VaultUnlock : SecureVaultDestination("vault_unlock/{vaultId}") {
         fun createRoute(vaultId: String) = "vault_unlock/$vaultId"
     }
@@ -34,10 +38,11 @@ sealed class SecureVaultDestination(val route: String) {
     data object ItemDetail : SecureVaultDestination("item_detail/{itemId}") {
         fun createRoute(itemId: String) = "item_detail/$itemId"
     }
+
     data object ItemEditor : SecureVaultDestination("item_editor?itemId={itemId}") {
-        fun createRoute(itemId: String?) =
-            if (itemId == null) "item_editor" else "item_editor?itemId=$itemId"
+        fun createRoute(itemId: String?) = if (itemId == null) "item_editor" else "item_editor?itemId=$itemId"
     }
+
     data object PasswordGenerator : SecureVaultDestination("password_generator")
 
     // --- Settings ---

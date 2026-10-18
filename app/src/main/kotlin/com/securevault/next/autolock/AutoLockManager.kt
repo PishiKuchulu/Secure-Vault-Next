@@ -12,9 +12,6 @@ import com.securevault.next.core.security.session.VaultSessionManager
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import java.util.concurrent.atomic.AtomicBoolean
-import javax.inject.Inject
-import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,11 +21,16 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /** Events the auto-lock manager publishes for navigation to react to. */
 sealed interface AutoLockEvent {
     /** The vault was auto-locked after the policy timeout; show its unlock screen. */
-    data class AutoLocked(val vaultId: String) : AutoLockEvent
+    data class AutoLocked(
+        val vaultId: String,
+    ) : AutoLockEvent
 }
 
 /**
@@ -69,63 +71,79 @@ interface AutoLockEntryPoint {
  * application-scoped callbacks.
  */
 @Singleton
-class AutoLockManager @Inject constructor(
-    private val lockVaultUseCase: LockVaultUseCase,
-    private val sessionManager: VaultSessionManager,
-    private val vaultRepository: VaultRepository,
-) {
-    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    private val registered = AtomicBoolean(false)
+class AutoLockManager
+    @Inject
+    constructor(
+        private val lockVaultUseCase: LockVaultUseCase,
+        private val sessionManager: VaultSessionManager,
+        private val vaultRepository: VaultRepository,
+    ) {
+        private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        private val registered = AtomicBoolean(false)
 
-    private val _events = MutableSharedFlow<AutoLockEvent>(extraBufferCapacity = 1)
-    val events: SharedFlow<AutoLockEvent> = _events.asSharedFlow()
+        private val _events = MutableSharedFlow<AutoLockEvent>(extraBufferCapacity = 1)
+        val events: SharedFlow<AutoLockEvent> = _events.asSharedFlow()
 
-    private var timerJob: Job? = null
-    private var startedActivities = 0
+        private var timerJob: Job? = null
+        private var startedActivities = 0
 
-    /** Registers the background detection; idempotent, call once from the Application. */
-    fun register(application: Application) {
-        if (!registered.compareAndSet(false, true)) return
-        application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
-            override fun onActivityStarted(activity: Activity) {
-                startedActivities++
-                timerJob?.cancel()
-                timerJob = null
-            }
+        /** Registers the background detection; idempotent, call once from the Application. */
+        fun register(application: Application) {
+            if (!registered.compareAndSet(false, true)) return
+            application.registerActivityLifecycleCallbacks(
+                object : Application.ActivityLifecycleCallbacks {
+                    override fun onActivityStarted(activity: Activity) {
+                        startedActivities++
+                        timerJob?.cancel()
+                        timerJob = null
+                    }
 
-            override fun onActivityStopped(activity: Activity) {
-                startedActivities = (startedActivities - 1).coerceAtLeast(0)
-                if (startedActivities == 0) {
-                    scheduleLock()
+                    override fun onActivityStopped(activity: Activity) {
+                        startedActivities = (startedActivities - 1).coerceAtLeast(0)
+                        if (startedActivities == 0) {
+                            scheduleLock()
+                        }
+                    }
+
+                    override fun onActivityCreated(
+                        activity: Activity,
+                        savedInstanceState: Bundle?,
+                    ) = Unit
+
+                    override fun onActivityResumed(activity: Activity) = Unit
+
+                    override fun onActivityPaused(activity: Activity) = Unit
+
+                    override fun onActivitySaveInstanceState(
+                        activity: Activity,
+                        outState: Bundle,
+                    ) = Unit
+
+                    override fun onActivityDestroyed(activity: Activity) = Unit
+                },
+            )
+        }
+
+        private fun scheduleLock() {
+            timerJob?.cancel()
+            timerJob =
+                scope.launch {
+                    val vaultId = sessionManager.currentSession()?.vaultId ?: return@launch
+                    val policy =
+                        vaultRepository.getVault(vaultId).getOrNull()?.securityPolicy
+                            ?: VaultSecurityPolicy()
+                    if (policy.autoLockPolicy == AutoLockPolicy.NEVER) return@launch
+
+                    val delayMs = policy.autoLockPolicy.minutes.coerceAtLeast(0) * MILLIS_PER_MINUTE
+                    if (delayMs > 0) {
+                        delay(delayMs)
+                    }
+                    lockVaultUseCase(vaultId)
+                    _events.emit(AutoLockEvent.AutoLocked(vaultId.value))
                 }
-            }
+        }
 
-            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) = Unit
-            override fun onActivityResumed(activity: Activity) = Unit
-            override fun onActivityPaused(activity: Activity) = Unit
-            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) = Unit
-            override fun onActivityDestroyed(activity: Activity) = Unit
-        })
-    }
-
-    private fun scheduleLock() {
-        timerJob?.cancel()
-        timerJob = scope.launch {
-            val vaultId = sessionManager.currentSession()?.vaultId ?: return@launch
-            val policy = vaultRepository.getVault(vaultId).getOrNull()?.securityPolicy
-                ?: VaultSecurityPolicy()
-            if (policy.autoLockPolicy == AutoLockPolicy.NEVER) return@launch
-
-            val delayMs = policy.autoLockPolicy.minutes.coerceAtLeast(0) * MILLIS_PER_MINUTE
-            if (delayMs > 0) {
-                delay(delayMs)
-            }
-            lockVaultUseCase(vaultId)
-            _events.emit(AutoLockEvent.AutoLocked(vaultId.value))
+        private companion object {
+            const val MILLIS_PER_MINUTE = 60_000L
         }
     }
-
-    private companion object {
-        const val MILLIS_PER_MINUTE = 60_000L
-    }
-}

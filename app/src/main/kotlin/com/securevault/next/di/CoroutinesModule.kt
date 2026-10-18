@@ -23,7 +23,6 @@ import kotlinx.coroutines.Dispatchers
 @Module
 @InstallIn(SingletonComponent::class)
 object CoroutinesModule {
-
     @Provides
     @Dispatcher(SecureVaultDispatcher.Default)
     fun providesDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default

@@ -81,26 +81,29 @@ fun CreateVaultScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colors.baseBackground,
-                    titleContentColor = colors.label,
-                    navigationIconContentColor = colors.label,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = colors.baseBackground,
+                        titleContentColor = colors.label,
+                        navigationIconContentColor = colors.label,
+                    ),
             )
         },
         containerColor = colors.baseBackground,
     ) { padding ->
         Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .imePadding(),
+            modifier =
+                Modifier
+                    .padding(padding)
+                    .fillMaxSize()
+                    .imePadding(),
         ) {
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = spacing.large),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = spacing.large),
                 verticalArrangement = Arrangement.spacedBy(spacing.medium),
             ) {
                 Text(
@@ -161,9 +164,10 @@ fun CreateVaultScreen(
             VaultButton(
                 text = stringResource(R.string.create_vault_submit),
                 onClick = viewModel::onCreateClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.large),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.large),
                 loading = uiState.isLoading,
             )
 
@@ -182,12 +186,11 @@ fun CreateVaultScreen(
 }
 
 @Composable
-private fun CreateVaultFieldError.resolve(): String {
-    return when (this) {
+private fun CreateVaultFieldError.resolve(): String =
+    when (this) {
         is CreateVaultFieldError.Resource -> stringResource(resId)
         is CreateVaultFieldError.EngineMessage -> message
     }
-}
 
 /**
  * The embedded password generator: a short interruption with one way

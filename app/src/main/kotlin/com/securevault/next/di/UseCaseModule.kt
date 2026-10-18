@@ -45,7 +45,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class UseCaseModule {
-
     @Binds
     @Singleton
     abstract fun bindCreateVaultUseCase(impl: CreateVaultUseCaseImpl): CreateVaultUseCase

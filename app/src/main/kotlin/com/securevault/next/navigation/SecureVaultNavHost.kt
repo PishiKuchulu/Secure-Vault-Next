@@ -153,13 +153,14 @@ fun SecureVaultNavHost(
 
         composable(
             route = SecureVaultDestination.ItemEditor.route,
-            arguments = listOf(
-                navArgument("itemId") {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                },
-            ),
+            arguments =
+                listOf(
+                    navArgument("itemId") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                ),
         ) { backStackEntry ->
             ItemEditorScreen(
                 itemId = backStackEntry.arguments?.getString("itemId"),

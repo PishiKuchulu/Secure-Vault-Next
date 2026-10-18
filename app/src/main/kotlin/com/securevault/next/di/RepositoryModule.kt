@@ -41,7 +41,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
-
     /**
      * M6: exposes the database transaction runner to the repository
      * implementations (which cannot reference Room types directly) so

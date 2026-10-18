@@ -63,7 +63,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class CryptoModule {
-
     @Binds
     @Singleton
     abstract fun bindSecureRandomProvider(impl: SystemSecureRandomProvider): SecureRandomProvider
@@ -131,11 +130,12 @@ abstract class CryptoModule {
             cipherEngine: CipherEngine,
             integrityVerifier: IntegrityVerifier,
             secureRandomProvider: SecureRandomProvider,
-        ): KeyRotationManager = DefaultKeyRotationManager(
-            keyDerivationEngine = keyDerivationEngine,
-            cipherEngine = cipherEngine,
-            integrityVerifier = integrityVerifier,
-            secureRandomProvider = secureRandomProvider,
-        )
+        ): KeyRotationManager =
+            DefaultKeyRotationManager(
+                keyDerivationEngine = keyDerivationEngine,
+                cipherEngine = cipherEngine,
+                integrityVerifier = integrityVerifier,
+                secureRandomProvider = secureRandomProvider,
+            )
     }
 }

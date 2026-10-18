@@ -20,24 +20,24 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): SecureVaultDatabase {
-        return Room.databaseBuilder(
-            context,
-            SecureVaultDatabase::class.java,
-            "secure_vault.db"
-        )
-            .addMigrations(
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): SecureVaultDatabase =
+        Room
+            .databaseBuilder(
+                context,
+                SecureVaultDatabase::class.java,
+                "secure_vault.db",
+            ).addMigrations(
                 SecureVaultDatabase.MIGRATION_1_2,
-                SecureVaultDatabase.MIGRATION_2_3
+                SecureVaultDatabase.MIGRATION_2_3,
             )
             // C6: installs the triggers that keep the FTS4 search index
             // in sync with the items table (plus a one-time backfill).
             .addCallback(SecureVaultDatabase.FTS_SYNC_CALLBACK)
             .build()
-    }
 
     @Provides
     fun provideVaultDao(db: SecureVaultDatabase): VaultDao = db.vaultDao()

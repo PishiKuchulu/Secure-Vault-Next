@@ -25,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint
  */
 @AndroidEntryPoint
 class MainActivity : FragmentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         // Must be called before super.onCreate() and before setContent
         // per the androidx.core.splashscreen contract.

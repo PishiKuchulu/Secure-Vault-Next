@@ -6,8 +6,8 @@ import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.usecase.LockVaultUseCase
 import com.securevault.next.core.security.session.VaultSessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Runs the explicit lock action from navigation callbacks (the home
@@ -20,16 +20,17 @@ import kotlinx.coroutines.launch
  * last known vault id (or nothing when no session ever existed).
  */
 @HiltViewModel
-class LockActionViewModel @Inject constructor(
-    private val lockVaultUseCase: LockVaultUseCase,
-    private val sessionManager: VaultSessionManager,
-) : ViewModel() {
-
-    fun lockNow(onLocked: (vaultId: String) -> Unit) {
-        viewModelScope.launch {
-            val vaultId: VaultId = sessionManager.currentSession()?.vaultId ?: return@launch
-            lockVaultUseCase(vaultId)
-            onLocked(vaultId.value)
+class LockActionViewModel
+    @Inject
+    constructor(
+        private val lockVaultUseCase: LockVaultUseCase,
+        private val sessionManager: VaultSessionManager,
+    ) : ViewModel() {
+        fun lockNow(onLocked: (vaultId: String) -> Unit) {
+            viewModelScope.launch {
+                val vaultId: VaultId = sessionManager.currentSession()?.vaultId ?: return@launch
+                lockVaultUseCase(vaultId)
+                onLocked(vaultId.value)
+            }
         }
     }
-}

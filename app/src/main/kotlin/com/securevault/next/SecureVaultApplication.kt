@@ -21,12 +21,12 @@ import dagger.hilt.android.HiltAndroidApp
  */
 @HiltAndroidApp
 class SecureVaultApplication : Application() {
-
     override fun onCreate() {
         super.onCreate()
-        val autoLockManager = EntryPointAccessors
-            .fromApplication(this, AutoLockEntryPoint::class.java)
-            .autoLockManager()
+        val autoLockManager =
+            EntryPointAccessors
+                .fromApplication(this, AutoLockEntryPoint::class.java)
+                .autoLockManager()
         autoLockManager.register(this)
     }
 }
