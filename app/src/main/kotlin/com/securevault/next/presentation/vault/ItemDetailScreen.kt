@@ -40,8 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -227,7 +227,14 @@ class ItemDetailViewModel @Inject constructor(
                 updatedAt = metadata.updatedAt.value,
                 fields = buildList {
                     item.username?.takeIf { it.isNotBlank() }?.let {
-                        add(DetailFieldUi(STR_FIELD_USERNAME, it, sensitive = false, copyDescription = STR_COPY_USERNAME_DESC))
+                        add(
+                            DetailFieldUi(
+                                STR_FIELD_USERNAME,
+                                it,
+                                sensitive = false,
+                                copyDescription = STR_COPY_USERNAME_DESC,
+                            ),
+                        )
                     }
                     add(
                         DetailFieldUi(
@@ -238,7 +245,14 @@ class ItemDetailViewModel @Inject constructor(
                         ),
                     )
                     item.url?.let {
-                        add(DetailFieldUi(STR_FIELD_URL, it.value, sensitive = false, copyDescription = STR_COPY_URL_DESC))
+                        add(
+                            DetailFieldUi(
+                                STR_FIELD_URL,
+                                it.value,
+                                sensitive = false,
+                                copyDescription = STR_COPY_URL_DESC,
+                            ),
+                        )
                     }
                 },
                 notes = metadata.notes?.value,
@@ -264,8 +278,22 @@ class ItemDetailViewModel @Inject constructor(
                 type = item.type,
                 updatedAt = metadata.updatedAt.value,
                 fields = buildList {
-                    add(DetailFieldUi("Cardholder", item.cardholderName, sensitive = false, copyDescription = "Copy cardholder name"))
-                    add(DetailFieldUi("Card number", reveal(item.cardNumber), sensitive = true, copyDescription = "Copy card number"))
+                    add(
+                        DetailFieldUi(
+                            "Cardholder",
+                            item.cardholderName,
+                            sensitive = false,
+                            copyDescription = "Copy cardholder name",
+                        ),
+                    )
+                    add(
+                        DetailFieldUi(
+                            "Card number",
+                            reveal(item.cardNumber),
+                            sensitive = true,
+                            copyDescription = "Copy card number",
+                        ),
+                    )
                     add(
                         DetailFieldUi(
                             "Expires",
@@ -274,7 +302,14 @@ class ItemDetailViewModel @Inject constructor(
                             copyDescription = "Copy expiry date",
                         ),
                     )
-                    add(DetailFieldUi("Security code", reveal(item.cvv), sensitive = true, copyDescription = "Copy security code"))
+                    add(
+                        DetailFieldUi(
+                            "Security code",
+                            reveal(item.cvv),
+                            sensitive = true,
+                            copyDescription = "Copy security code",
+                        ),
+                    )
                     item.pin?.let {
                         add(DetailFieldUi("PIN", reveal(it), sensitive = true, copyDescription = "Copy PIN"))
                     }
@@ -287,10 +322,31 @@ class ItemDetailViewModel @Inject constructor(
                 updatedAt = metadata.updatedAt.value,
                 fields = buildList {
                     add(DetailFieldUi("Bank", item.bankName, sensitive = false, copyDescription = "Copy bank name"))
-                    add(DetailFieldUi("Account holder", item.accountHolderName, sensitive = false, copyDescription = "Copy account holder"))
-                    add(DetailFieldUi("Account number", reveal(item.accountNumber), sensitive = true, copyDescription = "Copy account number"))
+                    add(
+                        DetailFieldUi(
+                            "Account holder",
+                            item.accountHolderName,
+                            sensitive = false,
+                            copyDescription = "Copy account holder",
+                        ),
+                    )
+                    add(
+                        DetailFieldUi(
+                            "Account number",
+                            reveal(item.accountNumber),
+                            sensitive = true,
+                            copyDescription = "Copy account number",
+                        ),
+                    )
                     item.routingNumber?.let {
-                        add(DetailFieldUi("Routing number", reveal(it), sensitive = true, copyDescription = "Copy routing number"))
+                        add(
+                            DetailFieldUi(
+                                "Routing number",
+                                reveal(it),
+                                sensitive = true,
+                                copyDescription = "Copy routing number",
+                            ),
+                        )
                     }
                     item.iban?.let {
                         add(DetailFieldUi("IBAN", reveal(it), sensitive = true, copyDescription = "Copy IBAN"))
@@ -306,11 +362,39 @@ class ItemDetailViewModel @Inject constructor(
                 type = item.type,
                 updatedAt = metadata.updatedAt.value,
                 fields = buildList {
-                    add(DetailFieldUi("Document type", item.documentType, sensitive = false, copyDescription = "Copy document type"))
-                    add(DetailFieldUi("Full name", item.fullName, sensitive = false, copyDescription = "Copy full name"))
-                    add(DetailFieldUi("Document number", reveal(item.documentNumber), sensitive = true, copyDescription = "Copy document number"))
+                    add(
+                        DetailFieldUi(
+                            "Document type",
+                            item.documentType,
+                            sensitive = false,
+                            copyDescription = "Copy document type",
+                        ),
+                    )
+                    add(
+                        DetailFieldUi(
+                            "Full name",
+                            item.fullName,
+                            sensitive = false,
+                            copyDescription = "Copy full name",
+                        ),
+                    )
+                    add(
+                        DetailFieldUi(
+                            "Document number",
+                            reveal(item.documentNumber),
+                            sensitive = true,
+                            copyDescription = "Copy document number",
+                        ),
+                    )
                     item.issuingCountry?.let {
-                        add(DetailFieldUi("Issuing country", it, sensitive = false, copyDescription = "Copy issuing country"))
+                        add(
+                            DetailFieldUi(
+                                "Issuing country",
+                                it,
+                                sensitive = false,
+                                copyDescription = "Copy issuing country",
+                            ),
+                        )
                     }
                 },
             )
@@ -320,8 +404,22 @@ class ItemDetailViewModel @Inject constructor(
                 type = item.type,
                 updatedAt = metadata.updatedAt.value,
                 fields = buildList {
-                    add(DetailFieldUi("Product", item.productName, sensitive = false, copyDescription = "Copy product name"))
-                    add(DetailFieldUi("License key", reveal(item.licenseKey), sensitive = true, copyDescription = "Copy license key"))
+                    add(
+                        DetailFieldUi(
+                            "Product",
+                            item.productName,
+                            sensitive = false,
+                            copyDescription = "Copy product name",
+                        ),
+                    )
+                    add(
+                        DetailFieldUi(
+                            "License key",
+                            reveal(item.licenseKey),
+                            sensitive = true,
+                            copyDescription = "Copy license key",
+                        ),
+                    )
                     item.licensedTo?.let {
                         add(DetailFieldUi("Licensed to", it, sensitive = false, copyDescription = "Copy licensee"))
                     }
@@ -353,12 +451,26 @@ class ItemDetailViewModel @Inject constructor(
                 updatedAt = metadata.updatedAt.value,
                 fields = buildList {
                     add(DetailFieldUi("Key type", item.keyType, sensitive = false, copyDescription = "Copy key type"))
-                    add(DetailFieldUi("Private key", reveal(item.privateKey), sensitive = true, copyDescription = "Copy private key"))
+                    add(
+                        DetailFieldUi(
+                            "Private key",
+                            reveal(item.privateKey),
+                            sensitive = true,
+                            copyDescription = "Copy private key",
+                        ),
+                    )
                     item.publicKey?.let {
                         add(DetailFieldUi("Public key", it, sensitive = false, copyDescription = "Copy public key"))
                     }
                     item.passphrase?.let {
-                        add(DetailFieldUi("Passphrase", reveal(it), sensitive = true, copyDescription = "Copy passphrase"))
+                        add(
+                            DetailFieldUi(
+                                "Passphrase",
+                                reveal(it),
+                                sensitive = true,
+                                copyDescription = "Copy passphrase",
+                            ),
+                        )
                     }
                     item.hostAddress?.let {
                         add(DetailFieldUi("Host", it, sensitive = false, copyDescription = "Copy host"))
@@ -840,9 +952,24 @@ private fun ItemDetailPasswordPreview() {
                     title = "GitHub",
                     updatedAt = Instant.now(),
                     fields = listOf(
-                        DetailFieldUi(STR_FIELD_USERNAME, "octocat", sensitive = false, copyDescription = STR_COPY_USERNAME_DESC),
-                        DetailFieldUi(STR_FIELD_PASSWORD, "correct-horse-battery-staple", sensitive = true, copyDescription = STR_COPY_PASSWORD_DESC),
-                        DetailFieldUi(STR_FIELD_URL, "https://github.com", sensitive = false, copyDescription = STR_COPY_URL_DESC),
+                        DetailFieldUi(
+                            STR_FIELD_USERNAME,
+                            "octocat",
+                            sensitive = false,
+                            copyDescription = STR_COPY_USERNAME_DESC,
+                        ),
+                        DetailFieldUi(
+                            STR_FIELD_PASSWORD,
+                            "correct-horse-battery-staple",
+                            sensitive = true,
+                            copyDescription = STR_COPY_PASSWORD_DESC,
+                        ),
+                        DetailFieldUi(
+                            STR_FIELD_URL,
+                            "https://github.com",
+                            sensitive = false,
+                            copyDescription = STR_COPY_URL_DESC,
+                        ),
                     ),
                     notes = "Personal account.",
                     totp = TotpUi(

@@ -37,12 +37,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.draw.clip
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -365,11 +365,19 @@ class ItemEditorViewModel @Inject constructor(
         val passwordError =
             if (state.editableType == EditableType.PASSWORD && state.password.isBlank()) STR_PASSWORD_REQUIRED else null
         val contentError =
-            if (state.editableType == EditableType.SECURE_NOTE && state.noteContent.isBlank()) STR_CONTENT_REQUIRED else null
+            if (state.editableType == EditableType.SECURE_NOTE && state.noteContent.isBlank()) {
+                STR_CONTENT_REQUIRED
+            } else {
+                null
+            }
         val urlError =
             if (state.url.isNotBlank() && !isPlausibleUrl(state.url.trim())) STR_URL_INVALID else null
         val totpSecretError =
-            if (state.totpSecret.isNotBlank() && !isPlausibleTotpSecret(state.totpSecret.trim())) STR_TOTP_SECRET_INVALID else null
+            if (state.totpSecret.isNotBlank() && !isPlausibleTotpSecret(state.totpSecret.trim())) {
+                STR_TOTP_SECRET_INVALID
+            } else {
+                null
+            }
         _uiState.update {
             it.copy(
                 titleError = titleError,
@@ -525,7 +533,15 @@ private fun ItemEditorContent(
         containerColor = colors.baseBackground,
         topBar = {
             TopAppBar(
-                title = { Text(if (state.isCreate) stringResource(R.string.item_editor_title_new) else stringResource(R.string.item_editor_title_edit)) },
+                title = {
+                    Text(
+                        if (state.isCreate) {
+                            stringResource(R.string.item_editor_title_new)
+                        } else {
+                            stringResource(R.string.item_editor_title_edit)
+                        },
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
