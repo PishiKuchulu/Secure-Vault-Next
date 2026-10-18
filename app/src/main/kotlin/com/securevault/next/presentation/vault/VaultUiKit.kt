@@ -48,13 +48,13 @@ import com.securevault.next.core.domain.repository.VaultRepository
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 import com.securevault.next.core.ui.theme.footnote
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 
 /*
  * Shared presentation helpers for the vault item flows (home list,
@@ -84,69 +84,71 @@ internal fun <T> StateFlow<T>.collectAsStateLifecycleAware(): State<T> {
 }
 
 /** The vault the item flows operate on: the first available vault, matching DashboardViewModel's convention. */
-internal suspend fun VaultRepository.firstVaultId(): VaultId? =
-    observeAllVaultMetadata().first().firstOrNull()?.id
+internal suspend fun VaultRepository.firstVaultId(): VaultId? = observeAllVaultMetadata().first().firstOrNull()?.id
 
 /** Human-facing error copy for domain failures. Never surfaces raw technical messages. */
-internal fun friendlyErrorMessage(error: DomainError): String = when (error) {
-    is DomainError.CryptoRequiredError ->
-        "The vault is locked. Unlock it and try again."
-    is DomainError.RepositoryError.NotFound ->
-        "This item couldn't be found. It may have been deleted."
-    is DomainError.RepositoryError ->
-        "Couldn't reach your vault data. Try again."
-    is DomainError.ValidationError ->
-        "Some values aren't valid. Check the highlighted fields."
-    is DomainError.VaultError ->
-        "There's a problem with this vault. Try again."
-    is DomainError.AuthenticationError ->
-        "Authentication failed. Try again."
-    else ->
-        "Something went wrong. Try again."
-}
+internal fun friendlyErrorMessage(error: DomainError): String =
+    when (error) {
+        is DomainError.CryptoRequiredError ->
+            "The vault is locked. Unlock it and try again."
+        is DomainError.RepositoryError.NotFound ->
+            "This item couldn't be found. It may have been deleted."
+        is DomainError.RepositoryError ->
+            "Couldn't reach your vault data. Try again."
+        is DomainError.ValidationError ->
+            "Some values aren't valid. Check the highlighted fields."
+        is DomainError.VaultError ->
+            "There's a problem with this vault. Try again."
+        is DomainError.AuthenticationError ->
+            "Authentication failed. Try again."
+        else ->
+            "Something went wrong. Try again."
+    }
 
 /** Sentence-case, user-facing label per item type. */
 internal val ItemType.uiLabel: String
-    get() = when (this) {
-        ItemType.PASSWORD -> "Login"
-        ItemType.SECURE_NOTE -> "Secure note"
-        ItemType.CREDIT_CARD -> "Credit card"
-        ItemType.BANK_ACCOUNT -> "Bank account"
-        ItemType.IDENTITY_DOCUMENT -> "Identity document"
-        ItemType.SOFTWARE_LICENSE -> "Software license"
-        ItemType.API_KEY -> "API key"
-        ItemType.SSH_KEY -> "SSH key"
-        ItemType.RECOVERY_CODE -> "Recovery codes"
-        ItemType.TOTP_SEED -> "Authenticator code"
-    }
+    get() =
+        when (this) {
+            ItemType.PASSWORD -> "Login"
+            ItemType.SECURE_NOTE -> "Secure note"
+            ItemType.CREDIT_CARD -> "Credit card"
+            ItemType.BANK_ACCOUNT -> "Bank account"
+            ItemType.IDENTITY_DOCUMENT -> "Identity document"
+            ItemType.SOFTWARE_LICENSE -> "Software license"
+            ItemType.API_KEY -> "API key"
+            ItemType.SSH_KEY -> "SSH key"
+            ItemType.RECOVERY_CODE -> "Recovery codes"
+            ItemType.TOTP_SEED -> "Authenticator code"
+        }
 
 /** One icon family (Material), one icon per item type, used in list leading slots. */
 internal val ItemType.uiIcon: ImageVector
-    get() = when (this) {
-        ItemType.PASSWORD -> Icons.Filled.VpnKey
-        ItemType.SECURE_NOTE -> Icons.Filled.Description
-        ItemType.CREDIT_CARD -> Icons.Filled.CreditCard
-        ItemType.BANK_ACCOUNT -> Icons.Filled.AccountBalance
-        ItemType.IDENTITY_DOCUMENT -> Icons.Filled.Badge
-        ItemType.SOFTWARE_LICENSE -> Icons.Filled.VerifiedUser
-        ItemType.API_KEY -> Icons.Filled.Code
-        ItemType.SSH_KEY -> Icons.Filled.Terminal
-        ItemType.RECOVERY_CODE -> Icons.Filled.Restore
-        ItemType.TOTP_SEED -> Icons.Filled.Schedule
-    }
+    get() =
+        when (this) {
+            ItemType.PASSWORD -> Icons.Filled.VpnKey
+            ItemType.SECURE_NOTE -> Icons.Filled.Description
+            ItemType.CREDIT_CARD -> Icons.Filled.CreditCard
+            ItemType.BANK_ACCOUNT -> Icons.Filled.AccountBalance
+            ItemType.IDENTITY_DOCUMENT -> Icons.Filled.Badge
+            ItemType.SOFTWARE_LICENSE -> Icons.Filled.VerifiedUser
+            ItemType.API_KEY -> Icons.Filled.Code
+            ItemType.SSH_KEY -> Icons.Filled.Terminal
+            ItemType.RECOVERY_CODE -> Icons.Filled.Restore
+            ItemType.TOTP_SEED -> Icons.Filled.Schedule
+        }
 
 /** Localized medium date-time for metadata footers ("Last modified …"). */
 internal fun formatInstant(instant: Instant): String {
-    val formatter = DateTimeFormatter
-        .ofLocalizedDateTime(FormatStyle.MEDIUM)
-        .withLocale(Locale.getDefault())
-        .withZone(ZoneId.systemDefault())
+    val formatter =
+        DateTimeFormatter
+            .ofLocalizedDateTime(FormatStyle.MEDIUM)
+            .withLocale(Locale.getDefault())
+            .withZone(ZoneId.systemDefault())
     return formatter.format(instant)
 }
 
 /** Groups TOTP digits the way authenticator apps do ("123 456"). */
-internal fun formatTotpCode(code: String): String =
-    code.chunked(3).joinToString(" ")
+internal fun formatTotpCode(code: String): String = code.chunked(3).joinToString(" ")
 
 /**
  * A quiet informational note: accent-soft card, info icon, plain
@@ -209,12 +211,13 @@ internal fun DetailFieldRow(
     var revealed by remember(value) { mutableStateOf(!sensitive) }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = spacing.medium,
-                vertical = spacing.small + spacing.extraSmall,
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    horizontal = spacing.medium,
+                    vertical = spacing.small + spacing.extraSmall,
+                ),
     ) {
         Text(
             text = label,
@@ -222,17 +225,19 @@ internal fun DetailFieldRow(
             color = colors.secondaryLabel,
         )
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = spacing.extraSmall),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = spacing.extraSmall),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(spacing.small),
         ) {
             Text(
                 text = if (revealed) value else MASKED_VALUE,
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontFeatureSettings = "tnum",
-                ),
+                style =
+                    MaterialTheme.typography.bodyLarge.copy(
+                        fontFeatureSettings = "tnum",
+                    ),
                 color = colors.label,
                 modifier = Modifier.weight(1f),
             )
@@ -240,8 +245,9 @@ internal fun DetailFieldRow(
                 IconButton(onClick = { revealed = !revealed }) {
                     Icon(
                         imageVector = if (revealed) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                        contentDescription = showContentDescription
-                            ?: if (revealed) "Hide $label" else "Show $label",
+                        contentDescription =
+                            showContentDescription
+                                ?: if (revealed) "Hide $label" else "Show $label",
                     )
                 }
             }
