@@ -77,14 +77,14 @@ import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 import com.securevault.next.core.ui.theme.SecureVaultTheme
 import com.securevault.next.core.ui.theme.footnote
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.Instant
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
-import javax.inject.Inject
 
 // Screen copy is centralized in strings.xml (item_detail_*). The field labels,
 // copy descriptions and the load-error description stay consts: they are used in
@@ -98,12 +98,7 @@ private const val STR_COPY_PASSWORD_DESC = "Copy password"
 private const val STR_COPY_URL_DESC = "Copy website"
 
 /** One decrypted detail row: label, plaintext value, whether it starts masked. */
-data class DetailFieldUi(
-    val label: String,
-    val value: String,
-    val sensitive: Boolean,
-    val copyDescription: String,
-)
+data class DetailFieldUi(val label: String, val value: String, val sensitive: Boolean, val copyDescription: String)
 
 /** Live TOTP material, decrypted once at load and re-rendered every second. */
 data class TotpUi(
@@ -111,7 +106,7 @@ data class TotpUi(
     val issuer: String?,
     val accountName: String?,
     val digits: Int,
-    val periodSeconds: Int,
+    val periodSeconds: Int
 )
 
 sealed interface DecryptedItemUi {
@@ -126,7 +121,7 @@ sealed interface DecryptedItemUi {
         override val updatedAt: Instant,
         val fields: List<DetailFieldUi>,
         val notes: String?,
-        val totp: TotpUi?,
+        val totp: TotpUi?
     ) : DecryptedItemUi {
         override val type: ItemType = ItemType.PASSWORD
     }
@@ -135,7 +130,7 @@ sealed interface DecryptedItemUi {
         override val id: String,
         override val title: String,
         override val updatedAt: Instant,
-        val content: String,
+        val content: String
     ) : DecryptedItemUi {
         override val type: ItemType = ItemType.SECURE_NOTE
     }
@@ -146,504 +141,496 @@ sealed interface DecryptedItemUi {
         override val type: ItemType,
         override val updatedAt: Instant,
         val fields: List<DetailFieldUi>,
-        val totp: TotpUi? = null,
+        val totp: TotpUi? = null
     ) : DecryptedItemUi
 }
 
 sealed interface ItemDetailUiState {
     data object Loading : ItemDetailUiState
 
-    data class Loaded(
-        val item: DecryptedItemUi,
-        val copiedLabel: String? = null,
-    ) : ItemDetailUiState
+    data class Loaded(val item: DecryptedItemUi, val copiedLabel: String? = null) : ItemDetailUiState
 
-    data class Error(
-        val message: String,
-    ) : ItemDetailUiState
+    data class Error(val message: String) : ItemDetailUiState
 }
 
 @HiltViewModel
 class ItemDetailViewModel
-    @Inject
-    constructor(
-        private val vaultRepository: VaultRepository,
-        private val searchItems: SearchItemsUseCase,
-        private val encryption: ItemEncryptionEngine,
-        private val clipboard: SecureClipboardManager,
-    ) : ViewModel() {
-        private val _uiState = MutableStateFlow<ItemDetailUiState>(ItemDetailUiState.Loading)
-        val uiState: StateFlow<ItemDetailUiState> = _uiState.asStateFlow()
+@Inject
+constructor(
+    private val vaultRepository: VaultRepository,
+    private val searchItems: SearchItemsUseCase,
+    private val encryption: ItemEncryptionEngine,
+    private val clipboard: SecureClipboardManager
+) : ViewModel() {
+    private val _uiState = MutableStateFlow<ItemDetailUiState>(ItemDetailUiState.Loading)
+    val uiState: StateFlow<ItemDetailUiState> = _uiState.asStateFlow()
 
-        fun load(itemId: String) {
-            viewModelScope.launch {
-                _uiState.value = ItemDetailUiState.Loading
-                val vaultId = vaultRepository.firstVaultId()
-                if (vaultId == null) {
-                    _uiState.value = ItemDetailUiState.Error(STR_ERROR_DESC)
-                    return@launch
-                }
-                val items = searchItems(vaultId, SearchFilter()).getOrNull()?.items
-                if (items == null) {
-                    _uiState.value = ItemDetailUiState.Error(STR_ERROR_DESC)
-                    return@launch
-                }
-                val item = items.firstOrNull { it.metadata.id.value == itemId }
-                if (item == null) {
-                    _uiState.value = ItemDetailUiState.Error(STR_ERROR_DESC)
-                    return@launch
-                }
-                _uiState.value =
-                    try {
-                        ItemDetailUiState.Loaded(decrypt(item))
-                    } catch (e: Exception) {
-                        ItemDetailUiState.Error(STR_ERROR_DESC)
-                    }
+    fun load(itemId: String) {
+        viewModelScope.launch {
+            _uiState.value = ItemDetailUiState.Loading
+            val vaultId = vaultRepository.firstVaultId()
+            if (vaultId == null) {
+                _uiState.value = ItemDetailUiState.Error(STR_ERROR_DESC)
+                return@launch
             }
-        }
-
-        fun onRetry(itemId: String) = load(itemId)
-
-        fun onCopy(
-            label: String,
-            value: String,
-        ) {
-            clipboard.copyToClipboard(label, value)
-            val current = _uiState.value
-            if (current is ItemDetailUiState.Loaded) {
-                _uiState.update { current.copy(copiedLabel = label) }
+            val items = searchItems(vaultId, SearchFilter()).getOrNull()?.items
+            if (items == null) {
+                _uiState.value = ItemDetailUiState.Error(STR_ERROR_DESC)
+                return@launch
             }
-        }
-
-        private suspend fun reveal(field: EncryptedField): String {
-            val chars =
-                when (val result = encryption.decryptField(field)) {
-                    is Result.Success -> result.value
-                    is Result.Failure -> throw IllegalStateException("decrypt failed: ${result.error.message}")
+            val item = items.firstOrNull { it.metadata.id.value == itemId }
+            if (item == null) {
+                _uiState.value = ItemDetailUiState.Error(STR_ERROR_DESC)
+                return@launch
+            }
+            _uiState.value =
+                try {
+                    ItemDetailUiState.Loaded(decrypt(item))
+                } catch (e: Exception) {
+                    ItemDetailUiState.Error(STR_ERROR_DESC)
                 }
-            return try {
-                String(chars)
-            } finally {
-                chars.fill('\u0000')
-            }
-        }
-
-        private suspend fun decrypt(item: VaultItem): DecryptedItemUi {
-            val metadata = item.metadata
-            return when (item) {
-                is PasswordItem ->
-                    DecryptedItemUi.Password(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        updatedAt = metadata.updatedAt.value,
-                        fields =
-                            buildList {
-                                item.username?.takeIf { it.isNotBlank() }?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            STR_FIELD_USERNAME,
-                                            it,
-                                            sensitive = false,
-                                            copyDescription = STR_COPY_USERNAME_DESC,
-                                        ),
-                                    )
-                                }
-                                add(
-                                    DetailFieldUi(
-                                        label = STR_FIELD_PASSWORD,
-                                        value = reveal(item.password),
-                                        sensitive = true,
-                                        copyDescription = STR_COPY_PASSWORD_DESC,
-                                    ),
-                                )
-                                item.url?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            STR_FIELD_URL,
-                                            it.value,
-                                            sensitive = false,
-                                            copyDescription = STR_COPY_URL_DESC,
-                                        ),
-                                    )
-                                }
-                            },
-                        notes = metadata.notes?.value,
-                        totp =
-                            item.totp?.let { config ->
-                                TotpUi(
-                                    secret = reveal(config.secret),
-                                    issuer = config.issuer,
-                                    accountName = config.accountName,
-                                    digits = config.digits,
-                                    periodSeconds = config.periodSeconds,
-                                )
-                            },
-                    )
-                is SecureNote ->
-                    DecryptedItemUi.Note(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        updatedAt = metadata.updatedAt.value,
-                        content = reveal(item.content),
-                    )
-                is CreditCard ->
-                    DecryptedItemUi.Other(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        type = item.type,
-                        updatedAt = metadata.updatedAt.value,
-                        fields =
-                            buildList {
-                                add(
-                                    DetailFieldUi(
-                                        "Cardholder",
-                                        item.cardholderName,
-                                        sensitive = false,
-                                        copyDescription = "Copy cardholder name",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "Card number",
-                                        reveal(item.cardNumber),
-                                        sensitive = true,
-                                        copyDescription = "Copy card number",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "Expires",
-                                        "%02d/%d".format(item.expiryMonth, item.expiryYear),
-                                        sensitive = false,
-                                        copyDescription = "Copy expiry date",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "Security code",
-                                        reveal(item.cvv),
-                                        sensitive = true,
-                                        copyDescription = "Copy security code",
-                                    ),
-                                )
-                                item.pin?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "PIN",
-                                            reveal(it),
-                                            sensitive = true,
-                                            copyDescription = "Copy PIN",
-                                        ),
-                                    )
-                                }
-                            },
-                    )
-                is BankAccount ->
-                    DecryptedItemUi.Other(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        type = item.type,
-                        updatedAt = metadata.updatedAt.value,
-                        fields =
-                            buildList {
-                                add(
-                                    DetailFieldUi(
-                                        "Bank",
-                                        item.bankName,
-                                        sensitive = false,
-                                        copyDescription = "Copy bank name",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "Account holder",
-                                        item.accountHolderName,
-                                        sensitive = false,
-                                        copyDescription = "Copy account holder",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "Account number",
-                                        reveal(item.accountNumber),
-                                        sensitive = true,
-                                        copyDescription = "Copy account number",
-                                    ),
-                                )
-                                item.routingNumber?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "Routing number",
-                                            reveal(it),
-                                            sensitive = true,
-                                            copyDescription = "Copy routing number",
-                                        ),
-                                    )
-                                }
-                                item.iban?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "IBAN",
-                                            reveal(it),
-                                            sensitive = true,
-                                            copyDescription = "Copy IBAN",
-                                        ),
-                                    )
-                                }
-                                item.swiftCode?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "SWIFT code",
-                                            it,
-                                            sensitive = false,
-                                            copyDescription = "Copy SWIFT code",
-                                        ),
-                                    )
-                                }
-                            },
-                    )
-                is IdentityDocument ->
-                    DecryptedItemUi.Other(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        type = item.type,
-                        updatedAt = metadata.updatedAt.value,
-                        fields =
-                            buildList {
-                                add(
-                                    DetailFieldUi(
-                                        "Document type",
-                                        item.documentType,
-                                        sensitive = false,
-                                        copyDescription = "Copy document type",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "Full name",
-                                        item.fullName,
-                                        sensitive = false,
-                                        copyDescription = "Copy full name",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "Document number",
-                                        reveal(item.documentNumber),
-                                        sensitive = true,
-                                        copyDescription = "Copy document number",
-                                    ),
-                                )
-                                item.issuingCountry?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "Issuing country",
-                                            it,
-                                            sensitive = false,
-                                            copyDescription = "Copy issuing country",
-                                        ),
-                                    )
-                                }
-                            },
-                    )
-                is SoftwareLicense ->
-                    DecryptedItemUi.Other(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        type = item.type,
-                        updatedAt = metadata.updatedAt.value,
-                        fields =
-                            buildList {
-                                add(
-                                    DetailFieldUi(
-                                        "Product",
-                                        item.productName,
-                                        sensitive = false,
-                                        copyDescription = "Copy product name",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "License key",
-                                        reveal(item.licenseKey),
-                                        sensitive = true,
-                                        copyDescription = "Copy license key",
-                                    ),
-                                )
-                                item.licensedTo?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "Licensed to",
-                                            it,
-                                            sensitive = false,
-                                            copyDescription = "Copy licensee",
-                                        ),
-                                    )
-                                }
-                                item.vendor?.let {
-                                    add(DetailFieldUi("Vendor", it, sensitive = false, copyDescription = "Copy vendor"))
-                                }
-                            },
-                    )
-                is ApiKey ->
-                    DecryptedItemUi.Other(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        type = item.type,
-                        updatedAt = metadata.updatedAt.value,
-                        fields =
-                            buildList {
-                                add(
-                                    DetailFieldUi(
-                                        "Service",
-                                        item.service,
-                                        sensitive = false,
-                                        copyDescription = "Copy service",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "Key",
-                                        reveal(item.keyValue),
-                                        sensitive = true,
-                                        copyDescription = "Copy API key",
-                                    ),
-                                )
-                                item.keySecret?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "Secret",
-                                            reveal(it),
-                                            sensitive = true,
-                                            copyDescription = "Copy API secret",
-                                        ),
-                                    )
-                                }
-                                item.environment?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "Environment",
-                                            it,
-                                            sensitive = false,
-                                            copyDescription = "Copy environment",
-                                        ),
-                                    )
-                                }
-                            },
-                    )
-                is SSHKey ->
-                    DecryptedItemUi.Other(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        type = item.type,
-                        updatedAt = metadata.updatedAt.value,
-                        fields =
-                            buildList {
-                                add(
-                                    DetailFieldUi(
-                                        "Key type",
-                                        item.keyType,
-                                        sensitive = false,
-                                        copyDescription = "Copy key type",
-                                    ),
-                                )
-                                add(
-                                    DetailFieldUi(
-                                        "Private key",
-                                        reveal(item.privateKey),
-                                        sensitive = true,
-                                        copyDescription = "Copy private key",
-                                    ),
-                                )
-                                item.publicKey?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "Public key",
-                                            it,
-                                            sensitive = false,
-                                            copyDescription = "Copy public key",
-                                        ),
-                                    )
-                                }
-                                item.passphrase?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "Passphrase",
-                                            reveal(it),
-                                            sensitive = true,
-                                            copyDescription = "Copy passphrase",
-                                        ),
-                                    )
-                                }
-                                item.hostAddress?.let {
-                                    add(DetailFieldUi("Host", it, sensitive = false, copyDescription = "Copy host"))
-                                }
-                            },
-                    )
-                is RecoveryCode ->
-                    DecryptedItemUi.Other(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        type = item.type,
-                        updatedAt = metadata.updatedAt.value,
-                        fields =
-                            buildList {
-                                add(
-                                    DetailFieldUi(
-                                        "Service",
-                                        item.service,
-                                        sensitive = false,
-                                        copyDescription = "Copy service",
-                                    ),
-                                )
-                                item.codes.forEachIndexed { index, code ->
-                                    if (index !in item.usedCodeIndices) {
-                                        add(
-                                            DetailFieldUi(
-                                                "Code ${index + 1}",
-                                                reveal(code),
-                                                sensitive = true,
-                                                copyDescription = "Copy recovery code ${index + 1}",
-                                            ),
-                                        )
-                                    }
-                                }
-                            },
-                    )
-                is TOTPSeed ->
-                    DecryptedItemUi.Other(
-                        id = metadata.id.value,
-                        title = metadata.title,
-                        type = item.type,
-                        updatedAt = metadata.updatedAt.value,
-                        fields =
-                            buildList {
-                                item.config.issuer?.let {
-                                    add(DetailFieldUi("Issuer", it, sensitive = false, copyDescription = "Copy issuer"))
-                                }
-                                item.config.accountName?.let {
-                                    add(
-                                        DetailFieldUi(
-                                            "Account",
-                                            it,
-                                            sensitive = false,
-                                            copyDescription = "Copy account name",
-                                        ),
-                                    )
-                                }
-                            },
-                        totp =
-                            TotpUi(
-                                secret = reveal(item.config.secret),
-                                issuer = item.config.issuer,
-                                accountName = item.config.accountName,
-                                digits = item.config.digits,
-                                periodSeconds = item.config.periodSeconds,
-                            ),
-                    )
-            }
         }
     }
+
+    fun onRetry(itemId: String) = load(itemId)
+
+    fun onCopy(label: String, value: String) {
+        clipboard.copyToClipboard(label, value)
+        val current = _uiState.value
+        if (current is ItemDetailUiState.Loaded) {
+            _uiState.update { current.copy(copiedLabel = label) }
+        }
+    }
+
+    private suspend fun reveal(field: EncryptedField): String {
+        val chars =
+            when (val result = encryption.decryptField(field)) {
+                is Result.Success -> result.value
+                is Result.Failure -> throw IllegalStateException("decrypt failed: ${result.error.message}")
+            }
+        return try {
+            String(chars)
+        } finally {
+            chars.fill('\u0000')
+        }
+    }
+
+    private suspend fun decrypt(item: VaultItem): DecryptedItemUi {
+        val metadata = item.metadata
+        return when (item) {
+            is PasswordItem ->
+                DecryptedItemUi.Password(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    updatedAt = metadata.updatedAt.value,
+                    fields =
+                    buildList {
+                        item.username?.takeIf { it.isNotBlank() }?.let {
+                            add(
+                                DetailFieldUi(
+                                    STR_FIELD_USERNAME,
+                                    it,
+                                    sensitive = false,
+                                    copyDescription = STR_COPY_USERNAME_DESC
+                                )
+                            )
+                        }
+                        add(
+                            DetailFieldUi(
+                                label = STR_FIELD_PASSWORD,
+                                value = reveal(item.password),
+                                sensitive = true,
+                                copyDescription = STR_COPY_PASSWORD_DESC
+                            )
+                        )
+                        item.url?.let {
+                            add(
+                                DetailFieldUi(
+                                    STR_FIELD_URL,
+                                    it.value,
+                                    sensitive = false,
+                                    copyDescription = STR_COPY_URL_DESC
+                                )
+                            )
+                        }
+                    },
+                    notes = metadata.notes?.value,
+                    totp =
+                    item.totp?.let { config ->
+                        TotpUi(
+                            secret = reveal(config.secret),
+                            issuer = config.issuer,
+                            accountName = config.accountName,
+                            digits = config.digits,
+                            periodSeconds = config.periodSeconds
+                        )
+                    }
+                )
+            is SecureNote ->
+                DecryptedItemUi.Note(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    updatedAt = metadata.updatedAt.value,
+                    content = reveal(item.content)
+                )
+            is CreditCard ->
+                DecryptedItemUi.Other(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    type = item.type,
+                    updatedAt = metadata.updatedAt.value,
+                    fields =
+                    buildList {
+                        add(
+                            DetailFieldUi(
+                                "Cardholder",
+                                item.cardholderName,
+                                sensitive = false,
+                                copyDescription = "Copy cardholder name"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "Card number",
+                                reveal(item.cardNumber),
+                                sensitive = true,
+                                copyDescription = "Copy card number"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "Expires",
+                                "%02d/%d".format(item.expiryMonth, item.expiryYear),
+                                sensitive = false,
+                                copyDescription = "Copy expiry date"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "Security code",
+                                reveal(item.cvv),
+                                sensitive = true,
+                                copyDescription = "Copy security code"
+                            )
+                        )
+                        item.pin?.let {
+                            add(
+                                DetailFieldUi(
+                                    "PIN",
+                                    reveal(it),
+                                    sensitive = true,
+                                    copyDescription = "Copy PIN"
+                                )
+                            )
+                        }
+                    }
+                )
+            is BankAccount ->
+                DecryptedItemUi.Other(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    type = item.type,
+                    updatedAt = metadata.updatedAt.value,
+                    fields =
+                    buildList {
+                        add(
+                            DetailFieldUi(
+                                "Bank",
+                                item.bankName,
+                                sensitive = false,
+                                copyDescription = "Copy bank name"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "Account holder",
+                                item.accountHolderName,
+                                sensitive = false,
+                                copyDescription = "Copy account holder"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "Account number",
+                                reveal(item.accountNumber),
+                                sensitive = true,
+                                copyDescription = "Copy account number"
+                            )
+                        )
+                        item.routingNumber?.let {
+                            add(
+                                DetailFieldUi(
+                                    "Routing number",
+                                    reveal(it),
+                                    sensitive = true,
+                                    copyDescription = "Copy routing number"
+                                )
+                            )
+                        }
+                        item.iban?.let {
+                            add(
+                                DetailFieldUi(
+                                    "IBAN",
+                                    reveal(it),
+                                    sensitive = true,
+                                    copyDescription = "Copy IBAN"
+                                )
+                            )
+                        }
+                        item.swiftCode?.let {
+                            add(
+                                DetailFieldUi(
+                                    "SWIFT code",
+                                    it,
+                                    sensitive = false,
+                                    copyDescription = "Copy SWIFT code"
+                                )
+                            )
+                        }
+                    }
+                )
+            is IdentityDocument ->
+                DecryptedItemUi.Other(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    type = item.type,
+                    updatedAt = metadata.updatedAt.value,
+                    fields =
+                    buildList {
+                        add(
+                            DetailFieldUi(
+                                "Document type",
+                                item.documentType,
+                                sensitive = false,
+                                copyDescription = "Copy document type"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "Full name",
+                                item.fullName,
+                                sensitive = false,
+                                copyDescription = "Copy full name"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "Document number",
+                                reveal(item.documentNumber),
+                                sensitive = true,
+                                copyDescription = "Copy document number"
+                            )
+                        )
+                        item.issuingCountry?.let {
+                            add(
+                                DetailFieldUi(
+                                    "Issuing country",
+                                    it,
+                                    sensitive = false,
+                                    copyDescription = "Copy issuing country"
+                                )
+                            )
+                        }
+                    }
+                )
+            is SoftwareLicense ->
+                DecryptedItemUi.Other(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    type = item.type,
+                    updatedAt = metadata.updatedAt.value,
+                    fields =
+                    buildList {
+                        add(
+                            DetailFieldUi(
+                                "Product",
+                                item.productName,
+                                sensitive = false,
+                                copyDescription = "Copy product name"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "License key",
+                                reveal(item.licenseKey),
+                                sensitive = true,
+                                copyDescription = "Copy license key"
+                            )
+                        )
+                        item.licensedTo?.let {
+                            add(
+                                DetailFieldUi(
+                                    "Licensed to",
+                                    it,
+                                    sensitive = false,
+                                    copyDescription = "Copy licensee"
+                                )
+                            )
+                        }
+                        item.vendor?.let {
+                            add(DetailFieldUi("Vendor", it, sensitive = false, copyDescription = "Copy vendor"))
+                        }
+                    }
+                )
+            is ApiKey ->
+                DecryptedItemUi.Other(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    type = item.type,
+                    updatedAt = metadata.updatedAt.value,
+                    fields =
+                    buildList {
+                        add(
+                            DetailFieldUi(
+                                "Service",
+                                item.service,
+                                sensitive = false,
+                                copyDescription = "Copy service"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "Key",
+                                reveal(item.keyValue),
+                                sensitive = true,
+                                copyDescription = "Copy API key"
+                            )
+                        )
+                        item.keySecret?.let {
+                            add(
+                                DetailFieldUi(
+                                    "Secret",
+                                    reveal(it),
+                                    sensitive = true,
+                                    copyDescription = "Copy API secret"
+                                )
+                            )
+                        }
+                        item.environment?.let {
+                            add(
+                                DetailFieldUi(
+                                    "Environment",
+                                    it,
+                                    sensitive = false,
+                                    copyDescription = "Copy environment"
+                                )
+                            )
+                        }
+                    }
+                )
+            is SSHKey ->
+                DecryptedItemUi.Other(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    type = item.type,
+                    updatedAt = metadata.updatedAt.value,
+                    fields =
+                    buildList {
+                        add(
+                            DetailFieldUi(
+                                "Key type",
+                                item.keyType,
+                                sensitive = false,
+                                copyDescription = "Copy key type"
+                            )
+                        )
+                        add(
+                            DetailFieldUi(
+                                "Private key",
+                                reveal(item.privateKey),
+                                sensitive = true,
+                                copyDescription = "Copy private key"
+                            )
+                        )
+                        item.publicKey?.let {
+                            add(
+                                DetailFieldUi(
+                                    "Public key",
+                                    it,
+                                    sensitive = false,
+                                    copyDescription = "Copy public key"
+                                )
+                            )
+                        }
+                        item.passphrase?.let {
+                            add(
+                                DetailFieldUi(
+                                    "Passphrase",
+                                    reveal(it),
+                                    sensitive = true,
+                                    copyDescription = "Copy passphrase"
+                                )
+                            )
+                        }
+                        item.hostAddress?.let {
+                            add(DetailFieldUi("Host", it, sensitive = false, copyDescription = "Copy host"))
+                        }
+                    }
+                )
+            is RecoveryCode ->
+                DecryptedItemUi.Other(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    type = item.type,
+                    updatedAt = metadata.updatedAt.value,
+                    fields =
+                    buildList {
+                        add(
+                            DetailFieldUi(
+                                "Service",
+                                item.service,
+                                sensitive = false,
+                                copyDescription = "Copy service"
+                            )
+                        )
+                        item.codes.forEachIndexed { index, code ->
+                            if (index !in item.usedCodeIndices) {
+                                add(
+                                    DetailFieldUi(
+                                        "Code ${index + 1}",
+                                        reveal(code),
+                                        sensitive = true,
+                                        copyDescription = "Copy recovery code ${index + 1}"
+                                    )
+                                )
+                            }
+                        }
+                    }
+                )
+            is TOTPSeed ->
+                DecryptedItemUi.Other(
+                    id = metadata.id.value,
+                    title = metadata.title,
+                    type = item.type,
+                    updatedAt = metadata.updatedAt.value,
+                    fields =
+                    buildList {
+                        item.config.issuer?.let {
+                            add(DetailFieldUi("Issuer", it, sensitive = false, copyDescription = "Copy issuer"))
+                        }
+                        item.config.accountName?.let {
+                            add(
+                                DetailFieldUi(
+                                    "Account",
+                                    it,
+                                    sensitive = false,
+                                    copyDescription = "Copy account name"
+                                )
+                            )
+                        }
+                    },
+                    totp =
+                    TotpUi(
+                        secret = reveal(item.config.secret),
+                        issuer = item.config.issuer,
+                        accountName = item.config.accountName,
+                        digits = item.config.digits,
+                        periodSeconds = item.config.periodSeconds
+                    )
+                )
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -651,7 +638,7 @@ fun ItemDetailScreen(
     itemId: String,
     onEdit: (itemId: String) -> Unit,
     onBack: () -> Unit,
-    viewModel: ItemDetailViewModel = hiltViewModel(),
+    viewModel: ItemDetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateLifecycleAware()
 
@@ -664,7 +651,7 @@ fun ItemDetailScreen(
         onEdit = { onEdit(itemId) },
         onBack = onBack,
         onRetry = { viewModel.onRetry(itemId) },
-        onCopy = viewModel::onCopy,
+        onCopy = viewModel::onCopy
     )
 }
 
@@ -675,7 +662,7 @@ private fun ItemDetailContent(
     onEdit: () -> Unit,
     onBack: () -> Unit,
     onRetry: () -> Unit,
-    onCopy: (label: String, value: String) -> Unit,
+    onCopy: (label: String, value: String) -> Unit
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -688,14 +675,14 @@ private fun ItemDetailContent(
                 title = {
                     Text(
                         text = title,
-                        maxLines = 1,
+                        maxLines = 1
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.item_detail_back_desc),
+                            contentDescription = stringResource(R.string.item_detail_back_desc)
                         )
                     }
                 },
@@ -704,28 +691,28 @@ private fun ItemDetailContent(
                         IconButton(onClick = onEdit) {
                             Icon(
                                 imageVector = Icons.Filled.Edit,
-                                contentDescription = stringResource(R.string.item_detail_edit_desc),
+                                contentDescription = stringResource(R.string.item_detail_edit_desc)
                             )
                         }
                     }
                 },
                 colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = colors.baseBackground,
-                        titleContentColor = colors.label,
-                        navigationIconContentColor = colors.label,
-                        actionIconContentColor = colors.accent,
-                    ),
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = colors.baseBackground,
+                    titleContentColor = colors.label,
+                    navigationIconContentColor = colors.label,
+                    actionIconContentColor = colors.accent
+                )
             )
-        },
+        }
     ) { innerPadding ->
         when (state) {
             is ItemDetailUiState.Loading ->
                 DetailSkeleton(
                     modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
                 )
             is ItemDetailUiState.Error ->
                 ErrorState(
@@ -734,9 +721,9 @@ private fun ItemDetailContent(
                     onRetry = onRetry,
                     retryLabel = stringResource(R.string.item_detail_retry),
                     modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
                 )
             is ItemDetailUiState.Loaded ->
                 LoadedDetail(
@@ -744,9 +731,9 @@ private fun ItemDetailContent(
                     copiedLabel = state.copiedLabel,
                     onCopy = onCopy,
                     modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
                 )
         }
     }
@@ -757,14 +744,14 @@ private fun LoadedDetail(
     item: DecryptedItemUi,
     copiedLabel: String?,
     onCopy: (label: String, value: String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val spacing = SecureVaultSpacingScope.spacing
     val scrollState = rememberScrollState()
 
     Column(
         modifier = modifier.verticalScroll(scrollState),
-        verticalArrangement = Arrangement.spacedBy(spacing.small),
+        verticalArrangement = Arrangement.spacedBy(spacing.small)
     ) {
         when (item) {
             is DecryptedItemUi.Password -> {
@@ -779,7 +766,7 @@ private fun LoadedDetail(
                     NotesCard(
                         notes = notes,
                         copied = copiedLabel == notesLabel,
-                        onCopy = { onCopy(notesLabel, notes) },
+                        onCopy = { onCopy(notesLabel, notes) }
                     )
                 }
             }
@@ -788,7 +775,7 @@ private fun LoadedDetail(
                 NotesCard(
                     notes = item.content,
                     copied = copiedLabel == noteLabel,
-                    onCopy = { onCopy(noteLabel, item.content) },
+                    onCopy = { onCopy(noteLabel, item.content) }
                 )
             }
             is DecryptedItemUi.Other -> {
@@ -802,7 +789,7 @@ private fun LoadedDetail(
                 }
                 QuietInfoNote(
                     text = stringResource(R.string.item_detail_editing_soon_note),
-                    modifier = Modifier.padding(horizontal = spacing.medium),
+                    modifier = Modifier.padding(horizontal = spacing.medium)
                 )
             }
         }
@@ -812,12 +799,12 @@ private fun LoadedDetail(
             color = SecureVaultColorsScope.colors.secondaryLabel,
             textAlign = TextAlign.Center,
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = SecureVaultSpacingScope.spacing.medium,
-                        bottom = SecureVaultSpacingScope.spacing.extraLarge,
-                    ),
+            Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = SecureVaultSpacingScope.spacing.medium,
+                    bottom = SecureVaultSpacingScope.spacing.extraLarge
+                )
         )
     }
 }
@@ -828,18 +815,18 @@ private fun DetailCard(
     fields: List<DetailFieldUi>,
     copiedLabel: String?,
     onCopy: (label: String, value: String) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
     Surface(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = spacing.medium),
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = spacing.medium),
         shape = MaterialTheme.shapes.large,
-        color = colors.surface,
+        color = colors.surface
     ) {
         Column {
             fields.forEachIndexed { index, field ->
@@ -850,13 +837,13 @@ private fun DetailCard(
                     copyContentDescription = field.copyDescription,
                     onCopy = { onCopy(field.label, field.value) },
                     showCopiedHint = copiedLabel == field.label,
-                    copiedHintText = stringResource(R.string.item_detail_copied_hint),
+                    copiedHintText = stringResource(R.string.item_detail_copied_hint)
                 )
                 if (index < fields.lastIndex) {
                     HorizontalDivider(
                         modifier = Modifier.padding(start = spacing.medium),
                         thickness = 1.dp,
-                        color = colors.separator,
+                        color = colors.separator
                     )
                 }
             }
@@ -865,56 +852,51 @@ private fun DetailCard(
 }
 
 @Composable
-private fun NotesCard(
-    notes: String,
-    copied: Boolean,
-    onCopy: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun NotesCard(notes: String, copied: Boolean, onCopy: () -> Unit, modifier: Modifier = Modifier) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
     Surface(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = spacing.medium),
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = spacing.medium),
         shape = MaterialTheme.shapes.large,
-        color = colors.surface,
+        color = colors.surface
     ) {
         Column(
             modifier =
-                Modifier.padding(
-                    horizontal = spacing.medium,
-                    vertical = spacing.small + spacing.extraSmall,
-                ),
-            verticalArrangement = Arrangement.spacedBy(spacing.small),
+            Modifier.padding(
+                horizontal = spacing.medium,
+                vertical = spacing.small + spacing.extraSmall
+            ),
+            verticalArrangement = Arrangement.spacedBy(spacing.small)
         ) {
             SelectionContainer {
                 Text(
                     text = notes,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = colors.label,
+                    color = colors.label
                 )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 if (copied) {
                     Text(
                         text = stringResource(R.string.item_detail_copied_hint),
                         style = MaterialTheme.typography.footnote,
                         color = colors.success,
-                        modifier = Modifier.padding(end = spacing.small),
+                        modifier = Modifier.padding(end = spacing.small)
                     )
                 }
                 IconButton(onClick = onCopy) {
                     Icon(
                         imageVector = Icons.Filled.ContentCopy,
                         contentDescription = stringResource(R.string.item_detail_copy_notes_desc),
-                        tint = colors.accent,
+                        tint = colors.accent
                     )
                 }
             }
@@ -928,11 +910,7 @@ private fun NotesCard(
  * second boundaries so the ring never jumps.
  */
 @Composable
-private fun TotpCard(
-    totp: TotpUi,
-    onCopy: (label: String, value: String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun TotpCard(totp: TotpUi, onCopy: (label: String, value: String) -> Unit, modifier: Modifier = Modifier) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
@@ -952,7 +930,7 @@ private fun TotpCard(
                     timeMillis = now,
                     digits = totp.digits,
                     periodSeconds = totp.periodSeconds,
-                    algorithm = TOTPConfig.DEFAULT_ALGORITHM,
+                    algorithm = TOTPConfig.DEFAULT_ALGORITHM
                 )
             }.getOrNull()
         }
@@ -963,44 +941,44 @@ private fun TotpCard(
 
     Surface(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = spacing.medium),
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = spacing.medium),
         shape = MaterialTheme.shapes.large,
-        color = colors.surface,
+        color = colors.surface
     ) {
         Column(
             modifier = Modifier.padding(spacing.medium),
-            verticalArrangement = Arrangement.spacedBy(spacing.small),
+            verticalArrangement = Arrangement.spacedBy(spacing.small)
         ) {
             if (totp.issuer != null || totp.accountName != null) {
                 Text(
                     text = listOfNotNull(totp.issuer, totp.accountName).joinToString(" · "),
                     style = MaterialTheme.typography.footnote,
-                    color = colors.secondaryLabel,
+                    color = colors.secondaryLabel
                 )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(spacing.medium),
+                horizontalArrangement = Arrangement.spacedBy(spacing.medium)
             ) {
                 if (code != null) {
                     Text(
                         text = formatTotpCode(code),
                         style =
-                            MaterialTheme.typography.headlineMedium.copy(
-                                fontFeatureSettings = "tnum",
-                            ),
+                        MaterialTheme.typography.headlineMedium.copy(
+                            fontFeatureSettings = "tnum"
+                        ),
                         color = colors.label,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     )
                 } else {
                     Text(
                         text = stringResource(R.string.item_detail_totp_invalid),
                         style = MaterialTheme.typography.bodyMedium,
                         color = colors.danger,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     )
                 }
                 // Countdown ring: track + progress, round caps.
@@ -1011,14 +989,14 @@ private fun TotpCard(
                         startAngle = -90f,
                         sweepAngle = 360f,
                         useCenter = false,
-                        style = Stroke(width = stroke, cap = StrokeCap.Round),
+                        style = Stroke(width = stroke, cap = StrokeCap.Round)
                     )
                     drawArc(
                         color = progressColor,
                         startAngle = -90f,
                         sweepAngle = 360f * fraction,
                         useCenter = false,
-                        style = Stroke(width = stroke, cap = StrokeCap.Round),
+                        style = Stroke(width = stroke, cap = StrokeCap.Round)
                     )
                 }
                 val totpLabel = stringResource(R.string.item_detail_section_totp)
@@ -1027,7 +1005,7 @@ private fun TotpCard(
                         Icon(
                             imageVector = Icons.Filled.ContentCopy,
                             contentDescription = stringResource(R.string.item_detail_totp_copy_desc),
-                            tint = colors.accent,
+                            tint = colors.accent
                         )
                     }
                 }
@@ -1035,7 +1013,7 @@ private fun TotpCard(
             Text(
                 text = "$remaining",
                 style = MaterialTheme.typography.footnote.copy(fontFeatureSettings = "tnum"),
-                color = colors.secondaryLabel,
+                color = colors.secondaryLabel
             )
         }
     }
@@ -1049,25 +1027,25 @@ private fun DetailSkeleton(modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier.padding(horizontal = spacing.medium),
-        verticalArrangement = Arrangement.spacedBy(spacing.small),
+        verticalArrangement = Arrangement.spacedBy(spacing.small)
     ) {
         repeat(2) {
             Surface(
                 shape = MaterialTheme.shapes.large,
-                color = colors.surface,
+                color = colors.surface
             ) {
                 Column(
                     modifier = Modifier.padding(spacing.medium),
-                    verticalArrangement = Arrangement.spacedBy(spacing.small),
+                    verticalArrangement = Arrangement.spacedBy(spacing.small)
                 ) {
                     repeat(3) {
                         Box(
                             modifier =
-                                Modifier
-                                    .height(16.dp)
-                                    .fillMaxWidth(0.6f)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(colors.fill),
+                            Modifier
+                                .height(16.dp)
+                                .fillMaxWidth(0.6f)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(colors.fill)
                         )
                     }
                 }
@@ -1084,48 +1062,48 @@ private fun ItemDetailPasswordPreview() {
     SecureVaultTheme {
         ItemDetailContent(
             state =
-                ItemDetailUiState.Loaded(
-                    item =
-                        DecryptedItemUi.Password(
-                            id = "1",
-                            title = "GitHub",
-                            updatedAt = Instant.now(),
-                            fields =
-                                listOf(
-                                    DetailFieldUi(
-                                        STR_FIELD_USERNAME,
-                                        "octocat",
-                                        sensitive = false,
-                                        copyDescription = STR_COPY_USERNAME_DESC,
-                                    ),
-                                    DetailFieldUi(
-                                        STR_FIELD_PASSWORD,
-                                        "correct-horse-battery-staple",
-                                        sensitive = true,
-                                        copyDescription = STR_COPY_PASSWORD_DESC,
-                                    ),
-                                    DetailFieldUi(
-                                        STR_FIELD_URL,
-                                        "https://github.com",
-                                        sensitive = false,
-                                        copyDescription = STR_COPY_URL_DESC,
-                                    ),
-                                ),
-                            notes = "Personal account.",
-                            totp =
-                                TotpUi(
-                                    secret = "JBSWY3DPEHPK3PXP",
-                                    issuer = "GitHub",
-                                    accountName = "octocat",
-                                    digits = 6,
-                                    periodSeconds = 30,
-                                ),
+            ItemDetailUiState.Loaded(
+                item =
+                DecryptedItemUi.Password(
+                    id = "1",
+                    title = "GitHub",
+                    updatedAt = Instant.now(),
+                    fields =
+                    listOf(
+                        DetailFieldUi(
+                            STR_FIELD_USERNAME,
+                            "octocat",
+                            sensitive = false,
+                            copyDescription = STR_COPY_USERNAME_DESC
                         ),
-                ),
+                        DetailFieldUi(
+                            STR_FIELD_PASSWORD,
+                            "correct-horse-battery-staple",
+                            sensitive = true,
+                            copyDescription = STR_COPY_PASSWORD_DESC
+                        ),
+                        DetailFieldUi(
+                            STR_FIELD_URL,
+                            "https://github.com",
+                            sensitive = false,
+                            copyDescription = STR_COPY_URL_DESC
+                        )
+                    ),
+                    notes = "Personal account.",
+                    totp =
+                    TotpUi(
+                        secret = "JBSWY3DPEHPK3PXP",
+                        issuer = "GitHub",
+                        accountName = "octocat",
+                        digits = 6,
+                        periodSeconds = 30
+                    )
+                )
+            ),
             onEdit = {},
             onBack = {},
             onRetry = {},
-            onCopy = { _, _ -> },
+            onCopy = { _, _ -> }
         )
     }
 }
@@ -1136,19 +1114,19 @@ private fun ItemDetailNotePreview() {
     SecureVaultTheme {
         ItemDetailContent(
             state =
-                ItemDetailUiState.Loaded(
-                    item =
-                        DecryptedItemUi.Note(
-                            id = "2",
-                            title = "Wi-Fi details",
-                            updatedAt = Instant.now(),
-                            content = "Network: Home-5G\nPassword: hunter2",
-                        ),
-                ),
+            ItemDetailUiState.Loaded(
+                item =
+                DecryptedItemUi.Note(
+                    id = "2",
+                    title = "Wi-Fi details",
+                    updatedAt = Instant.now(),
+                    content = "Network: Home-5G\nPassword: hunter2"
+                )
+            ),
             onEdit = {},
             onBack = {},
             onRetry = {},
-            onCopy = { _, _ -> },
+            onCopy = { _, _ -> }
         )
     }
 }
