@@ -44,14 +44,14 @@ interface SecureRandomProvider {
  * additional configuration to be secure.
  */
 class SystemSecureRandomProvider
-    @Inject
-    constructor() : SecureRandomProvider {
-        private val secureRandom = SecureRandom()
+@Inject
+constructor() : SecureRandomProvider {
+    private val secureRandom = SecureRandom()
 
-        override fun nextBytes(size: Int): SecureBytes {
-            require(size > 0) { "SecureRandomProvider.nextBytes size must be positive, was $size" }
-            val bytes = ByteArray(size)
-            secureRandom.nextBytes(bytes)
-            return SecureBytes.wrap(bytes)
-        }
+    override fun nextBytes(size: Int): SecureBytes {
+        require(size > 0) { "SecureRandomProvider.nextBytes size must be positive, was $size" }
+        val bytes = ByteArray(size)
+        secureRandom.nextBytes(bytes)
+        return SecureBytes.wrap(bytes)
     }
+}

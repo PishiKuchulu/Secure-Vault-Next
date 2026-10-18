@@ -39,30 +39,22 @@ import com.securevault.next.core.crypto.memory.SecureBytes
  *   vault content, or vice versa.
  */
 @JvmInline
-value class MasterKey(
-    val bytes: SecureBytes,
-) {
+value class MasterKey(val bytes: SecureBytes) {
     fun destroy() = bytes.close()
 }
 
 @JvmInline
-value class VaultKey(
-    val bytes: SecureBytes,
-) {
+value class VaultKey(val bytes: SecureBytes) {
     fun destroy() = bytes.close()
 }
 
 @JvmInline
-value class SessionKey(
-    val bytes: SecureBytes,
-) {
+value class SessionKey(val bytes: SecureBytes) {
     fun destroy() = bytes.close()
 }
 
 @JvmInline
-value class BackupKey(
-    val bytes: SecureBytes,
-) {
+value class BackupKey(val bytes: SecureBytes) {
     fun destroy() = bytes.close()
 }
 

@@ -27,22 +27,20 @@ import javax.inject.Inject
  * the session layer's abstraction.
  */
 class SessionKeyHolderStore
-    @Inject
-    constructor(
-        private val holder: SessionKeyHolder,
-    ) : SessionKeyStore {
-        override fun install(keyBytes: ByteArray) {
-            // SecureBytes.wrap aliases the caller's array; the caller (unlock use
-            // case) wipes its temporary buffer in a finally block. Copy the bytes
-            // into a fresh owned buffer so the holder's key is a distinct array
-            // that survives the caller's wipe. Exactly one live key buffer is held.
-            holder.set(SessionKey(SecureBytes.wrap(keyBytes.copyOf())))
-        }
-
-        override fun destroy() {
-            holder.clear()
-        }
-
-        override val isActive: Boolean
-            get() = holder.isActive
+@Inject
+constructor(private val holder: SessionKeyHolder) : SessionKeyStore {
+    override fun install(keyBytes: ByteArray) {
+        // SecureBytes.wrap aliases the caller's array; the caller (unlock use
+        // case) wipes its temporary buffer in a finally block. Copy the bytes
+        // into a fresh owned buffer so the holder's key is a distinct array
+        // that survives the caller's wipe. Exactly one live key buffer is held.
+        holder.set(SessionKey(SecureBytes.wrap(keyBytes.copyOf())))
     }
+
+    override fun destroy() {
+        holder.clear()
+    }
+
+    override val isActive: Boolean
+        get() = holder.isActive
+}

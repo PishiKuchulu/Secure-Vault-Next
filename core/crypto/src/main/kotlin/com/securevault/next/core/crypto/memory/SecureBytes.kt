@@ -44,9 +44,7 @@ import java.util.Arrays
  * takes an explicit, auditable action to reduce that data's remaining
  * lifetime in memory to as close to zero as the JVM allows.
  */
-class SecureBytes private constructor(
-    private var backing: ByteArray?,
-) : AutoCloseable {
+class SecureBytes private constructor(private var backing: ByteArray?) : AutoCloseable {
     /** The size of the wrapped array. Throws [IllegalStateException] once wiped. */
     val size: Int
         get() = current().size

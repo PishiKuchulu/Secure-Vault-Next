@@ -7,11 +7,11 @@ import com.securevault.next.core.crypto.memory.SecureBytes
 import com.securevault.next.core.crypto.result.CryptoResult
 import com.securevault.next.core.crypto.result.asCryptoFailure
 import com.securevault.next.core.crypto.result.asCryptoSuccess
-import kotlinx.coroutines.CancellationException
 import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
+import kotlinx.coroutines.CancellationException
 
 /**
  * Computes and verifies HMAC-SHA256 message authentication codes.
@@ -40,10 +40,7 @@ import javax.inject.Inject
  */
 interface IntegrityVerifier {
     /** Computes an HMAC-SHA256 over [data] using [macKey]. */
-    fun computeMac(
-        macKey: SecureBytes,
-        data: ByteArray,
-    ): CryptoResult<ByteArray>
+    fun computeMac(macKey: SecureBytes, data: ByteArray): CryptoResult<ByteArray>
 
     /**
      * Recomputes the HMAC over [data] with [macKey] and compares it to
@@ -52,54 +49,44 @@ interface IntegrityVerifier {
      * accidentally ignore a failed check the way a discarded `Boolean`
      * return value can be.
      */
-    fun verifyMac(
-        macKey: SecureBytes,
-        data: ByteArray,
-        expectedMac: ByteArray,
-        subject: String,
-    ): CryptoResult<Unit>
+    fun verifyMac(macKey: SecureBytes, data: ByteArray, expectedMac: ByteArray, subject: String): CryptoResult<Unit>
 }
 
 /** The production [IntegrityVerifier], backed by `javax.crypto.Mac` with the standard `"HmacSHA256"` algorithm. */
 class HmacSha256IntegrityVerifier
-    @Inject
-    constructor() : IntegrityVerifier {
-        override fun computeMac(
-            macKey: SecureBytes,
-            data: ByteArray,
-        ): CryptoResult<ByteArray> =
-            try {
-                val mac =
-                    macKey.peek { keyBytes ->
-                        Mac.getInstance(ALGORITHM).apply {
-                            init(SecretKeySpec(keyBytes, ALGORITHM))
-                        }
-                    }
-                mac.doFinal(data).asCryptoSuccess()
-            } catch (c: CancellationException) {
-                throw c
-            } catch (t: Throwable) {
-                CryptoError.CryptoFailure("HMAC-SHA256 computation failed", t).asCryptoFailure()
-            }
-
-        override fun verifyMac(
-            macKey: SecureBytes,
-            data: ByteArray,
-            expectedMac: ByteArray,
-            subject: String,
-        ): CryptoResult<Unit> =
-            computeMac(macKey, data).flatMap { computed ->
-                // MessageDigest.isEqual performs a constant-time comparison,
-                // which prevents a timing side-channel from leaking how many
-                // leading bytes of a forged MAC happened to match.
-                if (MessageDigest.isEqual(computed, expectedMac)) {
-                    Result.success(Unit)
-                } else {
-                    Result.failure(CryptoError.IntegrityCheckFailed(subject))
+@Inject
+constructor() : IntegrityVerifier {
+    override fun computeMac(macKey: SecureBytes, data: ByteArray): CryptoResult<ByteArray> = try {
+        val mac =
+            macKey.peek { keyBytes ->
+                Mac.getInstance(ALGORITHM).apply {
+                    init(SecretKeySpec(keyBytes, ALGORITHM))
                 }
             }
+        mac.doFinal(data).asCryptoSuccess()
+    } catch (c: CancellationException) {
+        throw c
+    } catch (t: Throwable) {
+        CryptoError.CryptoFailure("HMAC-SHA256 computation failed", t).asCryptoFailure()
+    }
 
-        private companion object {
-            const val ALGORITHM = "HmacSHA256"
+    override fun verifyMac(
+        macKey: SecureBytes,
+        data: ByteArray,
+        expectedMac: ByteArray,
+        subject: String
+    ): CryptoResult<Unit> = computeMac(macKey, data).flatMap { computed ->
+        // MessageDigest.isEqual performs a constant-time comparison,
+        // which prevents a timing side-channel from leaking how many
+        // leading bytes of a forged MAC happened to match.
+        if (MessageDigest.isEqual(computed, expectedMac)) {
+            Result.success(Unit)
+        } else {
+            Result.failure(CryptoError.IntegrityCheckFailed(subject))
         }
     }
+
+    private companion object {
+        const val ALGORITHM = "HmacSHA256"
+    }
+}

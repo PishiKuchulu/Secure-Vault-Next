@@ -12,9 +12,7 @@ import kotlinx.serialization.Serializable
  */
 @JvmInline
 @Serializable
-value class VaultFormatVersion(
-    val value: Int,
-) {
+value class VaultFormatVersion(val value: Int) {
     init {
         require(value >= 1) { "VaultFormatVersion must be at least 1, was $value" }
     }

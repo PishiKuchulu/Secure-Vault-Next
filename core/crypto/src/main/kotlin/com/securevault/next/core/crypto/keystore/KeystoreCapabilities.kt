@@ -8,7 +8,4 @@ package com.securevault.next.core.crypto.keystore
  * unavailable.") — this is how a caller finds out what it actually got,
  * e.g. to inform a security-status display.
  */
-data class KeystoreCapabilities(
-    val isInsideSecureHardware: Boolean,
-    val isStrongBoxBacked: Boolean,
-)
+data class KeystoreCapabilities(val isInsideSecureHardware: Boolean, val isStrongBoxBacked: Boolean)

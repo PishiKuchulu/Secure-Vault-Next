@@ -7,7 +7,7 @@ package com.securevault.next.core.crypto.kdf
  * side-channel attacks with Argon2d's resistance to GPU cracking.
  */
 enum class KdfAlgorithm {
-    ARGON2ID,
+    ARGON2ID
 }
 
 /**
@@ -47,7 +47,7 @@ data class KdfParameters(
      * Derived output length in bytes. Defaults to 64 = 32 bytes for the
      * cipher key + 32 bytes for the integrity MAC key.
      */
-    val outputLengthBytes: Int = DEFAULT_OUTPUT_LENGTH_BYTES,
+    val outputLengthBytes: Int = DEFAULT_OUTPUT_LENGTH_BYTES
 ) {
     init {
         require(parameterVersion >= 1) { "KdfParameters.parameterVersion must be at least 1" }

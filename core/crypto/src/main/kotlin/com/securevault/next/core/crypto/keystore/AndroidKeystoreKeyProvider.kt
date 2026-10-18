@@ -12,7 +12,6 @@ import com.securevault.next.core.crypto.result.CryptoResult
 import com.securevault.next.core.crypto.result.asCryptoFailure
 import com.securevault.next.core.crypto.result.asCryptoSuccess
 import com.securevault.next.core.domain.model.valueobject.EncryptedField
-import kotlinx.coroutines.CancellationException
 import java.security.KeyStore
 import java.util.Base64
 import javax.crypto.AEADBadTagException
@@ -21,6 +20,7 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.GCMParameterSpec
+import kotlinx.coroutines.CancellationException
 
 /**
  * Generates, stores and uses hardware-backed AES keys via the Android
@@ -52,7 +52,7 @@ interface AndroidKeystoreKeyProvider {
     fun generateKey(
         alias: String,
         requireUserAuthentication: Boolean,
-        userAuthenticationValiditySeconds: Int = DEFAULT_AUTH_VALIDITY_SECONDS,
+        userAuthenticationValiditySeconds: Int = DEFAULT_AUTH_VALIDITY_SECONDS
     ): CryptoResult<KeystoreCapabilities>
 
     /**
@@ -73,20 +73,14 @@ interface AndroidKeystoreKeyProvider {
      * [CryptoError.AuthenticationFailed] if the key requires
      * authentication that has not been satisfied.
      */
-    fun encrypt(
-        alias: String,
-        plaintext: SecureBytes,
-    ): CryptoResult<EncryptedField>
+    fun encrypt(alias: String, plaintext: SecureBytes): CryptoResult<EncryptedField>
 
     /**
      * Decrypts [encryptedField] using the Keystore key at [alias]. Fails
      * with [CryptoError.AuthenticationFailed] if the key requires
      * authentication that has not been satisfied.
      */
-    fun decrypt(
-        alias: String,
-        encryptedField: EncryptedField,
-    ): CryptoResult<SecureBytes>
+    fun decrypt(alias: String, encryptedField: EncryptedField): CryptoResult<SecureBytes>
 
     companion object {
         const val DEFAULT_AUTH_VALIDITY_SECONDS = 30
@@ -121,37 +115,36 @@ class SystemAndroidKeystoreKeyProvider : AndroidKeystoreKeyProvider {
     override fun generateKey(
         alias: String,
         requireUserAuthentication: Boolean,
-        userAuthenticationValiditySeconds: Int,
-    ): CryptoResult<KeystoreCapabilities> =
-        synchronized(lock) {
-            try {
-                val strongBoxResult =
-                    tryGenerateKey(
-                        alias = alias,
-                        requireUserAuthentication = requireUserAuthentication,
-                        userAuthenticationValiditySeconds = userAuthenticationValiditySeconds,
-                        requestStrongBox = true,
-                    )
+        userAuthenticationValiditySeconds: Int
+    ): CryptoResult<KeystoreCapabilities> = synchronized(lock) {
+        try {
+            val strongBoxResult =
+                tryGenerateKey(
+                    alias = alias,
+                    requireUserAuthentication = requireUserAuthentication,
+                    userAuthenticationValiditySeconds = userAuthenticationValiditySeconds,
+                    requestStrongBox = true
+                )
 
-                val generated =
-                    strongBoxResult ?: tryGenerateKey(
-                        alias = alias,
-                        requireUserAuthentication = requireUserAuthentication,
-                        userAuthenticationValiditySeconds = userAuthenticationValiditySeconds,
-                        requestStrongBox = false,
-                    ) ?: return@synchronized CryptoError
-                        .KeystoreFailure(
-                            operation = "generateKey",
-                            cause = IllegalStateException("Key generation failed with and without StrongBox"),
-                        ).asCryptoFailure()
+            val generated =
+                strongBoxResult ?: tryGenerateKey(
+                    alias = alias,
+                    requireUserAuthentication = requireUserAuthentication,
+                    userAuthenticationValiditySeconds = userAuthenticationValiditySeconds,
+                    requestStrongBox = false
+                ) ?: return@synchronized CryptoError
+                    .KeystoreFailure(
+                        operation = "generateKey",
+                        cause = IllegalStateException("Key generation failed with and without StrongBox")
+                    ).asCryptoFailure()
 
-                generated.asCryptoSuccess()
-            } catch (c: CancellationException) {
-                throw c
-            } catch (t: Throwable) {
-                CryptoError.KeystoreFailure("generateKey", t).asCryptoFailure()
-            }
+            generated.asCryptoSuccess()
+        } catch (c: CancellationException) {
+            throw c
+        } catch (t: Throwable) {
+            CryptoError.KeystoreFailure("generateKey", t).asCryptoFailure()
         }
+    }
 
     /**
      * Returns `null` (rather than throwing) specifically for
@@ -162,13 +155,13 @@ class SystemAndroidKeystoreKeyProvider : AndroidKeystoreKeyProvider {
         alias: String,
         requireUserAuthentication: Boolean,
         userAuthenticationValiditySeconds: Int,
-        requestStrongBox: Boolean,
+        requestStrongBox: Boolean
     ): KeystoreCapabilities? {
         val specBuilder =
             KeyGenParameterSpec
                 .Builder(
                     alias,
-                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+                    KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
                 ).setBlockModes(KeyProperties.BLOCK_MODE_GCM)
                 .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
                 .setKeySize(KEY_SIZE_BITS)
@@ -186,7 +179,7 @@ class SystemAndroidKeystoreKeyProvider : AndroidKeystoreKeyProvider {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 specBuilder.setUserAuthenticationParameters(
                     userAuthenticationValiditySeconds,
-                    KeyProperties.AUTH_BIOMETRIC_STRONG,
+                    KeyProperties.AUTH_BIOMETRIC_STRONG
                 )
             } else {
                 @Suppress("DEPRECATION")
@@ -211,42 +204,39 @@ class SystemAndroidKeystoreKeyProvider : AndroidKeystoreKeyProvider {
         }
     }
 
-    override fun hasKey(alias: String): CryptoResult<Boolean> =
-        synchronized(lock) {
-            try {
-                keyStore.containsAlias(alias).asCryptoSuccess()
-            } catch (c: CancellationException) {
-                throw c
-            } catch (t: Throwable) {
-                CryptoError.KeystoreFailure("hasKey", t).asCryptoFailure()
-            }
+    override fun hasKey(alias: String): CryptoResult<Boolean> = synchronized(lock) {
+        try {
+            keyStore.containsAlias(alias).asCryptoSuccess()
+        } catch (c: CancellationException) {
+            throw c
+        } catch (t: Throwable) {
+            CryptoError.KeystoreFailure("hasKey", t).asCryptoFailure()
         }
+    }
 
-    override fun deleteKey(alias: String): CryptoResult<Unit> =
-        synchronized(lock) {
-            try {
-                keyStore.deleteEntry(alias)
-                Unit.asCryptoSuccess()
-            } catch (c: CancellationException) {
-                throw c
-            } catch (t: Throwable) {
-                CryptoError.KeystoreFailure("deleteKey", t).asCryptoFailure()
-            }
+    override fun deleteKey(alias: String): CryptoResult<Unit> = synchronized(lock) {
+        try {
+            keyStore.deleteEntry(alias)
+            Unit.asCryptoSuccess()
+        } catch (c: CancellationException) {
+            throw c
+        } catch (t: Throwable) {
+            CryptoError.KeystoreFailure("deleteKey", t).asCryptoFailure()
         }
+    }
 
-    override fun capabilities(alias: String): CryptoResult<KeystoreCapabilities> =
-        synchronized(lock) {
-            try {
-                if (!keyStore.containsAlias(alias)) {
-                    return@synchronized CryptoError.KeyUnavailable(alias).asCryptoFailure()
-                }
-                readCapabilities(alias).asCryptoSuccess()
-            } catch (c: CancellationException) {
-                throw c
-            } catch (t: Throwable) {
-                CryptoError.KeystoreFailure("capabilities", t).asCryptoFailure()
+    override fun capabilities(alias: String): CryptoResult<KeystoreCapabilities> = synchronized(lock) {
+        try {
+            if (!keyStore.containsAlias(alias)) {
+                return@synchronized CryptoError.KeyUnavailable(alias).asCryptoFailure()
             }
+            readCapabilities(alias).asCryptoSuccess()
+        } catch (c: CancellationException) {
+            throw c
+        } catch (t: Throwable) {
+            CryptoError.KeystoreFailure("capabilities", t).asCryptoFailure()
         }
+    }
 
     /**
      * Reads back the security properties of an existing key. Callers
@@ -266,7 +256,7 @@ class SystemAndroidKeystoreKeyProvider : AndroidKeystoreKeyProvider {
         val keyInfo = factory.getKeySpec(key, KeyInfo::class.java) as KeyInfo
         return KeystoreCapabilities(
             isInsideSecureHardware = keyInfo.isInsideSecureHardware,
-            isStrongBoxBacked = isStrongBoxBacked(keyInfo),
+            isStrongBoxBacked = isStrongBoxBacked(keyInfo)
         )
     }
 
@@ -274,45 +264,37 @@ class SystemAndroidKeystoreKeyProvider : AndroidKeystoreKeyProvider {
      * [KeyInfo.getSecurityLevel] (StrongBox detection) requires API 31+;
      * older API levels can only report TEE-vs-not.
      */
-    private fun isStrongBoxBacked(keyInfo: KeyInfo): Boolean =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            keyInfo.securityLevel == KeyProperties.SECURITY_LEVEL_STRONGBOX
-        } else {
-            false
+    private fun isStrongBoxBacked(keyInfo: KeyInfo): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        keyInfo.securityLevel == KeyProperties.SECURITY_LEVEL_STRONGBOX
+    } else {
+        false
+    }
+
+    override fun encrypt(alias: String, plaintext: SecureBytes): CryptoResult<EncryptedField> = synchronized(lock) {
+        try {
+            val key =
+                keyStore.getKey(alias, null) as? SecretKey
+                    ?: return@synchronized CryptoError.KeyUnavailable(alias).asCryptoFailure()
+
+            val cipher = Cipher.getInstance(TRANSFORMATION)
+            cipher.init(Cipher.ENCRYPT_MODE, key)
+            val ciphertextAndTag = plaintext.peek { cipher.doFinal(it) }
+
+            EncryptedField(
+                ciphertext = Base64.getEncoder().encodeToString(ciphertextAndTag),
+                nonce = Base64.getEncoder().encodeToString(cipher.iv),
+                algorithm = EncryptedField.DEFAULT_ALGORITHM
+            ).asCryptoSuccess()
+        } catch (c: CancellationException) {
+            throw c
+        } catch (u: UserNotAuthenticatedException) {
+            CryptoError.AuthenticationFailed("biometric", u).asCryptoFailure()
+        } catch (t: Throwable) {
+            CryptoError.KeystoreFailure("encrypt", t).asCryptoFailure()
         }
+    }
 
-    override fun encrypt(
-        alias: String,
-        plaintext: SecureBytes,
-    ): CryptoResult<EncryptedField> =
-        synchronized(lock) {
-            try {
-                val key =
-                    keyStore.getKey(alias, null) as? SecretKey
-                        ?: return@synchronized CryptoError.KeyUnavailable(alias).asCryptoFailure()
-
-                val cipher = Cipher.getInstance(TRANSFORMATION)
-                cipher.init(Cipher.ENCRYPT_MODE, key)
-                val ciphertextAndTag = plaintext.peek { cipher.doFinal(it) }
-
-                EncryptedField(
-                    ciphertext = Base64.getEncoder().encodeToString(ciphertextAndTag),
-                    nonce = Base64.getEncoder().encodeToString(cipher.iv),
-                    algorithm = EncryptedField.DEFAULT_ALGORITHM,
-                ).asCryptoSuccess()
-            } catch (c: CancellationException) {
-                throw c
-            } catch (u: UserNotAuthenticatedException) {
-                CryptoError.AuthenticationFailed("biometric", u).asCryptoFailure()
-            } catch (t: Throwable) {
-                CryptoError.KeystoreFailure("encrypt", t).asCryptoFailure()
-            }
-        }
-
-    override fun decrypt(
-        alias: String,
-        encryptedField: EncryptedField,
-    ): CryptoResult<SecureBytes> =
+    override fun decrypt(alias: String, encryptedField: EncryptedField): CryptoResult<SecureBytes> =
         synchronized(lock) {
             try {
                 val key =

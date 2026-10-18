@@ -18,10 +18,7 @@ package com.securevault.next.core.crypto.error
  * than a single generic "decryption failed" — callers (and future audit
  * logging) can distinguish *why* a cryptographic operation failed.
  */
-sealed class CryptoError(
-    open val message: String,
-    open val cause: Throwable? = null,
-) {
+sealed class CryptoError(open val message: String, open val cause: Throwable? = null) {
     /**
      * The supplied master password did not unwrap the vault key.
      * Indistinguishable, by design, from [VaultCorrupted].
@@ -30,10 +27,8 @@ sealed class CryptoError(
         CryptoError("The provided password is incorrect")
 
     /** Authentication via a non-password method (biometric, PIN, hardware key) failed. */
-    data class AuthenticationFailed(
-        val method: String,
-        override val cause: Throwable? = null,
-    ) : CryptoError("Authentication via $method failed", cause)
+    data class AuthenticationFailed(val method: String, override val cause: Throwable? = null) :
+        CryptoError("Authentication via $method failed", cause)
 
     /**
      * The vault's encrypted structure is malformed in a way that isn't
@@ -44,10 +39,8 @@ sealed class CryptoError(
      * failure occurred; see [InvalidCiphertext] for where that
      * indistinguishability is enforced.
      */
-    data class VaultCorrupted(
-        val details: String,
-        override val cause: Throwable? = null,
-    ) : CryptoError("Vault data is corrupted: $details", cause)
+    data class VaultCorrupted(val details: String, override val cause: Throwable? = null) :
+        CryptoError("Vault data is corrupted: $details", cause)
 
     /**
      * Decryption failed — either the key was wrong or the ciphertext
@@ -56,37 +49,28 @@ sealed class CryptoError(
      * "tampered ciphertext" by design, and this error type preserves
      * that ambiguity rather than trying to guess which occurred.
      */
-    data class InvalidCiphertext(
-        override val cause: Throwable? = null,
-    ) : CryptoError("The ciphertext could not be authenticated and decrypted", cause)
+    data class InvalidCiphertext(override val cause: Throwable? = null) :
+        CryptoError("The ciphertext could not be authenticated and decrypted", cause)
 
     /**
      * A stored integrity value (HMAC) did not match the recomputed value
      * — see `core.crypto.integrity.IntegrityVerifier`.
      */
-    data class IntegrityCheckFailed(
-        val subject: String,
-    ) : CryptoError("Integrity check failed for: $subject")
+    data class IntegrityCheckFailed(val subject: String) : CryptoError("Integrity check failed for: $subject")
 
     /** The vault format, KDF metadata, or cipher metadata version is not one this build knows how to handle. */
-    data class UnsupportedVersion(
-        val found: Int,
-        val supportedRange: IntRange,
-    ) : CryptoError("Version $found is not supported (supported: $supportedRange)")
+    data class UnsupportedVersion(val found: Int, val supportedRange: IntRange) :
+        CryptoError("Version $found is not supported (supported: $supportedRange)")
 
     /** A required cryptographic key was not available in memory (e.g. the vault is locked) or in the Keystore. */
-    data class KeyUnavailable(
-        val keyAlias: String,
-    ) : CryptoError("Key '$keyAlias' is not available")
+    data class KeyUnavailable(val keyAlias: String) : CryptoError("Key '$keyAlias' is not available")
 
     /**
      * Android Keystore itself failed — key generation, retrieval, or a
      * Keystore-backed [java.security.KeyStore] operation threw.
      */
-    data class KeystoreFailure(
-        val operation: String,
-        override val cause: Throwable? = null,
-    ) : CryptoError("Keystore operation '$operation' failed", cause)
+    data class KeystoreFailure(val operation: String, override val cause: Throwable? = null) :
+        CryptoError("Keystore operation '$operation' failed", cause)
 
     /**
      * A failure that does not fit any category above. Always carries
@@ -95,8 +79,6 @@ sealed class CryptoError(
      * map to a more specific case, never as a substitute for modeling a
      * real failure mode.
      */
-    data class CryptoFailure(
-        override val message: String,
-        override val cause: Throwable? = null,
-    ) : CryptoError(message, cause)
+    data class CryptoFailure(override val message: String, override val cause: Throwable? = null) :
+        CryptoError(message, cause)
 }

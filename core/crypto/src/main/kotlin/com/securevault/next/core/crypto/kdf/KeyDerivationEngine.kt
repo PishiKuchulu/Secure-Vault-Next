@@ -23,9 +23,5 @@ interface KeyDerivationEngine {
      * and a separate integrity/MAC key (see `core.crypto.vault.VaultEncryptionEngine`)
      * — this function itself is agnostic to how its output bytes are used.
      */
-    fun derive(
-        password: SecureBytes,
-        salt: SecureBytes,
-        parameters: KdfParameters,
-    ): CryptoResult<SecureBytes>
+    fun derive(password: SecureBytes, salt: SecureBytes, parameters: KdfParameters): CryptoResult<SecureBytes>
 }

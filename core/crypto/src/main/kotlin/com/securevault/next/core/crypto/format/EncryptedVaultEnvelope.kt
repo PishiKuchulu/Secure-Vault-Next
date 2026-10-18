@@ -1,6 +1,8 @@
 package com.securevault.next.core.crypto.format
 
 import com.securevault.next.core.domain.model.valueobject.EncryptedField
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -10,8 +12,6 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
-import java.io.ByteArrayOutputStream
-import java.io.DataOutputStream
 
 /**
  * Serializer for the envelope's embedded [EncryptedField] (the wrapped
@@ -29,10 +29,7 @@ object EncryptedFieldSerializer : KSerializer<EncryptedField> {
             element<String>("algorithm")
         }
 
-    override fun serialize(
-        encoder: Encoder,
-        value: EncryptedField,
-    ) {
+    override fun serialize(encoder: Encoder, value: EncryptedField) {
         encoder.encodeStructure(descriptor) {
             encodeStringElement(descriptor, 0, value.ciphertext)
             encodeStringElement(descriptor, 1, value.nonce)
@@ -40,21 +37,20 @@ object EncryptedFieldSerializer : KSerializer<EncryptedField> {
         }
     }
 
-    override fun deserialize(decoder: Decoder): EncryptedField =
-        decoder.decodeStructure(descriptor) {
-            var ciphertext = ""
-            var nonce = ""
-            var algorithm = EncryptedField.DEFAULT_ALGORITHM
-            while (true) {
-                when (val index = decodeElementIndex(descriptor)) {
-                    0 -> ciphertext = decodeStringElement(descriptor, 0)
-                    1 -> nonce = decodeStringElement(descriptor, 1)
-                    2 -> algorithm = decodeStringElement(descriptor, 2)
-                    else -> break
-                }
+    override fun deserialize(decoder: Decoder): EncryptedField = decoder.decodeStructure(descriptor) {
+        var ciphertext = ""
+        var nonce = ""
+        var algorithm = EncryptedField.DEFAULT_ALGORITHM
+        while (true) {
+            when (val index = decodeElementIndex(descriptor)) {
+                0 -> ciphertext = decodeStringElement(descriptor, 0)
+                1 -> nonce = decodeStringElement(descriptor, 1)
+                2 -> algorithm = decodeStringElement(descriptor, 2)
+                else -> break
             }
-            EncryptedField(ciphertext = ciphertext, nonce = nonce, algorithm = algorithm)
         }
+        EncryptedField(ciphertext = ciphertext, nonce = nonce, algorithm = algorithm)
+    }
 }
 
 /**
@@ -63,9 +59,7 @@ object EncryptedFieldSerializer : KSerializer<EncryptedField> {
  * symmetry with [KdfMetadata] and room to grow.
  */
 @Serializable
-data class CipherMetadata(
-    val algorithm: String = EncryptedField.DEFAULT_ALGORITHM,
-) {
+data class CipherMetadata(val algorithm: String = EncryptedField.DEFAULT_ALGORITHM) {
     init {
         require(algorithm.isNotBlank()) { "CipherMetadata.algorithm must not be blank" }
     }
@@ -80,7 +74,7 @@ data class CipherMetadata(
 @Serializable
 data class EncryptionMetadata(
     @Serializable(with = EncryptedFieldSerializer::class)
-    val wrappedVaultKey: EncryptedField,
+    val wrappedVaultKey: EncryptedField
 )
 
 /**
@@ -92,7 +86,7 @@ data class EncryptionMetadata(
 @Serializable
 data class IntegrityMetadata(
     /** Base64-encoded HMAC-SHA256 output. */
-    val mac: String,
+    val mac: String
 ) {
     init {
         require(mac.isNotBlank()) { "IntegrityMetadata.mac must not be blank" }
@@ -120,7 +114,7 @@ data class EncryptedVaultEnvelope(
     /** The vault's serialized content (see `core:vault`, Milestone 4), encrypted under the unwrapped vault key. */
     @Serializable(with = EncryptedFieldSerializer::class)
     val encryptedContent: EncryptedField,
-    val futureCompatibilityFields: Map<String, String> = emptyMap(),
+    val futureCompatibilityFields: Map<String, String> = emptyMap()
 ) {
     /**
      * The exact byte sequence that [integrityMetadata]'s MAC is computed
@@ -148,10 +142,7 @@ data class EncryptedVaultEnvelope(
         val buffer = ByteArrayOutputStream()
         val out = DataOutputStream(buffer)
 
-        fun writeField(
-            name: String,
-            value: String,
-        ) {
+        fun writeField(name: String, value: String) {
             out.writeUTF(name)
             val bytes = value.toByteArray(Charsets.UTF_8)
             out.writeInt(bytes.size)

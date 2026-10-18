@@ -34,7 +34,7 @@ object DerivedKeySplitter {
             return CryptoError
                 .CryptoFailure(
                     "Derived key material is too short to split into a master key and a MAC key " +
-                        "(need $REQUIRED_TOTAL_LENGTH_BYTES bytes, got ${derived.size})",
+                        "(need $REQUIRED_TOTAL_LENGTH_BYTES bytes, got ${derived.size})"
                 ).asCryptoFailure()
         }
 
@@ -43,7 +43,7 @@ object DerivedKeySplitter {
             val macKeyBytes =
                 bytes.copyOfRange(
                     MASTER_KEY_LENGTH_BYTES,
-                    REQUIRED_TOTAL_LENGTH_BYTES,
+                    REQUIRED_TOTAL_LENGTH_BYTES
                 )
             (SecureBytes.wrap(masterKeyBytes) to SecureBytes.wrap(macKeyBytes)).asCryptoSuccess()
         }
