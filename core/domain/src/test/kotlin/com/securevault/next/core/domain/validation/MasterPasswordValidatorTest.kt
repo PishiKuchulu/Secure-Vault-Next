@@ -6,7 +6,6 @@ import com.securevault.next.core.domain.model.ValidationResult
 import org.junit.Test
 
 class MasterPasswordValidatorTest {
-
     private val validator = MasterPasswordValidator(minLength = 12)
 
     @Test

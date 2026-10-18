@@ -10,7 +10,6 @@ import kotlin.math.log2
  * strength levels, and overall security scores.
  */
 object SecurityScoreEngine {
-
     fun calculateEntropy(password: CharArray): Double {
         if (password.isEmpty()) return 0.0
 
@@ -39,13 +38,14 @@ object SecurityScoreEngine {
 
     fun evaluateStrength(password: CharArray): PasswordStrength {
         val entropy = calculateEntropy(password)
-        val level = when {
-            entropy < 40 -> PasswordStrengthLevel.VERY_WEAK
-            entropy < 60 -> PasswordStrengthLevel.WEAK
-            entropy < 80 -> PasswordStrengthLevel.FAIR
-            entropy < 100 -> PasswordStrengthLevel.STRONG
-            else -> PasswordStrengthLevel.VERY_STRONG
-        }
+        val level =
+            when {
+                entropy < 40 -> PasswordStrengthLevel.VERY_WEAK
+                entropy < 60 -> PasswordStrengthLevel.WEAK
+                entropy < 80 -> PasswordStrengthLevel.FAIR
+                entropy < 100 -> PasswordStrengthLevel.STRONG
+                else -> PasswordStrengthLevel.VERY_STRONG
+            }
 
         val scoreValue = (entropy.coerceIn(0.0, 120.0) / 120.0 * 100).toInt()
         val score = SecurityScore(scoreValue)

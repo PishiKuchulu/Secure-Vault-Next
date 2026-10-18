@@ -13,7 +13,10 @@ fun interface CreateBackupUseCase {
 
 /** Restores a vault from a previously created backup, authenticating with the master password used to create it. */
 fun interface RestoreBackupUseCase {
-    suspend operator fun invoke(backupId: String, masterPassword: CharArray): DomainResult<Vault>
+    suspend operator fun invoke(
+        backupId: String,
+        masterPassword: CharArray,
+    ): DomainResult<Vault>
 }
 
 /** Runs a security audit over a vault's items, producing an [AuditResult]. */

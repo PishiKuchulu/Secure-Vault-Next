@@ -18,7 +18,6 @@ class FieldValidator(
     private val required: Boolean = false,
     private val maxLength: Int = DEFAULT_MAX_LENGTH,
 ) : Validator<String> {
-
     override fun validate(value: String): ValidationResult {
         val errors = mutableListOf<DomainError.ValidationError>()
 

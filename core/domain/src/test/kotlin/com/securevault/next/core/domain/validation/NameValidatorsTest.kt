@@ -6,7 +6,6 @@ import com.securevault.next.core.domain.model.ValidationResult
 import org.junit.Test
 
 class NameValidatorsTest {
-
     @Test
     fun `VaultNameValidator rejects a blank name`() {
         val result = VaultNameValidator().validate("   ")

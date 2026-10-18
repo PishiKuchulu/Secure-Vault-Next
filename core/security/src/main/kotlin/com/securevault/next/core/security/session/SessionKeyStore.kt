@@ -25,7 +25,6 @@ package com.securevault.next.core.security.session
  * store owns and wipes its private copy when [destroy] is called.
  */
 interface SessionKeyStore {
-
     /**
      * Installs the session key, destroying whatever key was previously
      * held. Copies [keyBytes]; the caller must wipe its own array

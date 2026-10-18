@@ -49,16 +49,18 @@ fun EmptyState(
     val spacing = SecureVaultSpacingScope.spacing
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = spacing.extraLarge, vertical = spacing.extraExtraLarge),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = spacing.extraLarge, vertical = spacing.extraExtraLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(spacing.medium),
     ) {
         Box(
-            modifier = Modifier
-                .size(88.dp)
-                .background(colors.fill, CircleShape),
+            modifier =
+                Modifier
+                    .size(88.dp)
+                    .background(colors.fill, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             // Decorative: title + description carry the meaning.

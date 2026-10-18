@@ -10,10 +10,14 @@ sealed interface LockoutState {
      * Unlock attempts are currently permitted. [attemptsRemaining] is
      * informational, for a UI to warn the user before lockout occurs.
      */
-    data class Allowed(val attemptsRemaining: Int) : LockoutState
+    data class Allowed(
+        val attemptsRemaining: Int,
+    ) : LockoutState
 
     /** Unlock attempts are currently blocked until [retryAt]. */
-    data class LockedOut(val retryAt: Instant) : LockoutState
+    data class LockedOut(
+        val retryAt: Instant,
+    ) : LockoutState
 }
 
 /**
@@ -54,8 +58,7 @@ class FailedAttemptTracker(
     // user's vault count.
     private val states = mutableMapOf<VaultId, VaultAttemptState>()
 
-    private fun stateFor(vaultId: VaultId): VaultAttemptState =
-        states.getOrPut(vaultId) { VaultAttemptState() }
+    private fun stateFor(vaultId: VaultId): VaultAttemptState = states.getOrPut(vaultId) { VaultAttemptState() }
 
     /** Records a failed unlock attempt against [vaultId], returning the resulting [LockoutState]. */
     @Synchronized

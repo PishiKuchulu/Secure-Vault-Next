@@ -68,28 +68,31 @@ fun VaultButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     loading: Boolean = false,
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
 ) {
     val colors = SecureVaultColorsScope.colors
     val interactions = remember { MutableInteractionSource() }
     Button(
         onClick = onClick,
-        modifier = modifier
-            .heightIn(min = ButtonMinHeight)
-            .pressScale(interactions),
+        modifier =
+            modifier
+                .heightIn(min = ButtonMinHeight)
+                .pressScale(interactions),
         enabled = enabled && !loading,
         interactionSource = interactions,
         shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colors.accent,
-            contentColor = colors.onAccent,
-            disabledContainerColor = colors.accent.copy(alpha = 0.30f),
-            disabledContentColor = colors.onAccent.copy(alpha = 0.55f),
-        ),
-        contentPadding = PaddingValues(
-            start = 24.dp,
-            end = 24.dp,
-        ),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = colors.accent,
+                contentColor = colors.onAccent,
+                disabledContainerColor = colors.accent.copy(alpha = 0.30f),
+                disabledContentColor = colors.onAccent.copy(alpha = 0.55f),
+            ),
+        contentPadding =
+            PaddingValues(
+                start = 24.dp,
+                end = 24.dp,
+            ),
     ) {
         VaultButtonInnerContent(text, loading, icon, colors.onAccent)
     }
@@ -106,28 +109,31 @@ fun VaultSecondaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     loading: Boolean = false,
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
 ) {
     val colors = SecureVaultColorsScope.colors
     val interactions = remember { MutableInteractionSource() }
     Button(
         onClick = onClick,
-        modifier = modifier
-            .heightIn(min = ButtonMinHeight)
-            .pressScale(interactions),
+        modifier =
+            modifier
+                .heightIn(min = ButtonMinHeight)
+                .pressScale(interactions),
         enabled = enabled && !loading,
         interactionSource = interactions,
         shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colors.accentSoft,
-            contentColor = colors.accent,
-            disabledContainerColor = colors.fill.copy(alpha = 0.60f),
-            disabledContentColor = colors.secondaryLabel.copy(alpha = 0.55f),
-        ),
-        contentPadding = PaddingValues(
-            start = 24.dp,
-            end = 24.dp,
-        ),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = colors.accentSoft,
+                contentColor = colors.accent,
+                disabledContainerColor = colors.fill.copy(alpha = 0.60f),
+                disabledContentColor = colors.secondaryLabel.copy(alpha = 0.55f),
+            ),
+        contentPadding =
+            PaddingValues(
+                start = 24.dp,
+                end = 24.dp,
+            ),
     ) {
         VaultButtonInnerContent(text, loading, icon, colors.accent)
     }
@@ -142,22 +148,24 @@ fun VaultTextButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     val colors = SecureVaultColorsScope.colors
     val interactions = remember { MutableInteractionSource() }
     TextButton(
         onClick = onClick,
-        modifier = modifier
-            .heightIn(min = ButtonMinHeight)
-            .pressScale(interactions),
+        modifier =
+            modifier
+                .heightIn(min = ButtonMinHeight)
+                .pressScale(interactions),
         enabled = enabled,
         interactionSource = interactions,
         shape = CircleShape,
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = colors.accent,
-            disabledContentColor = colors.secondaryLabel.copy(alpha = 0.55f),
-        ),
+        colors =
+            ButtonDefaults.textButtonColors(
+                contentColor = colors.accent,
+                disabledContentColor = colors.secondaryLabel.copy(alpha = 0.55f),
+            ),
     ) {
         Text(text = text, style = MaterialTheme.typography.labelLarge)
     }
@@ -175,28 +183,31 @@ fun VaultDestructiveButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     loading: Boolean = false,
-    icon: ImageVector? = null
+    icon: ImageVector? = null,
 ) {
     val colors = SecureVaultColorsScope.colors
     val interactions = remember { MutableInteractionSource() }
     Button(
         onClick = onClick,
-        modifier = modifier
-            .heightIn(min = ButtonMinHeight)
-            .pressScale(interactions),
+        modifier =
+            modifier
+                .heightIn(min = ButtonMinHeight)
+                .pressScale(interactions),
         enabled = enabled && !loading,
         interactionSource = interactions,
         shape = CircleShape,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = colors.danger,
-            contentColor = colors.onDanger,
-            disabledContainerColor = colors.danger.copy(alpha = 0.30f),
-            disabledContentColor = colors.onDanger.copy(alpha = 0.55f),
-        ),
-        contentPadding = PaddingValues(
-            start = 24.dp,
-            end = 24.dp,
-        ),
+        colors =
+            ButtonDefaults.buttonColors(
+                containerColor = colors.danger,
+                contentColor = colors.onDanger,
+                disabledContainerColor = colors.danger.copy(alpha = 0.30f),
+                disabledContentColor = colors.onDanger.copy(alpha = 0.55f),
+            ),
+        contentPadding =
+            PaddingValues(
+                start = 24.dp,
+                end = 24.dp,
+            ),
     ) {
         VaultButtonInnerContent(text, loading, icon, colors.onDanger)
     }

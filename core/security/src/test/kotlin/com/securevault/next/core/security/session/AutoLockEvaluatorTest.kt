@@ -2,13 +2,14 @@ package com.securevault.next.core.security.session
 
 import com.google.common.truth.Truth.assertThat
 import com.securevault.next.core.domain.model.enums.AutoLockPolicy
+import org.junit.Test
 import java.time.Duration
 import java.time.Instant
-import org.junit.Test
 
 class AutoLockEvaluatorTest {
-
-    private class FakeClock(var current: Instant) : SessionClock {
+    private class FakeClock(
+        var current: Instant,
+    ) : SessionClock {
         override fun now(): Instant = current
     }
 

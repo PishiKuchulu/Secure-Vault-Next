@@ -75,9 +75,10 @@ fun ErrorState(
     val spacing = SecureVaultSpacingScope.spacing
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = spacing.extraLarge, vertical = spacing.extraExtraLarge),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = spacing.extraLarge, vertical = spacing.extraExtraLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(spacing.medium),
     ) {

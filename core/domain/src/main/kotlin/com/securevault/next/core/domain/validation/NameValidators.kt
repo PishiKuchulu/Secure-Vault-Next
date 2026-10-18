@@ -22,11 +22,12 @@ class VaultNameValidator : Validator<String> {
         if (value.isBlank()) {
             errors += DomainError.ValidationError.BlankValue(FIELD_NAME)
         } else if (value.length > VaultName.MAX_LENGTH) {
-            errors += DomainError.ValidationError.TooLong(
-                field = FIELD_NAME,
-                maxLength = VaultName.MAX_LENGTH,
-                actualLength = value.length,
-            )
+            errors +=
+                DomainError.ValidationError.TooLong(
+                    field = FIELD_NAME,
+                    maxLength = VaultName.MAX_LENGTH,
+                    actualLength = value.length,
+                )
         }
 
         return ValidationResult.of(errors)

@@ -27,7 +27,6 @@ class MasterPasswordValidator(
     private val minLength: Int = DEFAULT_MIN_LENGTH,
     private val maxLength: Int = DEFAULT_MAX_LENGTH,
 ) : Validator<CharArray> {
-
     init {
         require(minLength >= 1) { "MasterPasswordValidator.minLength must be positive, was $minLength" }
         require(maxLength >= minLength) {
@@ -39,27 +38,30 @@ class MasterPasswordValidator(
         val errors = mutableListOf<DomainError.ValidationError>()
 
         if (value.size < minLength) {
-            errors += DomainError.ValidationError.TooShort(
-                field = FIELD_NAME,
-                minLength = minLength,
-                actualLength = value.size,
-            )
+            errors +=
+                DomainError.ValidationError.TooShort(
+                    field = FIELD_NAME,
+                    minLength = minLength,
+                    actualLength = value.size,
+                )
         }
 
         if (value.size > maxLength) {
-            errors += DomainError.ValidationError.TooLong(
-                field = FIELD_NAME,
-                maxLength = maxLength,
-                actualLength = value.size,
-            )
+            errors +=
+                DomainError.ValidationError.TooLong(
+                    field = FIELD_NAME,
+                    maxLength = maxLength,
+                    actualLength = value.size,
+                )
         }
 
-        val missingCharacterClasses = buildList {
-            if (value.none { it.isUpperCase() }) add("an uppercase letter")
-            if (value.none { it.isLowerCase() }) add("a lowercase letter")
-            if (value.none { it.isDigit() }) add("a digit")
-            if (value.none { it.isLetterOrDigit().not() }) add("a symbol")
-        }
+        val missingCharacterClasses =
+            buildList {
+                if (value.none { it.isUpperCase() }) add("an uppercase letter")
+                if (value.none { it.isLowerCase() }) add("a lowercase letter")
+                if (value.none { it.isDigit() }) add("a digit")
+                if (value.none { it.isLetterOrDigit().not() }) add("a symbol")
+            }
         if (missingCharacterClasses.isNotEmpty()) {
             errors += DomainError.ValidationError.WeakMasterPassword(missingCharacterClasses)
         }

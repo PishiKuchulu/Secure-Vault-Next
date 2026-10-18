@@ -6,7 +6,6 @@ import com.securevault.next.core.domain.security.SecurityScoreEngine
 import org.junit.Test
 
 class ValidatePasswordUseCaseTest {
-
     private val useCase = ValidatePasswordUseCaseImpl()
 
     @Test

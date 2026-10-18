@@ -11,27 +11,28 @@ import com.securevault.next.core.domain.model.valueobject.UpdatedAt
 import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.model.valueobject.VaultName
 import com.securevault.next.core.domain.model.valueobject.Version
-import java.time.Instant
 import org.junit.Test
+import java.time.Instant
 
 class VaultAggregateTest {
-
     @Test
     fun `a PasswordItem can be built and reports the correct ItemType`() {
         val now = Instant.now()
         val vaultId = VaultId("vault-1")
 
-        val item = PasswordItem(
-            metadata = VaultItemMetadata(
-                id = ItemId("item-1"),
-                vaultId = vaultId,
-                title = "GitHub",
-                createdAt = CreatedAt(now),
-                updatedAt = UpdatedAt(now),
-            ),
-            username = "octocat",
-            password = EncryptedField(ciphertext = "cipher", nonce = "nonce"),
-        )
+        val item =
+            PasswordItem(
+                metadata =
+                    VaultItemMetadata(
+                        id = ItemId("item-1"),
+                        vaultId = vaultId,
+                        title = "GitHub",
+                        createdAt = CreatedAt(now),
+                        updatedAt = UpdatedAt(now),
+                    ),
+                username = "octocat",
+                password = EncryptedField(ciphertext = "cipher", nonce = "nonce"),
+            )
 
         assertThat(item.type).isEqualTo(ItemType.PASSWORD)
         assertThat(item.metadata.title).isEqualTo("GitHub")
@@ -42,34 +43,37 @@ class VaultAggregateTest {
         val now = Instant.now()
         val vaultId = VaultId("vault-1")
 
-        val metadata = VaultMetadata(
-            id = vaultId,
-            name = VaultName("Personal"),
-            version = Version(1),
-            createdAt = CreatedAt(now),
-            updatedAt = UpdatedAt(now),
-        )
+        val metadata =
+            VaultMetadata(
+                id = vaultId,
+                name = VaultName("Personal"),
+                version = Version(1),
+                createdAt = CreatedAt(now),
+                updatedAt = UpdatedAt(now),
+            )
 
-        val statistics = VaultStatistics(
-            itemCount = 0,
-            categoryCount = 0,
-            favoriteCount = 0,
-            weakPasswordCount = 0,
-            reusedPasswordCount = 0,
-            oldPasswordCount = 0,
-            breachedPasswordCount = 0,
-            securityScore = SecurityScore(100),
-        )
+        val statistics =
+            VaultStatistics(
+                itemCount = 0,
+                categoryCount = 0,
+                favoriteCount = 0,
+                weakPasswordCount = 0,
+                reusedPasswordCount = 0,
+                oldPasswordCount = 0,
+                breachedPasswordCount = 0,
+                securityScore = SecurityScore(100),
+            )
 
-        val vault = Vault(
-            metadata = metadata,
-            items = emptyList(),
-            categories = emptyList(),
-            tags = emptyList(),
-            settings = VaultSettings(),
-            securityPolicy = VaultSecurityPolicy(),
-            statistics = statistics,
-        )
+        val vault =
+            Vault(
+                metadata = metadata,
+                items = emptyList(),
+                categories = emptyList(),
+                tags = emptyList(),
+                settings = VaultSettings(),
+                securityPolicy = VaultSecurityPolicy(),
+                statistics = statistics,
+            )
 
         assertThat(vault.metadata.name.value).isEqualTo("Personal")
         assertThat(vault.statistics.securityScore.value).isEqualTo(100)

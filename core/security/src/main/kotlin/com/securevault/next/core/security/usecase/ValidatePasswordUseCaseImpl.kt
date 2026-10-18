@@ -8,8 +8,8 @@ import javax.inject.Inject
 /**
  * Implementation of [ValidatePasswordUseCase] using [SecurityScoreEngine].
  */
-class ValidatePasswordUseCaseImpl @Inject constructor() : ValidatePasswordUseCase {
-    override fun invoke(password: CharArray): PasswordStrength {
-        return SecurityScoreEngine.evaluateStrength(password)
+class ValidatePasswordUseCaseImpl
+    @Inject
+    constructor() : ValidatePasswordUseCase {
+        override fun invoke(password: CharArray): PasswordStrength = SecurityScoreEngine.evaluateStrength(password)
     }
-}

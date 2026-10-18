@@ -19,7 +19,6 @@ import java.time.Instant
 class AutoLockEvaluator(
     private val clock: SessionClock,
 ) {
-
     /**
      * True if, given [policy] and the session's [lastActivityAt], the
      * session should be locked as of [clock]'s current time.
@@ -30,7 +29,10 @@ class AutoLockEvaluator(
      * "immediately" means the very next check after activity stops locks
      * it.
      */
-    fun shouldLock(policy: AutoLockPolicy, lastActivityAt: Instant): Boolean {
+    fun shouldLock(
+        policy: AutoLockPolicy,
+        lastActivityAt: Instant,
+    ): Boolean {
         if (policy == AutoLockPolicy.NEVER) return false
 
         val elapsed = Duration.between(lastActivityAt, clock.now())
@@ -44,7 +46,10 @@ class AutoLockEvaluator(
      * threshold has already passed. Returns `null` for
      * [AutoLockPolicy.NEVER], which has no such duration.
      */
-    fun remainingUntilLock(policy: AutoLockPolicy, lastActivityAt: Instant): Duration? {
+    fun remainingUntilLock(
+        policy: AutoLockPolicy,
+        lastActivityAt: Instant,
+    ): Duration? {
         if (policy == AutoLockPolicy.NEVER) return null
 
         val elapsed = Duration.between(lastActivityAt, clock.now())

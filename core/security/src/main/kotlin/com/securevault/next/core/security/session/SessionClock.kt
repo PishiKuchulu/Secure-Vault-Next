@@ -18,6 +18,8 @@ fun interface SessionClock {
 }
 
 /** The production [SessionClock], backed by [Instant.now]. */
-class SystemSessionClock @Inject constructor() : SessionClock {
-    override fun now(): Instant = Instant.now()
-}
+class SystemSessionClock
+    @Inject
+    constructor() : SessionClock {
+        override fun now(): Instant = Instant.now()
+    }

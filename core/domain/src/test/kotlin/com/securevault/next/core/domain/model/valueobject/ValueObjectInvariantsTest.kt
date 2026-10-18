@@ -4,7 +4,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 
 class ValueObjectInvariantsTest {
-
     @Test
     fun `VaultId rejects a blank value`() {
         assertThrows { VaultId("") }

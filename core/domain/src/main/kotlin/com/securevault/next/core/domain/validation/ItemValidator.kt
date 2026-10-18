@@ -15,18 +15,18 @@ import com.securevault.next.core.domain.model.VaultItemMetadata
  * block.
  */
 class ItemValidator : Validator<String> {
-
     override fun validate(value: String): ValidationResult {
         val errors = mutableListOf<DomainError.ValidationError>()
 
         if (value.isBlank()) {
             errors += DomainError.ValidationError.BlankValue(FIELD_NAME)
         } else if (value.length > VaultItemMetadata.MAX_TITLE_LENGTH) {
-            errors += DomainError.ValidationError.TooLong(
-                field = FIELD_NAME,
-                maxLength = VaultItemMetadata.MAX_TITLE_LENGTH,
-                actualLength = value.length,
-            )
+            errors +=
+                DomainError.ValidationError.TooLong(
+                    field = FIELD_NAME,
+                    maxLength = VaultItemMetadata.MAX_TITLE_LENGTH,
+                    actualLength = value.length,
+                )
         }
 
         return ValidationResult.of(errors)

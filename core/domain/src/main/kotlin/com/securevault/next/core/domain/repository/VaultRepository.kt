@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.Flow
  * returns a [Flow] rather than requiring the caller to poll.
  */
 interface VaultRepository {
-
     /** Emits the full [Vault] aggregate whenever it changes, or `null` if it does not exist or is locked. */
     fun observeVault(vaultId: VaultId): Flow<Vault?>
 
@@ -54,11 +53,20 @@ interface VaultRepository {
      * alone. Fails with `RepositoryError.NotFound` when the vault id is
      * unknown.
      */
-    suspend fun updateEnvelopeJson(vaultId: VaultId, envelopeJson: String): DomainResult<Unit>
+    suspend fun updateEnvelopeJson(
+        vaultId: VaultId,
+        envelopeJson: String,
+    ): DomainResult<Unit>
 
-    suspend fun updateVaultSettings(vaultId: VaultId, settings: VaultSettings): DomainResult<Unit>
+    suspend fun updateVaultSettings(
+        vaultId: VaultId,
+        settings: VaultSettings,
+    ): DomainResult<Unit>
 
-    suspend fun updateVaultSecurityPolicy(vaultId: VaultId, policy: VaultSecurityPolicy): DomainResult<Unit>
+    suspend fun updateVaultSecurityPolicy(
+        vaultId: VaultId,
+        policy: VaultSecurityPolicy,
+    ): DomainResult<Unit>
 
     suspend fun deleteVault(vaultId: VaultId): DomainResult<Unit>
 }
