@@ -4,19 +4,22 @@ import com.securevault.next.core.common.dispatcher.Dispatcher
 import com.securevault.next.core.common.dispatcher.SecureVaultDispatcher
 import com.securevault.next.core.common.memory.MemoryWiper
 import com.securevault.next.core.contracts.VaultKeyEncryptionService
-import com.securevault.next.core.domain.model.*
-import com.securevault.next.core.domain.model.enums.*
-import com.securevault.next.core.domain.model.valueobject.*
+import com.securevault.next.core.domain.model.Vault
+import com.securevault.next.core.domain.model.VaultMetadata
+import com.securevault.next.core.domain.model.VaultSecurityPolicy
+import com.securevault.next.core.domain.model.VaultSettings
+import com.securevault.next.core.domain.model.enums.VaultStatus
+import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.repository.VaultRepository
 import com.securevault.next.core.domain.result.DomainResult
 import com.securevault.next.core.domain.usecase.CreateVaultUseCase
 import com.securevault.next.core.domain.usecase.OpenVaultUseCase
 import com.securevault.next.core.domain.validation.MasterPasswordValidator
+import java.time.Instant
+import java.util.UUID
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.time.Instant
-import java.util.*
-import javax.inject.Inject
 
 class CreateVaultUseCaseImpl @Inject constructor(
     private val vaultRepository: VaultRepository,

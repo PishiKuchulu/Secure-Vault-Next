@@ -16,8 +16,8 @@ import com.securevault.next.data.persistence.dao.TagDao
 import com.securevault.next.data.persistence.dao.VaultDao
 import com.securevault.next.data.persistence.entity.ApiKeyEntity
 import com.securevault.next.data.persistence.entity.AuditResultEntity
-import com.securevault.next.data.persistence.entity.BankAccountEntity
 import com.securevault.next.data.persistence.entity.BackupMetadataEntity
+import com.securevault.next.data.persistence.entity.BankAccountEntity
 import com.securevault.next.data.persistence.entity.CategoryEntity
 import com.securevault.next.data.persistence.entity.CreditCardEntity
 import com.securevault.next.data.persistence.entity.IdentityDocumentEntity

@@ -36,4 +36,3 @@ data class RecoveryCodeEntity(
     @ColumnInfo(name = "used_indices_csv")
     val usedIndicesCsv: String,
 )
-

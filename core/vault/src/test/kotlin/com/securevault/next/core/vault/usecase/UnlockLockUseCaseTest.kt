@@ -18,11 +18,11 @@ import com.securevault.next.core.security.session.SessionKeyStore
 import com.securevault.next.core.security.session.SessionState
 import com.securevault.next.core.security.session.VaultSessionManager
 import java.time.Duration
+import java.time.Instant
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import java.time.Instant
 
 class UnlockLockUseCaseTest {
 
@@ -63,7 +63,9 @@ class UnlockLockUseCaseTest {
         override suspend fun getVault(vaultId: VaultId): DomainResult<com.securevault.next.core.domain.model.Vault> =
             DomainResult.failure(DomainError.RepositoryError.NotFound(vaultId.value, "Vault"))
 
-        override suspend fun getVaultMetadata(vaultId: VaultId): DomainResult<com.securevault.next.core.domain.model.VaultMetadata> =
+        override suspend fun getVaultMetadata(
+            vaultId: VaultId,
+        ): DomainResult<com.securevault.next.core.domain.model.VaultMetadata> =
             DomainResult.failure(DomainError.RepositoryError.NotFound(vaultId.value, "Vault"))
 
         override suspend fun createVault(
@@ -99,10 +101,16 @@ class UnlockLockUseCaseTest {
         override suspend fun updateEnvelopeJson(vaultId: VaultId, envelopeJson: String): DomainResult<Unit> =
             DomainResult.success(Unit)
 
-        override suspend fun updateVaultSettings(vaultId: VaultId, settings: com.securevault.next.core.domain.model.VaultSettings): DomainResult<Unit> =
+        override suspend fun updateVaultSettings(
+            vaultId: VaultId,
+            settings: com.securevault.next.core.domain.model.VaultSettings,
+        ): DomainResult<Unit> =
             DomainResult.success(Unit)
 
-        override suspend fun updateVaultSecurityPolicy(vaultId: VaultId, policy: com.securevault.next.core.domain.model.VaultSecurityPolicy): DomainResult<Unit> =
+        override suspend fun updateVaultSecurityPolicy(
+            vaultId: VaultId,
+            policy: com.securevault.next.core.domain.model.VaultSecurityPolicy,
+        ): DomainResult<Unit> =
             DomainResult.success(Unit)
 
         override suspend fun deleteVault(vaultId: VaultId): DomainResult<Unit> =
@@ -155,7 +163,15 @@ class UnlockLockUseCaseTest {
         val returned = ByteArray(32) { it.toByte() }
         val svc = FakeVaultKeyEncryptionService("envelope-json", returned)
         val m = manager(store)
-        val useCase = UnlockVaultUseCaseImpl(repo, svc, store, m, FakeClock(start), tracker(5), kotlinx.coroutines.Dispatchers.Unconfined)
+        val useCase = UnlockVaultUseCaseImpl(
+            repo,
+            svc,
+            store,
+            m,
+            FakeClock(start),
+            tracker(5),
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
 
         val result = useCase(vaultId, password, AuthenticationMethod.MASTER_PASSWORD)
 
@@ -176,7 +192,15 @@ class UnlockLockUseCaseTest {
             failWith = DomainError.AuthenticationError.InvalidCredentials,
         )
         val m = manager(store)
-        val useCase = UnlockVaultUseCaseImpl(repo, svc, store, m, FakeClock(start), tracker(5), kotlinx.coroutines.Dispatchers.Unconfined)
+        val useCase = UnlockVaultUseCaseImpl(
+            repo,
+            svc,
+            store,
+            m,
+            FakeClock(start),
+            tracker(5),
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
 
         val result = useCase(vaultId, "wrong-password".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
 
@@ -192,7 +216,15 @@ class UnlockLockUseCaseTest {
         val repo = FakeVaultRepository(null) // no envelope stored
         val svc = FakeVaultKeyEncryptionService(null, keyBytes)
         val m = manager(store)
-        val useCase = UnlockVaultUseCaseImpl(repo, svc, store, m, FakeClock(start), tracker(5), kotlinx.coroutines.Dispatchers.Unconfined)
+        val useCase = UnlockVaultUseCaseImpl(
+            repo,
+            svc,
+            store,
+            m,
+            FakeClock(start),
+            tracker(5),
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
 
         val result = useCase(vaultId, password, AuthenticationMethod.MASTER_PASSWORD)
 
@@ -209,7 +241,15 @@ class UnlockLockUseCaseTest {
         val buffer = ByteArray(32) { 0x5A }
         val svc = FakeVaultKeyEncryptionService("envelope-json", buffer)
         val m = manager(store)
-        val useCase = UnlockVaultUseCaseImpl(repo, svc, store, m, FakeClock(start), tracker(5), kotlinx.coroutines.Dispatchers.Unconfined)
+        val useCase = UnlockVaultUseCaseImpl(
+            repo,
+            svc,
+            store,
+            m,
+            FakeClock(start),
+            tracker(5),
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
 
         useCase(vaultId, password, AuthenticationMethod.MASTER_PASSWORD)
 
@@ -230,7 +270,15 @@ class UnlockLockUseCaseTest {
             failWith = DomainError.AuthenticationError.InvalidCredentials,
         )
         val m = manager(scr)
-        val useCase = UnlockVaultUseCaseImpl(FakeVaultRepository("env"), svc, scr, m, FakeClock(start), t, kotlinx.coroutines.Dispatchers.Unconfined)
+        val useCase = UnlockVaultUseCaseImpl(
+            FakeVaultRepository("env"),
+            svc,
+            scr,
+            m,
+            FakeClock(start),
+            t,
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
 
         useCase(vaultId, "wrong".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
 
@@ -249,7 +297,15 @@ class UnlockLockUseCaseTest {
             failWith = DomainError.AuthenticationError.InvalidCredentials,
         )
         val m = manager(scr)
-        val useCase = UnlockVaultUseCaseImpl(FakeVaultRepository("env"), svc, scr, m, FakeClock(start), t, kotlinx.coroutines.Dispatchers.Unconfined)
+        val useCase = UnlockVaultUseCaseImpl(
+            FakeVaultRepository("env"),
+            svc,
+            scr,
+            m,
+            FakeClock(start),
+            t,
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
 
         val result = useCase(vaultId, "wrong".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
 
@@ -268,12 +324,22 @@ class UnlockLockUseCaseTest {
             failWith = DomainError.AuthenticationError.InvalidCredentials,
         )
         val m = manager(scr)
-        val useCase = UnlockVaultUseCaseImpl(FakeVaultRepository("env"), svc, scr, m, FakeClock(start), t, kotlinx.coroutines.Dispatchers.Unconfined)
+        val useCase = UnlockVaultUseCaseImpl(
+            FakeVaultRepository("env"),
+            svc,
+            scr,
+            m,
+            FakeClock(start),
+            t,
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
 
         useCase(vaultId, "wrong".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
         useCase(vaultId, "wrong".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
 
-        assertThat(t.currentState(vaultId)).isInstanceOf(com.securevault.next.core.security.session.LockoutState.LockedOut::class.java)
+        assertThat(t.currentState(vaultId)).isInstanceOf(
+            com.securevault.next.core.security.session.LockoutState.LockedOut::class.java,
+        )
     }
 
     @Test
@@ -288,13 +354,29 @@ class UnlockLockUseCaseTest {
 
         // cause lockout
         val m0 = manager(scr)
-        val first = UnlockVaultUseCaseImpl(FakeVaultRepository("env"), svc, scr, m0, FakeClock(start), t, kotlinx.coroutines.Dispatchers.Unconfined)
+        val first = UnlockVaultUseCaseImpl(
+            FakeVaultRepository("env"),
+            svc,
+            scr,
+            m0,
+            FakeClock(start),
+            t,
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
         first(vaultId, "wrong".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
         val callsAtLock = svc.unwrapCalls
 
         // a fresh invocation while locked out must NOT call crypto
         val m1 = manager(scr)
-        val second = UnlockVaultUseCaseImpl(FakeVaultRepository("env"), svc, scr, m1, FakeClock(start), t, kotlinx.coroutines.Dispatchers.Unconfined)
+        val second = UnlockVaultUseCaseImpl(
+            FakeVaultRepository("env"),
+            svc,
+            scr,
+            m1,
+            FakeClock(start),
+            t,
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
         val result = second(vaultId, "wrong".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
 
         assertThat(result.isFailure).isTrue()
@@ -313,14 +395,26 @@ class UnlockLockUseCaseTest {
             failWith = DomainError.AuthenticationError.InvalidCredentials,
         )
         val m = manager(scr)
-        val useCase = UnlockVaultUseCaseImpl(FakeVaultRepository("env"), svc, scr, m, clock, t, kotlinx.coroutines.Dispatchers.Unconfined)
+        val useCase = UnlockVaultUseCaseImpl(
+            FakeVaultRepository("env"),
+            svc,
+            scr,
+            m,
+            clock,
+            t,
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
 
         useCase(vaultId, "wrong".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
         useCase(vaultId, "wrong".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
-        assertThat(t.currentState(vaultId)).isInstanceOf(com.securevault.next.core.security.session.LockoutState.LockedOut::class.java)
+        assertThat(t.currentState(vaultId)).isInstanceOf(
+            com.securevault.next.core.security.session.LockoutState.LockedOut::class.java,
+        )
 
         clock.current = start.plus(Duration.ofMinutes(6)) // past 5-min lockout
-        assertThat(t.currentState(vaultId)).isEqualTo(com.securevault.next.core.security.session.LockoutState.Allowed(attemptsRemaining = 2))
+        assertThat(t.currentState(vaultId)).isEqualTo(
+            com.securevault.next.core.security.session.LockoutState.Allowed(attemptsRemaining = 2),
+        )
     }
 
     @Test
@@ -333,18 +427,38 @@ class UnlockLockUseCaseTest {
             failWith = DomainError.AuthenticationError.InvalidCredentials,
         )
         val m = manager(scr)
-        val useCase = UnlockVaultUseCaseImpl(FakeVaultRepository("env"), svc, scr, m, FakeClock(start), t, kotlinx.coroutines.Dispatchers.Unconfined)
+        val useCase = UnlockVaultUseCaseImpl(
+            FakeVaultRepository("env"),
+            svc,
+            scr,
+            m,
+            FakeClock(start),
+            t,
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
 
         useCase(vaultId, "wrong".toCharArray(), AuthenticationMethod.MASTER_PASSWORD)
-        assertThat(t.currentState(vaultId)).isInstanceOf(com.securevault.next.core.security.session.LockoutState.Allowed::class.java)
+        assertThat(t.currentState(vaultId)).isInstanceOf(
+            com.securevault.next.core.security.session.LockoutState.Allowed::class.java,
+        )
 
         // switch service to succeed
         val okSvc = FakeVaultKeyEncryptionService("envelope", keyBytes)
-        val okUseCase = UnlockVaultUseCaseImpl(FakeVaultRepository("env"), okSvc, scr, m, FakeClock(start), t, kotlinx.coroutines.Dispatchers.Unconfined)
+        val okUseCase = UnlockVaultUseCaseImpl(
+            FakeVaultRepository("env"),
+            okSvc,
+            scr,
+            m,
+            FakeClock(start),
+            t,
+            kotlinx.coroutines.Dispatchers.Unconfined,
+        )
         val result = okUseCase(vaultId, password, AuthenticationMethod.MASTER_PASSWORD)
 
         assertThat(result.isSuccess).isTrue()
-        assertThat(t.currentState(vaultId)).isEqualTo(com.securevault.next.core.security.session.LockoutState.Allowed(attemptsRemaining = 3))
+        assertThat(t.currentState(vaultId)).isEqualTo(
+            com.securevault.next.core.security.session.LockoutState.Allowed(attemptsRemaining = 3),
+        )
     }
 
     // --- Lock ---

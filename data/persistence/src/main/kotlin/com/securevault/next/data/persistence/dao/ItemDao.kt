@@ -120,11 +120,17 @@ interface ItemDao {
     // --- Password History ---
 
     @Transaction
-    @Query("SELECT * FROM items WHERE vault_id = :vaultId AND is_deleted = 0 AND is_archived = 0 ORDER BY last_accessed_at DESC LIMIT :limit")
+    @Query(
+        "SELECT * FROM items WHERE vault_id = :vaultId AND is_deleted = 0 AND is_archived = 0 " +
+            "ORDER BY last_accessed_at DESC LIMIT :limit",
+    )
     fun observeRecentItems(vaultId: VaultId, limit: Int = 10): Flow<List<ItemSummaryPojo>>
 
     @Transaction
-    @Query("SELECT * FROM items WHERE vault_id = :vaultId AND is_deleted = 0 AND is_archived = 0 ORDER BY use_count DESC LIMIT :limit")
+    @Query(
+        "SELECT * FROM items WHERE vault_id = :vaultId AND is_deleted = 0 AND is_archived = 0 " +
+            "ORDER BY use_count DESC LIMIT :limit",
+    )
     fun observeFrequentlyUsedItems(vaultId: VaultId, limit: Int = 10): Flow<List<ItemSummaryPojo>>
 
     @Transaction
@@ -143,7 +149,10 @@ interface ItemDao {
     suspend fun bulkSetFavorite(itemIds: List<ItemId>, isFavorite: Boolean)
 
     @Query("UPDATE items SET category_id = :categoryId WHERE id IN (:itemIds)")
-    suspend fun bulkMoveToCategory(itemIds: List<ItemId>, categoryId: com.securevault.next.core.domain.model.valueobject.CategoryId?)
+    suspend fun bulkMoveToCategory(
+        itemIds: List<ItemId>,
+        categoryId: com.securevault.next.core.domain.model.valueobject.CategoryId?,
+    )
 
     // --- Password History ---
 

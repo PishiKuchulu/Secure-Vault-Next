@@ -153,6 +153,8 @@ class VaultTypeConverters {
      */
     @TypeConverter
     fun toAuthenticationMethod(value: String?): AuthenticationMethod? =
-        value?.let { runCatching { AuthenticationMethod.valueOf(it) }.getOrNull() ?: AuthenticationMethod.MASTER_PASSWORD }
+        value?.let {
+            runCatching { AuthenticationMethod.valueOf(it) }.getOrNull() ?: AuthenticationMethod.MASTER_PASSWORD
+        }
 
 }

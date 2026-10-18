@@ -1,10 +1,8 @@
 package com.securevault.next.data.persistence.entity
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.securevault.next.core.domain.model.enums.AuthenticationMethod
 import com.securevault.next.core.domain.model.enums.AutoLockPolicy
 import com.securevault.next.core.domain.model.enums.ClipboardTimeout
 import com.securevault.next.core.domain.model.enums.SortField
