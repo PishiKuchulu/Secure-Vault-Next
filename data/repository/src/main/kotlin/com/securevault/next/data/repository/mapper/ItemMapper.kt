@@ -61,26 +61,22 @@ object ItemMapper {
 
     // --- Base Metadata ---
 
-    fun toMetadata(
-        summary: ItemSummaryPojo,
-        notes: Notes?,
-    ): VaultItemMetadata =
-        VaultItemMetadata(
-            id = summary.item.id,
-            vaultId = summary.item.vaultId,
-            title = summary.item.title,
-            categoryId = summary.item.categoryId,
-            tagIds = summary.tags.map { it.id }.toSet(),
-            isFavorite = summary.item.isFavorite,
-            customFields =
-                summary.item.customFieldsJson?.let {
-                    json.decodeFromString<List<CustomField>>(it)
-                } ?: emptyList(),
-            notes = notes,
-            createdAt = CreatedAt(summary.item.createdAt),
-            updatedAt = UpdatedAt(summary.item.updatedAt),
-            revision = Revision(summary.item.revision.toLong()),
-        )
+    fun toMetadata(summary: ItemSummaryPojo, notes: Notes?): VaultItemMetadata = VaultItemMetadata(
+        id = summary.item.id,
+        vaultId = summary.item.vaultId,
+        title = summary.item.title,
+        categoryId = summary.item.categoryId,
+        tagIds = summary.tags.map { it.id }.toSet(),
+        isFavorite = summary.item.isFavorite,
+        customFields =
+        summary.item.customFieldsJson?.let {
+            json.decodeFromString<List<CustomField>>(it)
+        } ?: emptyList(),
+        notes = notes,
+        createdAt = CreatedAt(summary.item.createdAt),
+        updatedAt = UpdatedAt(summary.item.updatedAt),
+        revision = Revision(summary.item.revision.toLong())
+    )
 
     /**
      * Builds the [ItemEntity] for an INSERT.
@@ -96,31 +92,27 @@ object ItemMapper {
      * revisions of a single row is unrealistic, and widening the column
      * is not worth a second migration.
      */
-    fun toItemEntity(
-        domain: VaultItem,
-        notesEncrypted: EncryptedFieldEntity? = null,
-    ): ItemEntity =
-        ItemEntity(
-            id = domain.metadata.id,
-            vaultId = domain.metadata.vaultId,
-            type = domain.type,
-            title = domain.metadata.title,
-            categoryId = domain.metadata.categoryId,
-            isFavorite = domain.metadata.isFavorite,
-            notes = null,
-            notesEncrypted = notesEncrypted,
-            customFieldsJson =
-                if (domain.metadata.customFields.isEmpty()) {
-                    null
-                } else {
-                    json.encodeToString(domain.metadata.customFields)
-                },
-            createdAt = domain.metadata.createdAt.value,
-            updatedAt = domain.metadata.updatedAt.value,
-            revision =
-                domain.metadata.revision.value
-                    .toInt(),
-        )
+    fun toItemEntity(domain: VaultItem, notesEncrypted: EncryptedFieldEntity? = null): ItemEntity = ItemEntity(
+        id = domain.metadata.id,
+        vaultId = domain.metadata.vaultId,
+        type = domain.type,
+        title = domain.metadata.title,
+        categoryId = domain.metadata.categoryId,
+        isFavorite = domain.metadata.isFavorite,
+        notes = null,
+        notesEncrypted = notesEncrypted,
+        customFieldsJson =
+        if (domain.metadata.customFields.isEmpty()) {
+            null
+        } else {
+            json.encodeToString(domain.metadata.customFields)
+        },
+        createdAt = domain.metadata.createdAt.value,
+        updatedAt = domain.metadata.updatedAt.value,
+        revision =
+        domain.metadata.revision.value
+            .toInt()
+    )
 
     /**
      * Builds the [ItemEntity] for an UPDATE (H3).
@@ -134,17 +126,16 @@ object ItemMapper {
     fun toItemEntityForUpdate(
         domain: VaultItem,
         existing: ItemEntity,
-        notesEncrypted: EncryptedFieldEntity? = null,
-    ): ItemEntity =
-        toItemEntity(domain, notesEncrypted).copy(
-            lastAccessedAt = existing.lastAccessedAt,
-            useCount = existing.useCount,
-            isPinned = existing.isPinned,
-            isArchived = existing.isArchived,
-            isDeleted = existing.isDeleted,
-            deletedAt = existing.deletedAt,
-            expiresAt = existing.expiresAt,
-        )
+        notesEncrypted: EncryptedFieldEntity? = null
+    ): ItemEntity = toItemEntity(domain, notesEncrypted).copy(
+        lastAccessedAt = existing.lastAccessedAt,
+        useCount = existing.useCount,
+        isPinned = existing.isPinned,
+        isArchived = existing.isArchived,
+        isDeleted = existing.isDeleted,
+        deletedAt = existing.deletedAt,
+        expiresAt = existing.expiresAt
+    )
 
     // --- Encrypted Notes (C5) ---
 
@@ -155,10 +146,7 @@ object ItemMapper {
      * caller must then fail the write if notes were present — see
      * [toItemEntity]). The intermediate CharArray is wiped before return.
      */
-    suspend fun encryptNotesForStorage(
-        notes: Notes?,
-        engine: ItemEncryptionEngine,
-    ): EncryptedFieldEntity? {
+    suspend fun encryptNotesForStorage(notes: Notes?, engine: ItemEncryptionEngine): EncryptedFieldEntity? {
         if (notes == null) return null
         val chars = notes.value.toCharArray()
         return try {
@@ -181,11 +169,7 @@ object ItemMapper {
      * failing the whole item read; a failed lazy migration still returns
      * the legacy plaintext so the read succeeds.
      */
-    suspend fun resolveNotes(
-        entity: ItemEntity,
-        engine: ItemEncryptionEngine,
-        itemDao: ItemDao,
-    ): Notes? {
+    suspend fun resolveNotes(entity: ItemEntity, engine: ItemEncryptionEngine, itemDao: ItemDao): Notes? {
         entity.notesEncrypted?.let { encrypted ->
             val chars =
                 engine.decryptField(toEncryptedDomain(encrypted)).getOrNull()
@@ -204,7 +188,7 @@ object ItemMapper {
                 itemId = entity.id,
                 ciphertext = migrated.ciphertext,
                 nonce = migrated.nonce,
-                algorithm = migrated.algorithm,
+                algorithm = migrated.algorithm
             )
         }
         return notesOrNull(legacy)
@@ -226,7 +210,7 @@ object ItemMapper {
         itemId: ItemId,
         itemDao: ItemDao,
         engine: ItemEncryptionEngine,
-        txRunner: TransactionRunner,
+        txRunner: TransactionRunner
     ): DomainResult<T> {
         val typeName = T::class.simpleName ?: "VaultItem"
         val pojo =
@@ -243,7 +227,7 @@ object ItemMapper {
         val item =
             toDomain(reread, engine, itemDao) as? T
                 ?: return DomainResult.failure(
-                    DomainError.RepositoryError.ReadFailed("Item $itemId is not a $typeName"),
+                    DomainError.RepositoryError.ReadFailed("Item $itemId is not a $typeName")
                 )
         return DomainResult.success(item)
     }
@@ -257,158 +241,144 @@ object ItemMapper {
      */
     suspend fun encryptNotesResult(
         domain: VaultItem,
-        engine: ItemEncryptionEngine,
+        engine: ItemEncryptionEngine
     ): DomainResult<EncryptedFieldEntity?> {
         val notes = domain.metadata.notes ?: return DomainResult.success(null)
         val encrypted =
             encryptNotesForStorage(notes, engine)
                 ?: return DomainResult.failure(
                     DomainError.RepositoryError.WriteFailed(
-                        "Failed to encrypt notes for item ${domain.metadata.id}",
-                    ),
+                        "Failed to encrypt notes for item ${domain.metadata.id}"
+                    )
                 )
         return DomainResult.success(encrypted)
     }
 
     // --- Encrypted Fields ---
 
-    private fun toEncryptedEntity(domain: EncryptedField): EncryptedFieldEntity =
-        EncryptedFieldEntity(
-            ciphertext = domain.ciphertext,
-            nonce = domain.nonce,
-            algorithm = domain.algorithm,
-        )
+    private fun toEncryptedEntity(domain: EncryptedField): EncryptedFieldEntity = EncryptedFieldEntity(
+        ciphertext = domain.ciphertext,
+        nonce = domain.nonce,
+        algorithm = domain.algorithm
+    )
 
-    private fun toEncryptedDomain(entity: EncryptedFieldEntity): EncryptedField =
-        EncryptedField(
-            ciphertext = entity.ciphertext,
-            nonce = entity.nonce,
-            algorithm = entity.algorithm,
-        )
+    private fun toEncryptedDomain(entity: EncryptedFieldEntity): EncryptedField = EncryptedField(
+        ciphertext = entity.ciphertext,
+        nonce = entity.nonce,
+        algorithm = entity.algorithm
+    )
 
     // --- TOTP ---
 
-    private fun toTotpEntity(domain: TOTPConfig): TotpConfigEntity =
-        TotpConfigEntity(
-            secret = toEncryptedEntity(domain.secret),
-            issuer = domain.issuer,
-            accountName = domain.accountName,
-            algorithm = domain.algorithm,
-            digits = domain.digits,
-            periodSeconds = domain.periodSeconds,
-        )
+    private fun toTotpEntity(domain: TOTPConfig): TotpConfigEntity = TotpConfigEntity(
+        secret = toEncryptedEntity(domain.secret),
+        issuer = domain.issuer,
+        accountName = domain.accountName,
+        algorithm = domain.algorithm,
+        digits = domain.digits,
+        periodSeconds = domain.periodSeconds
+    )
 
-    private fun toTotpDomain(entity: TotpConfigEntity): TOTPConfig =
-        TOTPConfig(
-            secret = toEncryptedDomain(entity.secret),
-            issuer = entity.issuer,
-            accountName = entity.accountName,
-            algorithm = entity.algorithm,
-            digits = entity.digits,
-            periodSeconds = entity.periodSeconds,
-        )
+    private fun toTotpDomain(entity: TotpConfigEntity): TOTPConfig = TOTPConfig(
+        secret = toEncryptedDomain(entity.secret),
+        issuer = entity.issuer,
+        accountName = entity.accountName,
+        algorithm = entity.algorithm,
+        digits = entity.digits,
+        periodSeconds = entity.periodSeconds
+    )
 
     // --- Type-Specific Mappings ---
 
-    fun toPasswordEntity(domain: PasswordItem): PasswordEntity =
-        PasswordEntity(
-            itemId = domain.metadata.id,
-            username = domain.username,
-            password = toEncryptedEntity(domain.password),
-            url = domain.url?.value,
-            totp = domain.totp?.let { toTotpEntity(it) },
-        )
+    fun toPasswordEntity(domain: PasswordItem): PasswordEntity = PasswordEntity(
+        itemId = domain.metadata.id,
+        username = domain.username,
+        password = toEncryptedEntity(domain.password),
+        url = domain.url?.value,
+        totp = domain.totp?.let { toTotpEntity(it) }
+    )
 
-    fun toCreditCardEntity(domain: CreditCard): CreditCardEntity =
-        CreditCardEntity(
-            itemId = domain.metadata.id,
-            cardholderName = domain.cardholderName,
-            cardNumber = toEncryptedEntity(domain.cardNumber),
-            expiryMonth = domain.expiryMonth,
-            expiryYear = domain.expiryYear,
-            cvv = toEncryptedEntity(domain.cvv),
-            pin = domain.pin?.let { toEncryptedEntity(it) },
-        )
+    fun toCreditCardEntity(domain: CreditCard): CreditCardEntity = CreditCardEntity(
+        itemId = domain.metadata.id,
+        cardholderName = domain.cardholderName,
+        cardNumber = toEncryptedEntity(domain.cardNumber),
+        expiryMonth = domain.expiryMonth,
+        expiryYear = domain.expiryYear,
+        cvv = toEncryptedEntity(domain.cvv),
+        pin = domain.pin?.let { toEncryptedEntity(it) }
+    )
 
-    fun toSecureNoteEntity(domain: SecureNote): SecureNoteEntity =
-        SecureNoteEntity(
-            itemId = domain.metadata.id,
-            content = toEncryptedEntity(domain.content),
-        )
+    fun toSecureNoteEntity(domain: SecureNote): SecureNoteEntity = SecureNoteEntity(
+        itemId = domain.metadata.id,
+        content = toEncryptedEntity(domain.content)
+    )
 
-    fun toBankAccountEntity(domain: BankAccount): BankAccountEntity =
-        BankAccountEntity(
-            itemId = domain.metadata.id,
-            bankName = domain.bankName,
-            accountHolderName = domain.accountHolderName,
-            accountNumber = toEncryptedEntity(domain.accountNumber),
-            routingNumber = domain.routingNumber?.let { toEncryptedEntity(it) },
-            iban = domain.iban?.let { toEncryptedEntity(it) },
-            swiftCode = domain.swiftCode,
-        )
+    fun toBankAccountEntity(domain: BankAccount): BankAccountEntity = BankAccountEntity(
+        itemId = domain.metadata.id,
+        bankName = domain.bankName,
+        accountHolderName = domain.accountHolderName,
+        accountNumber = toEncryptedEntity(domain.accountNumber),
+        routingNumber = domain.routingNumber?.let { toEncryptedEntity(it) },
+        iban = domain.iban?.let { toEncryptedEntity(it) },
+        swiftCode = domain.swiftCode
+    )
 
-    fun toIdentityDocumentEntity(domain: IdentityDocument): IdentityDocumentEntity =
-        IdentityDocumentEntity(
-            itemId = domain.metadata.id,
-            documentType = domain.documentType,
-            fullName = domain.fullName,
-            documentNumber = toEncryptedEntity(domain.documentNumber),
-            issueDate = domain.issueDate,
-            expiryDate = domain.expiryDate,
-            issuingCountry = domain.issuingCountry,
-        )
+    fun toIdentityDocumentEntity(domain: IdentityDocument): IdentityDocumentEntity = IdentityDocumentEntity(
+        itemId = domain.metadata.id,
+        documentType = domain.documentType,
+        fullName = domain.fullName,
+        documentNumber = toEncryptedEntity(domain.documentNumber),
+        issueDate = domain.issueDate,
+        expiryDate = domain.expiryDate,
+        issuingCountry = domain.issuingCountry
+    )
 
-    fun toSoftwareLicenseEntity(domain: SoftwareLicense): SoftwareLicenseEntity =
-        SoftwareLicenseEntity(
-            itemId = domain.metadata.id,
-            productName = domain.productName,
-            licenseKey = toEncryptedEntity(domain.licenseKey),
-            licensedTo = domain.licensedTo,
-            purchaseDate = domain.purchaseDate,
-            expiryDate = domain.expiryDate,
-            vendor = domain.vendor,
-        )
+    fun toSoftwareLicenseEntity(domain: SoftwareLicense): SoftwareLicenseEntity = SoftwareLicenseEntity(
+        itemId = domain.metadata.id,
+        productName = domain.productName,
+        licenseKey = toEncryptedEntity(domain.licenseKey),
+        licensedTo = domain.licensedTo,
+        purchaseDate = domain.purchaseDate,
+        expiryDate = domain.expiryDate,
+        vendor = domain.vendor
+    )
 
-    fun toApiKeyEntity(domain: ApiKey): ApiKeyEntity =
-        ApiKeyEntity(
-            itemId = domain.metadata.id,
-            service = domain.service,
-            keyValue = toEncryptedEntity(domain.keyValue),
-            keySecret = domain.keySecret?.let { toEncryptedEntity(it) },
-            environment = domain.environment,
-        )
+    fun toApiKeyEntity(domain: ApiKey): ApiKeyEntity = ApiKeyEntity(
+        itemId = domain.metadata.id,
+        service = domain.service,
+        keyValue = toEncryptedEntity(domain.keyValue),
+        keySecret = domain.keySecret?.let { toEncryptedEntity(it) },
+        environment = domain.environment
+    )
 
-    fun toSshKeyEntity(domain: SSHKey): SshKeyEntity =
-        SshKeyEntity(
-            itemId = domain.metadata.id,
-            keyType = domain.keyType,
-            privateKey = toEncryptedEntity(domain.privateKey),
-            publicKey = domain.publicKey,
-            passphrase = domain.passphrase?.let { toEncryptedEntity(it) },
-            hostAddress = domain.hostAddress,
-        )
+    fun toSshKeyEntity(domain: SSHKey): SshKeyEntity = SshKeyEntity(
+        itemId = domain.metadata.id,
+        keyType = domain.keyType,
+        privateKey = toEncryptedEntity(domain.privateKey),
+        publicKey = domain.publicKey,
+        passphrase = domain.passphrase?.let { toEncryptedEntity(it) },
+        hostAddress = domain.hostAddress
+    )
 
-    fun toRecoveryCodeEntity(domain: RecoveryCode): RecoveryCodeEntity =
-        RecoveryCodeEntity(
-            itemId = domain.metadata.id,
-            service = domain.service,
-            usedIndicesCsv = domain.usedCodeIndices.joinToString(","),
-        )
+    fun toRecoveryCodeEntity(domain: RecoveryCode): RecoveryCodeEntity = RecoveryCodeEntity(
+        itemId = domain.metadata.id,
+        service = domain.service,
+        usedIndicesCsv = domain.usedCodeIndices.joinToString(",")
+    )
 
     fun toRecoveryCodeValues(domain: RecoveryCode): List<RecoveryCodeValueEntity> =
         domain.codes.mapIndexed { index, code ->
             RecoveryCodeValueEntity(
                 recoveryCodeItemId = domain.metadata.id,
                 sortOrder = index,
-                code = toEncryptedEntity(code),
+                code = toEncryptedEntity(code)
             )
         }
 
-    fun toTotpSeedEntity(domain: TOTPSeed): TotpSeedEntity =
-        TotpSeedEntity(
-            itemId = domain.metadata.id,
-            config = toTotpEntity(domain.config),
-        )
+    fun toTotpSeedEntity(domain: TOTPSeed): TotpSeedEntity = TotpSeedEntity(
+        itemId = domain.metadata.id,
+        config = toTotpEntity(domain.config)
+    )
 
     // --- Full Aggregate Mapping ---
 
@@ -420,18 +390,14 @@ object ItemMapper {
     suspend fun toDomainItems(
         pojos: List<FullItemPojo>,
         engine: ItemEncryptionEngine,
-        itemDao: ItemDao,
+        itemDao: ItemDao
     ): List<VaultItem> {
         val result = ArrayList<VaultItem>(pojos.size)
         for (pojo in pojos) result.add(toDomain(pojo, engine, itemDao))
         return result
     }
 
-    suspend fun toDomain(
-        pojo: FullItemPojo,
-        engine: ItemEncryptionEngine,
-        itemDao: ItemDao,
-    ): VaultItem {
+    suspend fun toDomain(pojo: FullItemPojo, engine: ItemEncryptionEngine, itemDao: ItemDao): VaultItem {
         val summary = ItemSummaryPojo(pojo.item, pojo.tags)
         val metadata = toMetadata(summary, resolveNotes(pojo.item, engine, itemDao))
 
@@ -452,7 +418,7 @@ object ItemMapper {
                     username = password.username,
                     password = toEncryptedDomain(password.password),
                     url = password.url?.let { UrlValue(it) },
-                    totp = password.totp?.let { toTotpDomain(it) },
+                    totp = password.totp?.let { toTotpDomain(it) }
                 )
             creditCard != null ->
                 CreditCard(
@@ -462,12 +428,12 @@ object ItemMapper {
                     expiryMonth = creditCard.expiryMonth,
                     expiryYear = creditCard.expiryYear,
                     cvv = toEncryptedDomain(creditCard.cvv),
-                    pin = creditCard.pin?.let { toEncryptedDomain(it) },
+                    pin = creditCard.pin?.let { toEncryptedDomain(it) }
                 )
             secureNote != null ->
                 SecureNote(
                     metadata = metadata,
-                    content = toEncryptedDomain(secureNote.content),
+                    content = toEncryptedDomain(secureNote.content)
                 )
             bankAccount != null ->
                 BankAccount(
@@ -477,7 +443,7 @@ object ItemMapper {
                     accountNumber = toEncryptedDomain(bankAccount.accountNumber),
                     routingNumber = bankAccount.routingNumber?.let { toEncryptedDomain(it) },
                     iban = bankAccount.iban?.let { toEncryptedDomain(it) },
-                    swiftCode = bankAccount.swiftCode,
+                    swiftCode = bankAccount.swiftCode
                 )
             identityDocument != null ->
                 IdentityDocument(
@@ -487,7 +453,7 @@ object ItemMapper {
                     documentNumber = toEncryptedDomain(identityDocument.documentNumber),
                     issueDate = identityDocument.issueDate,
                     expiryDate = identityDocument.expiryDate,
-                    issuingCountry = identityDocument.issuingCountry,
+                    issuingCountry = identityDocument.issuingCountry
                 )
             softwareLicense != null ->
                 SoftwareLicense(
@@ -497,7 +463,7 @@ object ItemMapper {
                     licensedTo = softwareLicense.licensedTo,
                     purchaseDate = softwareLicense.purchaseDate,
                     expiryDate = softwareLicense.expiryDate,
-                    vendor = softwareLicense.vendor,
+                    vendor = softwareLicense.vendor
                 )
             apiKey != null ->
                 ApiKey(
@@ -505,7 +471,7 @@ object ItemMapper {
                     service = apiKey.service,
                     keyValue = toEncryptedDomain(apiKey.keyValue),
                     keySecret = apiKey.keySecret?.let { toEncryptedDomain(it) },
-                    environment = apiKey.environment,
+                    environment = apiKey.environment
                 )
             sshKey != null ->
                 SSHKey(
@@ -514,31 +480,31 @@ object ItemMapper {
                     privateKey = toEncryptedDomain(sshKey.privateKey),
                     publicKey = sshKey.publicKey,
                     passphrase = sshKey.passphrase?.let { toEncryptedDomain(it) },
-                    hostAddress = sshKey.hostAddress,
+                    hostAddress = sshKey.hostAddress
                 )
             recoveryCode != null ->
                 RecoveryCode(
                     metadata = metadata,
                     service = recoveryCode.service,
                     codes =
-                        pojo.recoveryCodeValues
-                            .sortedBy { it.sortOrder }
-                            .map { toEncryptedDomain(it.code) },
+                    pojo.recoveryCodeValues
+                        .sortedBy { it.sortOrder }
+                        .map { toEncryptedDomain(it.code) },
                     // L13: never throw on malformed CSV — drop unparseable tokens.
                     usedCodeIndices =
-                        if (recoveryCode.usedIndicesCsv.isEmpty()) {
-                            emptySet()
-                        } else {
-                            recoveryCode.usedIndicesCsv
-                                .split(",")
-                                .mapNotNull { it.toIntOrNull() }
-                                .toSet()
-                        },
+                    if (recoveryCode.usedIndicesCsv.isEmpty()) {
+                        emptySet()
+                    } else {
+                        recoveryCode.usedIndicesCsv
+                            .split(",")
+                            .mapNotNull { it.toIntOrNull() }
+                            .toSet()
+                    }
                 )
             totpSeed != null ->
                 TOTPSeed(
                     metadata = metadata,
-                    config = toTotpDomain(totpSeed.config),
+                    config = toTotpDomain(totpSeed.config)
                 )
             else -> throw IllegalStateException("FullItemPojo with ID ${pojo.item.id} has no type-specific details")
         }
@@ -546,22 +512,17 @@ object ItemMapper {
 
     // --- Password History ---
 
-    fun toHistoryDomain(entity: PasswordHistoryEntity): PasswordHistory =
-        PasswordHistory(
-            id = entity.id,
-            itemId = entity.itemId,
-            password = toEncryptedDomain(entity.password),
-            changedAt = entity.changedAt,
-        )
+    fun toHistoryDomain(entity: PasswordHistoryEntity): PasswordHistory = PasswordHistory(
+        id = entity.id,
+        itemId = entity.itemId,
+        password = toEncryptedDomain(entity.password),
+        changedAt = entity.changedAt
+    )
 
-    fun toHistoryEntity(
-        domain: PasswordHistory,
-        itemId: ItemId,
-    ): PasswordHistoryEntity =
-        PasswordHistoryEntity(
-            id = domain.id,
-            itemId = itemId,
-            password = toEncryptedEntity(domain.password),
-            changedAt = domain.changedAt,
-        )
+    fun toHistoryEntity(domain: PasswordHistory, itemId: ItemId): PasswordHistoryEntity = PasswordHistoryEntity(
+        id = domain.id,
+        itemId = itemId,
+        password = toEncryptedEntity(domain.password),
+        changedAt = domain.changedAt
+    )
 }
