@@ -10,14 +10,10 @@ sealed interface LockoutState {
      * Unlock attempts are currently permitted. [attemptsRemaining] is
      * informational, for a UI to warn the user before lockout occurs.
      */
-    data class Allowed(
-        val attemptsRemaining: Int,
-    ) : LockoutState
+    data class Allowed(val attemptsRemaining: Int) : LockoutState
 
     /** Unlock attempts are currently blocked until [retryAt]. */
-    data class LockedOut(
-        val retryAt: Instant,
-    ) : LockoutState
+    data class LockedOut(val retryAt: Instant) : LockoutState
 }
 
 /**
@@ -42,16 +38,13 @@ sealed interface LockoutState {
 class FailedAttemptTracker(
     private val clock: SessionClock,
     private val maxAttempts: Int,
-    private val lockoutDuration: Duration = Duration.ofMinutes(5),
+    private val lockoutDuration: Duration = Duration.ofMinutes(5)
 ) {
     init {
         require(maxAttempts > 0) { "FailedAttemptTracker.maxAttempts must be positive, was $maxAttempts" }
     }
 
-    private data class VaultAttemptState(
-        var consecutiveFailures: Int = 0,
-        var lockedOutUntil: Instant? = null,
-    )
+    private data class VaultAttemptState(var consecutiveFailures: Int = 0, var lockedOutUntil: Instant? = null)
 
     // Guarded by the @Synchronized methods below. Entries accumulate one
     // per vault ever attempted in this process, which is bounded by the

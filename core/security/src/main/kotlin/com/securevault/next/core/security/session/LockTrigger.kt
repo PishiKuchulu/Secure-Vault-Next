@@ -15,5 +15,5 @@ enum class LockTrigger {
     APP_BACKGROUNDED,
 
     /** Too many consecutive failed unlock attempts were made. */
-    FAILED_ATTEMPTS_EXCEEDED,
+    FAILED_ATTEMPTS_EXCEEDED
 }

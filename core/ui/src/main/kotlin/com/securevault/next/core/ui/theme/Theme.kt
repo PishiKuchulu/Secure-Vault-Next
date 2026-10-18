@@ -52,7 +52,7 @@ private fun SecureVaultColors.toMaterialScheme(dark: Boolean): ColorScheme {
         scrim = baseBackground,
         inverseSurface = label,
         inverseOnSurface = baseBackground,
-        inversePrimary = accent,
+        inversePrimary = accent
     )
 }
 
@@ -72,7 +72,7 @@ private fun SecureVaultColors.toMaterialScheme(dark: Boolean): ColorScheme {
 fun SecureVaultTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) DarkSecureVaultColors else LightSecureVaultColors
     val colorScheme = colors.toMaterialScheme(darkTheme)
@@ -93,13 +93,13 @@ fun SecureVaultTheme(
 
     CompositionLocalProvider(
         LocalSecureVaultColors provides colors,
-        LocalSecureVaultSpacing provides SecureVaultSpacing(),
+        LocalSecureVaultSpacing provides SecureVaultSpacing()
     ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = SecureVaultTypography,
             shapes = SecureVaultShapes,
-            content = content,
+            content = content
         )
     }
 }

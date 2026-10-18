@@ -46,46 +46,46 @@ fun VaultCard(
     subtitle: String? = null,
     onClickLabel: String? = null,
     leading: (@Composable () -> Unit)? = null,
-    trailing: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
     Surface(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .heightIn(min = 64.dp)
-                .clickable(
-                    onClick = onClick,
-                    onClickLabel = onClickLabel ?: title,
-                    role = Role.Button,
-                ),
+        modifier
+            .fillMaxWidth()
+            .heightIn(min = 64.dp)
+            .clickable(
+                onClick = onClick,
+                onClickLabel = onClickLabel ?: title,
+                role = Role.Button
+            ),
         shape = MaterialTheme.shapes.large,
         color = colors.surface,
-        contentColor = colors.label,
+        contentColor = colors.label
     ) {
         Row(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.medium, vertical = spacing.small + spacing.extraSmall),
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = spacing.medium, vertical = spacing.small + spacing.extraSmall),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(spacing.small),
+            horizontalArrangement = Arrangement.spacedBy(spacing.small)
         ) {
             if (leading != null) {
                 leading()
             }
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                     color = colors.label,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis
                 )
                 if (subtitle != null) {
                     Text(
@@ -93,7 +93,7 @@ fun VaultCard(
                         style = MaterialTheme.typography.footnote,
                         color = colors.secondaryLabel,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -105,7 +105,7 @@ fun VaultCard(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
-                    tint = colors.secondaryLabel,
+                    tint = colors.secondaryLabel
                 )
             }
         }

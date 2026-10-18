@@ -23,7 +23,7 @@ data class SecureVaultSpacing(
     val medium: Dp = 16.dp,
     val large: Dp = 24.dp,
     val extraLarge: Dp = 32.dp,
-    val extraExtraLarge: Dp = 48.dp,
+    val extraExtraLarge: Dp = 48.dp
 )
 
 internal val LocalSecureVaultSpacing = staticCompositionLocalOf { SecureVaultSpacing() }

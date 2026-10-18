@@ -108,7 +108,7 @@ data class SecureVaultColors(
     /** Danger / destructive signal. */
     val danger: Color,
     /** Content on top of danger-filled surfaces. */
-    val onDanger: Color,
+    val onDanger: Color
 )
 
 val LightSecureVaultColors =
@@ -125,7 +125,7 @@ val LightSecureVaultColors =
         success = SuccessLight,
         warning = WarningLight,
         danger = DangerLight,
-        onDanger = OnDangerLight,
+        onDanger = OnDangerLight
     )
 
 val DarkSecureVaultColors =
@@ -142,7 +142,7 @@ val DarkSecureVaultColors =
         success = SuccessDark,
         warning = WarningDark,
         danger = DangerDark,
-        onDanger = OnDangerDark,
+        onDanger = OnDangerDark
     )
 
 internal val LocalSecureVaultColors = staticCompositionLocalOf { LightSecureVaultColors }

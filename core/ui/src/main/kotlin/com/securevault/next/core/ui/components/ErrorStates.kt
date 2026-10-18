@@ -32,29 +32,26 @@ import com.securevault.next.core.ui.theme.footnote
  * (e.g. "Could not reach the sync server. Check your connection.").
  */
 @Composable
-fun InlineError(
-    message: String,
-    modifier: Modifier = Modifier,
-) {
+fun InlineError(message: String, modifier: Modifier = Modifier) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(spacing.small),
-        verticalAlignment = Alignment.Top,
+        verticalAlignment = Alignment.Top
     ) {
         Icon(
             imageVector = Icons.Filled.ErrorOutline,
             contentDescription = null,
             modifier = Modifier.size(20.dp),
-            tint = colors.danger,
+            tint = colors.danger
         )
         Text(
             text = message,
             style = MaterialTheme.typography.footnote,
             color = colors.danger,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f)
         )
     }
 }
@@ -69,40 +66,40 @@ fun ErrorState(
     description: String,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier,
-    retryLabel: String = "Try again",
+    retryLabel: String = "Try again"
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
     Column(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = spacing.extraLarge, vertical = spacing.extraExtraLarge),
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = spacing.extraLarge, vertical = spacing.extraExtraLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(spacing.medium),
+        verticalArrangement = Arrangement.spacedBy(spacing.medium)
     ) {
         // Decorative: title + description carry the meaning.
         Icon(
             imageVector = Icons.Filled.ErrorOutline,
             contentDescription = null,
             modifier = Modifier.size(48.dp),
-            tint = colors.danger,
+            tint = colors.danger
         )
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
-            color = colors.label,
+            color = colors.label
         )
         Text(
             text = description,
             style = MaterialTheme.typography.bodyMedium,
-            color = colors.secondaryLabel,
+            color = colors.secondaryLabel
         )
         VaultSecondaryButton(
             text = retryLabel,
             onClick = onRetry,
-            modifier = Modifier.padding(top = spacing.small),
+            modifier = Modifier.padding(top = spacing.small)
         )
     }
 }

@@ -39,66 +39,62 @@ import com.securevault.next.core.ui.theme.footnote
  * the matching signal color.
  */
 @Composable
-fun StrengthMeter(
-    score: Float,
-    modifier: Modifier = Modifier,
-    label: String? = null,
-) {
+fun StrengthMeter(score: Float, modifier: Modifier = Modifier, label: String? = null) {
     val colors = SecureVaultColorsScope.colors
     val clamped = score.coerceIn(0f, 1f)
 
     val animatedScore by animateFloatAsState(
         targetValue = clamped,
         animationSpec =
-            tween(
-                durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
-                easing = SecureVaultEaseOut,
-            ),
-        label = "strengthProgress",
+        tween(
+            durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
+            easing = SecureVaultEaseOut
+        ),
+        label = "strengthProgress"
     )
     val meterColor by animateColorAsState(
         targetValue =
-            when {
-                clamped < 0.34f -> colors.danger
-                clamped < 0.67f -> colors.warning
-                else -> colors.success
-            },
+        when {
+            clamped < 0.34f -> colors.danger
+            clamped < 0.67f -> colors.warning
+            else -> colors.success
+        },
         animationSpec =
-            tween(
-                durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
-                easing = SecureVaultEaseOut,
-            ),
-        label = "strengthColor",
+        tween(
+            durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
+            easing = SecureVaultEaseOut
+        ),
+        label = "strengthColor"
     )
 
     val description = label ?: "Password strength ${(clamped * 100).toInt()} percent"
 
     Column(
         modifier = modifier.semantics { contentDescription = description },
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         if (label != null) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.footnote.copy(fontWeight = FontWeight.SemiBold),
-                color = meterColor,
+                color = meterColor
             )
         }
         Box(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(3.dp))
-                    .background(colors.fill),
+            Modifier
+                .fillMaxWidth()
+                .height(6.dp)
+                .clip(RoundedCornerShape(3.dp))
+                .background(colors.fill)
         ) {
             Box(
                 modifier =
-                    Modifier
-                        .fillMaxWidth(animatedScore)
-                        .height(6.dp)
-                        .clip(RoundedCornerShape(3.dp))
-                        .background(meterColor),
+                Modifier
+                    .fillMaxWidth(animatedScore)
+                    .height(6.dp)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(meterColor)
             )
         }
     }

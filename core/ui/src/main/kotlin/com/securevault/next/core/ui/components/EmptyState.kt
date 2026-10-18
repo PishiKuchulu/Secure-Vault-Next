@@ -43,50 +43,50 @@ fun EmptyState(
     description: String,
     actionLabel: String,
     onAction: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
     Column(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(horizontal = spacing.extraLarge, vertical = spacing.extraExtraLarge),
+        modifier
+            .fillMaxWidth()
+            .padding(horizontal = spacing.extraLarge, vertical = spacing.extraExtraLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(spacing.medium),
+        verticalArrangement = Arrangement.spacedBy(spacing.medium)
     ) {
         Box(
             modifier =
-                Modifier
-                    .size(88.dp)
-                    .background(colors.fill, CircleShape),
-            contentAlignment = Alignment.Center,
+            Modifier
+                .size(88.dp)
+                .background(colors.fill, CircleShape),
+            contentAlignment = Alignment.Center
         ) {
             // Decorative: title + description carry the meaning.
             Icon(
                 imageVector = icon,
                 contentDescription = null,
                 modifier = Modifier.size(40.dp),
-                tint = colors.secondaryLabel,
+                tint = colors.secondaryLabel
             )
         }
         Text(
             text = title,
             style = MaterialTheme.typography.headlineSmall,
             color = colors.label,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
         Text(
             text = description,
             style = MaterialTheme.typography.bodyMedium,
             color = colors.secondaryLabel,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
         VaultButton(
             text = actionLabel,
             onClick = onAction,
-            modifier = Modifier.padding(top = spacing.small),
+            modifier = Modifier.padding(top = spacing.small)
         )
     }
 }

@@ -57,19 +57,16 @@ const val SECURE_VAULT_PRESS_SCALE = 0.97f
  *     ) { ... }
  */
 @Composable
-fun Modifier.pressScale(
-    interactionSource: InteractionSource,
-    targetScale: Float = SECURE_VAULT_PRESS_SCALE,
-): Modifier {
+fun Modifier.pressScale(interactionSource: InteractionSource, targetScale: Float = SECURE_VAULT_PRESS_SCALE): Modifier {
     val pressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
         targetValue = if (pressed) targetScale else 1f,
         animationSpec =
-            tween(
-                durationMillis = SECURE_VAULT_PRESS_DURATION_MS,
-                easing = SecureVaultEaseOut,
-            ),
-        label = "secureVaultPressScale",
+        tween(
+            durationMillis = SECURE_VAULT_PRESS_DURATION_MS,
+            easing = SecureVaultEaseOut
+        ),
+        label = "secureVaultPressScale"
     )
     return this.graphicsLayer {
         scaleX = scale

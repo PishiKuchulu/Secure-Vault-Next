@@ -40,35 +40,35 @@ fun SectionHeader(
     title: String,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
-    trailing: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
     Row(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(
-                    start = spacing.medium,
-                    end = spacing.medium,
-                    top = spacing.large,
-                    bottom = spacing.small,
-                ),
+        modifier
+            .fillMaxWidth()
+            .padding(
+                start = spacing.medium,
+                end = spacing.medium,
+                top = spacing.large,
+                bottom = spacing.small
+            ),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(spacing.small),
+        horizontalArrangement = Arrangement.spacedBy(spacing.small)
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
-                color = colors.label,
+                color = colors.label
             )
             if (subtitle != null) {
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.footnote,
-                    color = colors.secondaryLabel,
+                    color = colors.secondaryLabel
                 )
             }
         }
@@ -99,7 +99,7 @@ fun SettingsRow(
     onClickLabel: String? = null,
     showChevron: Boolean = true,
     showDivider: Boolean = false,
-    trailing: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -109,7 +109,7 @@ fun SettingsRow(
             modifier.clickable(
                 onClick = onClick,
                 onClickLabel = onClickLabel ?: title,
-                role = Role.Button,
+                role = Role.Button
             )
         } else {
             modifier
@@ -118,23 +118,23 @@ fun SettingsRow(
     Column(modifier = rowModifier.fillMaxWidth()) {
         Row(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 56.dp)
-                    .padding(horizontal = spacing.medium, vertical = spacing.small),
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 56.dp)
+                .padding(horizontal = spacing.medium, vertical = spacing.small),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(spacing.small),
+            horizontalArrangement = Arrangement.spacedBy(spacing.small)
         ) {
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
                     color = colors.label,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
+                    overflow = TextOverflow.Ellipsis
                 )
                 if (subtitle != null) {
                     Text(
@@ -142,7 +142,7 @@ fun SettingsRow(
                         style = MaterialTheme.typography.footnote,
                         color = colors.secondaryLabel,
                         maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }
@@ -154,7 +154,7 @@ fun SettingsRow(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
                     modifier = Modifier.size(24.dp),
-                    tint = colors.secondaryLabel,
+                    tint = colors.secondaryLabel
                 )
             }
         }
@@ -162,7 +162,7 @@ fun SettingsRow(
             HorizontalDivider(
                 modifier = Modifier.padding(start = spacing.medium),
                 thickness = 1.dp,
-                color = colors.separator,
+                color = colors.separator
             )
         }
     }

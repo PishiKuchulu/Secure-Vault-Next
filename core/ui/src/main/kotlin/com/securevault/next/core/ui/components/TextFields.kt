@@ -33,43 +33,39 @@ import com.securevault.next.core.ui.theme.footnote
  */
 
 @Composable
-private fun vaultTextFieldColors() =
-    OutlinedTextFieldDefaults.colors(
-        focusedTextColor = SecureVaultColorsScope.colors.label,
-        unfocusedTextColor = SecureVaultColorsScope.colors.label,
-        disabledTextColor = SecureVaultColorsScope.colors.secondaryLabel,
-        errorTextColor = SecureVaultColorsScope.colors.label,
-        focusedContainerColor = SecureVaultColorsScope.colors.surface,
-        unfocusedContainerColor = SecureVaultColorsScope.colors.surface,
-        disabledContainerColor = SecureVaultColorsScope.colors.surface,
-        errorContainerColor = SecureVaultColorsScope.colors.surface,
-        cursorColor = SecureVaultColorsScope.colors.accent,
-        errorCursorColor = SecureVaultColorsScope.colors.danger,
-        focusedBorderColor = SecureVaultColorsScope.colors.accent,
-        unfocusedBorderColor = SecureVaultColorsScope.colors.separator,
-        disabledBorderColor = SecureVaultColorsScope.colors.separator.copy(alpha = 0.5f),
-        errorBorderColor = SecureVaultColorsScope.colors.danger,
-        focusedLabelColor = SecureVaultColorsScope.colors.accent,
-        unfocusedLabelColor = SecureVaultColorsScope.colors.secondaryLabel,
-        disabledLabelColor = SecureVaultColorsScope.colors.secondaryLabel.copy(alpha = 0.6f),
-        errorLabelColor = SecureVaultColorsScope.colors.danger,
-        focusedSupportingTextColor = SecureVaultColorsScope.colors.secondaryLabel,
-        unfocusedSupportingTextColor = SecureVaultColorsScope.colors.secondaryLabel,
-        errorSupportingTextColor = SecureVaultColorsScope.colors.danger,
-        focusedTrailingIconColor = SecureVaultColorsScope.colors.secondaryLabel,
-        unfocusedTrailingIconColor = SecureVaultColorsScope.colors.secondaryLabel,
-        errorTrailingIconColor = SecureVaultColorsScope.colors.danger,
-    )
+private fun vaultTextFieldColors() = OutlinedTextFieldDefaults.colors(
+    focusedTextColor = SecureVaultColorsScope.colors.label,
+    unfocusedTextColor = SecureVaultColorsScope.colors.label,
+    disabledTextColor = SecureVaultColorsScope.colors.secondaryLabel,
+    errorTextColor = SecureVaultColorsScope.colors.label,
+    focusedContainerColor = SecureVaultColorsScope.colors.surface,
+    unfocusedContainerColor = SecureVaultColorsScope.colors.surface,
+    disabledContainerColor = SecureVaultColorsScope.colors.surface,
+    errorContainerColor = SecureVaultColorsScope.colors.surface,
+    cursorColor = SecureVaultColorsScope.colors.accent,
+    errorCursorColor = SecureVaultColorsScope.colors.danger,
+    focusedBorderColor = SecureVaultColorsScope.colors.accent,
+    unfocusedBorderColor = SecureVaultColorsScope.colors.separator,
+    disabledBorderColor = SecureVaultColorsScope.colors.separator.copy(alpha = 0.5f),
+    errorBorderColor = SecureVaultColorsScope.colors.danger,
+    focusedLabelColor = SecureVaultColorsScope.colors.accent,
+    unfocusedLabelColor = SecureVaultColorsScope.colors.secondaryLabel,
+    disabledLabelColor = SecureVaultColorsScope.colors.secondaryLabel.copy(alpha = 0.6f),
+    errorLabelColor = SecureVaultColorsScope.colors.danger,
+    focusedSupportingTextColor = SecureVaultColorsScope.colors.secondaryLabel,
+    unfocusedSupportingTextColor = SecureVaultColorsScope.colors.secondaryLabel,
+    errorSupportingTextColor = SecureVaultColorsScope.colors.danger,
+    focusedTrailingIconColor = SecureVaultColorsScope.colors.secondaryLabel,
+    unfocusedTrailingIconColor = SecureVaultColorsScope.colors.secondaryLabel,
+    errorTrailingIconColor = SecureVaultColorsScope.colors.danger
+)
 
 @Composable
-private fun fieldSupportingText(
-    error: String?,
-    supporting: String?,
-) {
+private fun fieldSupportingText(error: String?, supporting: String?) {
     val message = error ?: supporting ?: return
     Text(
         text = message,
-        style = MaterialTheme.typography.footnote,
+        style = MaterialTheme.typography.footnote
     )
 }
 
@@ -91,7 +87,7 @@ fun VaultTextField(
     error: String? = null,
     supporting: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true,
+    singleLine: Boolean = true
 ) {
     OutlinedTextField(
         value = value,
@@ -103,7 +99,7 @@ fun VaultTextField(
         keyboardOptions = keyboardOptions,
         singleLine = singleLine,
         shape = MaterialTheme.shapes.medium,
-        colors = vaultTextFieldColors(),
+        colors = vaultTextFieldColors()
     )
 }
 
@@ -120,7 +116,7 @@ fun VaultPasswordTextField(
     label: String,
     modifier: Modifier = Modifier,
     error: String? = null,
-    supporting: String? = null,
+    supporting: String? = null
 ) {
     var passwordVisible by remember { mutableStateOf(false) }
 
@@ -143,6 +139,6 @@ fun VaultPasswordTextField(
         },
         singleLine = true,
         shape = MaterialTheme.shapes.medium,
-        colors = vaultTextFieldColors(),
+        colors = vaultTextFieldColors()
     )
 }

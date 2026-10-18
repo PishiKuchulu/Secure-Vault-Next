@@ -35,7 +35,7 @@ fun VaultSheet(
     modifier: Modifier = Modifier,
     sheetState: SheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
     dragHandle: @Composable (() -> Unit)? = { BottomSheetDefaults.DragHandle() },
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.() -> Unit
 ) {
     val colors = SecureVaultColorsScope.colors
 
@@ -49,7 +49,7 @@ fun VaultSheet(
         tonalElevation = 0.dp,
         scrimColor = Color.Black.copy(alpha = 0.45f),
         dragHandle = dragHandle,
-        content = content,
+        content = content
     )
 }
 
@@ -62,6 +62,6 @@ fun ColumnScope.VaultSheetTitle(text: String) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleLarge,
-        color = SecureVaultColorsScope.colors.label,
+        color = SecureVaultColorsScope.colors.label
     )
 }
