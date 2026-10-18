@@ -11,7 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 
-/**
+/*
  * SecureVault Next motion tokens.
  *
  * Motion laws (from the design skills, translated to Compose):
@@ -31,16 +31,16 @@ import androidx.compose.ui.graphics.graphicsLayer
 val SecureVaultEaseOut: Easing = CubicBezierEasing(0.23f, 1f, 0.32f, 1f)
 
 /** Press-in feedback duration: lands on press-in, never later. */
-const val SecureVaultPressDurationMs = 120
+const val SECURE_VAULT_PRESS_DURATION_MS = 120
 
 /** Standard state-change duration (progress, color, selection). Always < 300ms. */
-const val SecureVaultStateChangeDurationMs = 250
+const val SECURE_VAULT_STATE_CHANGE_DURATION_MS = 250
 
 /**
  * Scale target for press feedback on buttons and cards (0.97).
  * List rows never scale — they use a background highlight instead.
  */
-const val SecureVaultPressScale = 0.97f
+const val SECURE_VAULT_PRESS_SCALE = 0.97f
 
 /**
  * Applies press-in scale feedback (0.97 over 120ms, ease-out) driven by
@@ -59,15 +59,16 @@ const val SecureVaultPressScale = 0.97f
 @Composable
 fun Modifier.pressScale(
     interactionSource: InteractionSource,
-    targetScale: Float = SecureVaultPressScale,
+    targetScale: Float = SECURE_VAULT_PRESS_SCALE,
 ): Modifier {
     val pressed by interactionSource.collectIsPressedAsState()
     val scale by animateFloatAsState(
         targetValue = if (pressed) targetScale else 1f,
-        animationSpec = tween(
-            durationMillis = SecureVaultPressDurationMs,
-            easing = SecureVaultEaseOut,
-        ),
+        animationSpec =
+            tween(
+                durationMillis = SECURE_VAULT_PRESS_DURATION_MS,
+                easing = SecureVaultEaseOut,
+            ),
         label = "secureVaultPressScale",
     )
     return this.graphicsLayer {

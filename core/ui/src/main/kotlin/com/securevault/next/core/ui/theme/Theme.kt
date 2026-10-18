@@ -72,7 +72,7 @@ private fun SecureVaultColors.toMaterialScheme(dark: Boolean): ColorScheme {
 fun SecureVaultTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colors = if (darkTheme) DarkSecureVaultColors else LightSecureVaultColors
     val colorScheme = colors.toMaterialScheme(darkTheme)
@@ -99,7 +99,7 @@ fun SecureVaultTheme(
             colorScheme = colorScheme,
             typography = SecureVaultTypography,
             shapes = SecureVaultShapes,
-            content = content
+            content = content,
         )
     }
 }

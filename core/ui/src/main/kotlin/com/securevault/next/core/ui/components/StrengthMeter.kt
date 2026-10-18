@@ -20,9 +20,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.securevault.next.core.ui.theme.SECURE_VAULT_STATE_CHANGE_DURATION_MS
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultEaseOut
-import com.securevault.next.core.ui.theme.SecureVaultStateChangeDurationMs
 import com.securevault.next.core.ui.theme.footnote
 
 /**
@@ -49,22 +49,25 @@ fun StrengthMeter(
 
     val animatedScore by animateFloatAsState(
         targetValue = clamped,
-        animationSpec = tween(
-            durationMillis = SecureVaultStateChangeDurationMs,
-            easing = SecureVaultEaseOut,
-        ),
+        animationSpec =
+            tween(
+                durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
+                easing = SecureVaultEaseOut,
+            ),
         label = "strengthProgress",
     )
     val meterColor by animateColorAsState(
-        targetValue = when {
-            clamped < 0.34f -> colors.danger
-            clamped < 0.67f -> colors.warning
-            else -> colors.success
-        },
-        animationSpec = tween(
-            durationMillis = SecureVaultStateChangeDurationMs,
-            easing = SecureVaultEaseOut,
-        ),
+        targetValue =
+            when {
+                clamped < 0.34f -> colors.danger
+                clamped < 0.67f -> colors.warning
+                else -> colors.success
+            },
+        animationSpec =
+            tween(
+                durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
+                easing = SecureVaultEaseOut,
+            ),
         label = "strengthColor",
     )
 
@@ -82,18 +85,20 @@ fun StrengthMeter(
             )
         }
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(6.dp)
-                .clip(RoundedCornerShape(3.dp))
-                .background(colors.fill),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(animatedScore)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
                     .height(6.dp)
                     .clip(RoundedCornerShape(3.dp))
-                    .background(meterColor),
+                    .background(colors.fill),
+        ) {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxWidth(animatedScore)
+                        .height(6.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .background(meterColor),
             )
         }
     }

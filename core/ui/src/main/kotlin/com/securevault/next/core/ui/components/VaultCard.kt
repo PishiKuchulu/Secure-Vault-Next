@@ -52,22 +52,24 @@ fun VaultCard(
     val spacing = SecureVaultSpacingScope.spacing
 
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = 64.dp)
-            .clickable(
-                onClick = onClick,
-                onClickLabel = onClickLabel ?: title,
-                role = Role.Button,
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .heightIn(min = 64.dp)
+                .clickable(
+                    onClick = onClick,
+                    onClickLabel = onClickLabel ?: title,
+                    role = Role.Button,
+                ),
         shape = MaterialTheme.shapes.large,
         color = colors.surface,
         contentColor = colors.label,
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = spacing.medium, vertical = spacing.small + spacing.extraSmall),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = spacing.medium, vertical = spacing.small + spacing.extraSmall),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(spacing.small),
         ) {

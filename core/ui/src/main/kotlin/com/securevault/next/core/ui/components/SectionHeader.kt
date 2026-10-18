@@ -46,14 +46,15 @@ fun SectionHeader(
     val spacing = SecureVaultSpacingScope.spacing
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                start = spacing.medium,
-                end = spacing.medium,
-                top = spacing.large,
-                bottom = spacing.small,
-            ),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(
+                    start = spacing.medium,
+                    end = spacing.medium,
+                    top = spacing.large,
+                    bottom = spacing.small,
+                ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(spacing.small),
     ) {
@@ -103,22 +104,24 @@ fun SettingsRow(
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
-    val rowModifier = if (onClick != null) {
-        modifier.clickable(
-            onClick = onClick,
-            onClickLabel = onClickLabel ?: title,
-            role = Role.Button,
-        )
-    } else {
-        modifier
-    }
+    val rowModifier =
+        if (onClick != null) {
+            modifier.clickable(
+                onClick = onClick,
+                onClickLabel = onClickLabel ?: title,
+                role = Role.Button,
+            )
+        } else {
+            modifier
+        }
 
     Column(modifier = rowModifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 56.dp)
-                .padding(horizontal = spacing.medium, vertical = spacing.small),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 56.dp)
+                    .padding(horizontal = spacing.medium, vertical = spacing.small),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(spacing.small),
         ) {

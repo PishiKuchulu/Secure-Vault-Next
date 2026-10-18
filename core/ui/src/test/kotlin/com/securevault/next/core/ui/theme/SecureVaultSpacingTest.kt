@@ -11,19 +11,19 @@ import org.junit.Test
  * non-8dp-multiple value.
  */
 class SecureVaultSpacingTest {
-
     private val spacing = SecureVaultSpacing()
 
     @Test
     fun `every non-zero spacing value is a multiple of 4dp`() {
-        val values = listOf(
-            spacing.extraSmall,
-            spacing.small,
-            spacing.medium,
-            spacing.large,
-            spacing.extraLarge,
-            spacing.extraExtraLarge,
-        )
+        val values =
+            listOf(
+                spacing.extraSmall,
+                spacing.small,
+                spacing.medium,
+                spacing.large,
+                spacing.extraLarge,
+                spacing.extraExtraLarge,
+            )
 
         values.forEach { value ->
             val isMultipleOfBaseUnit = (value.value % 4f) == 0f
@@ -33,15 +33,16 @@ class SecureVaultSpacingTest {
 
     @Test
     fun `spacing scale increases monotonically`() {
-        val orderedValues = listOf(
-            spacing.none,
-            spacing.extraSmall,
-            spacing.small,
-            spacing.medium,
-            spacing.large,
-            spacing.extraLarge,
-            spacing.extraExtraLarge,
-        )
+        val orderedValues =
+            listOf(
+                spacing.none,
+                spacing.extraSmall,
+                spacing.small,
+                spacing.medium,
+                spacing.large,
+                spacing.extraLarge,
+                spacing.extraExtraLarge,
+            )
 
         for (index in 0 until orderedValues.lastIndex) {
             assertThat(orderedValues[index].value).isLessThan(orderedValues[index + 1].value)

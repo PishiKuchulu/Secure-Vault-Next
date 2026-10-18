@@ -45,24 +45,24 @@ val AccentSoftDark = Color(0xFF14283F)
  * Cool neutral grey family (single family, light theme).
  * Used structurally, never as decoration.
  */
-private val GreyLightBase = Color(0xFFF2F2F7)      // screen base (inset-grouped)
-private val GreyLightSurface = Color(0xFFFFFFFF)   // cards, sheets
-private val GreyLightLabel = Color(0xFF111214)     // primary text
+private val GreyLightBase = Color(0xFFF2F2F7) // screen base (inset-grouped)
+private val GreyLightSurface = Color(0xFFFFFFFF) // cards, sheets
+private val GreyLightLabel = Color(0xFF111214) // primary text
 private val GreyLightSecondaryLabel = Color(0xFF6C6C70) // secondary text, 5.2:1 on surface
 private val GreyLightSeparator = Color(0xFFD1D1D6) // hairlines
-private val GreyLightFill = Color(0xFFE9E9EE)      // subtle fills (chips, pressed states)
+private val GreyLightFill = Color(0xFFE9E9EE) // subtle fills (chips, pressed states)
 
 /*
  * Cool neutral grey family (single family, dark theme).
  */
-private val GreyDarkBase = Color(0xFF0A0A0C)       // screen base
-private val GreyDarkSurface = Color(0xFF1C1C1E)    // cards, sheets
-private val GreyDarkLabel = Color(0xFFFFFFFF)      // primary text
+private val GreyDarkBase = Color(0xFF0A0A0C) // screen base
+private val GreyDarkSurface = Color(0xFF1C1C1E) // cards, sheets
+private val GreyDarkLabel = Color(0xFFFFFFFF) // primary text
 private val GreyDarkSecondaryLabel = Color(0xFF9B9BA1) // secondary text
-private val GreyDarkSeparator = Color(0xFF38383C)  // hairlines
-private val GreyDarkFill = Color(0xFF2C2C30)       // subtle fills
+private val GreyDarkSeparator = Color(0xFF38383C) // hairlines
+private val GreyDarkFill = Color(0xFF2C2C30) // subtle fills
 
-/* Semantic signal colors: one meaning per color, both themes. */
+// Semantic signal colors: one meaning per color, both themes.
 
 val SuccessLight = Color(0xFF237A3B)
 val SuccessDark = Color(0xFF3FB950)
@@ -111,37 +111,39 @@ data class SecureVaultColors(
     val onDanger: Color,
 )
 
-val LightSecureVaultColors = SecureVaultColors(
-    baseBackground = GreyLightBase,
-    surface = GreyLightSurface,
-    label = GreyLightLabel,
-    secondaryLabel = GreyLightSecondaryLabel,
-    separator = GreyLightSeparator,
-    fill = GreyLightFill,
-    accent = AccentLight,
-    onAccent = OnAccentLight,
-    accentSoft = AccentSoftLight,
-    success = SuccessLight,
-    warning = WarningLight,
-    danger = DangerLight,
-    onDanger = OnDangerLight,
-)
+val LightSecureVaultColors =
+    SecureVaultColors(
+        baseBackground = GreyLightBase,
+        surface = GreyLightSurface,
+        label = GreyLightLabel,
+        secondaryLabel = GreyLightSecondaryLabel,
+        separator = GreyLightSeparator,
+        fill = GreyLightFill,
+        accent = AccentLight,
+        onAccent = OnAccentLight,
+        accentSoft = AccentSoftLight,
+        success = SuccessLight,
+        warning = WarningLight,
+        danger = DangerLight,
+        onDanger = OnDangerLight,
+    )
 
-val DarkSecureVaultColors = SecureVaultColors(
-    baseBackground = GreyDarkBase,
-    surface = GreyDarkSurface,
-    label = GreyDarkLabel,
-    secondaryLabel = GreyDarkSecondaryLabel,
-    separator = GreyDarkSeparator,
-    fill = GreyDarkFill,
-    accent = AccentDark,
-    onAccent = OnAccentDark,
-    accentSoft = AccentSoftDark,
-    success = SuccessDark,
-    warning = WarningDark,
-    danger = DangerDark,
-    onDanger = OnDangerDark,
-)
+val DarkSecureVaultColors =
+    SecureVaultColors(
+        baseBackground = GreyDarkBase,
+        surface = GreyDarkSurface,
+        label = GreyDarkLabel,
+        secondaryLabel = GreyDarkSecondaryLabel,
+        separator = GreyDarkSeparator,
+        fill = GreyDarkFill,
+        accent = AccentDark,
+        onAccent = OnAccentDark,
+        accentSoft = AccentSoftDark,
+        success = SuccessDark,
+        warning = WarningDark,
+        danger = DangerDark,
+        onDanger = OnDangerDark,
+    )
 
 internal val LocalSecureVaultColors = staticCompositionLocalOf { LightSecureVaultColors }
 
