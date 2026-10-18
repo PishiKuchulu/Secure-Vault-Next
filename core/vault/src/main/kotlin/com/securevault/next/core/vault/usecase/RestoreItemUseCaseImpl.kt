@@ -18,9 +18,9 @@ import com.securevault.next.core.domain.repository.SshKeyRepository
 import com.securevault.next.core.domain.repository.TotpRepository
 import com.securevault.next.core.domain.result.DomainResult
 import com.securevault.next.core.domain.usecase.RestoreItemUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * The [RestoreItemUseCase] implementation (Finding M10).
@@ -33,44 +33,43 @@ import javax.inject.Inject
  * skipped; the first success wins.
  */
 class RestoreItemUseCaseImpl
-    @Inject
-    constructor(
-        private val passwordRepository: PasswordRepository,
-        private val notesRepository: NotesRepository,
-        private val creditCardRepository: CreditCardRepository,
-        private val bankAccountRepository: BankAccountRepository,
-        private val identityRepository: IdentityRepository,
-        private val softwareLicenseRepository: SoftwareLicenseRepository,
-        private val apiKeyRepository: ApiKeyRepository,
-        private val sshKeyRepository: SshKeyRepository,
-        private val recoveryCodeRepository: RecoveryCodeRepository,
-        private val totpRepository: TotpRepository,
-        @Dispatcher(SecureVaultDispatcher.Io) private val ioDispatcher: CoroutineDispatcher,
-    ) : RestoreItemUseCase {
-        override suspend fun invoke(itemId: ItemId): DomainResult<VaultItem> =
-            withContext(ioDispatcher) {
-                val attempts: List<suspend () -> DomainResult<VaultItem>> =
-                    listOf(
-                        { passwordRepository.restoreItem(itemId) },
-                        { notesRepository.restoreItem(itemId) },
-                        { creditCardRepository.restoreItem(itemId) },
-                        { bankAccountRepository.restoreItem(itemId) },
-                        { identityRepository.restoreItem(itemId) },
-                        { softwareLicenseRepository.restoreItem(itemId) },
-                        { apiKeyRepository.restoreItem(itemId) },
-                        { sshKeyRepository.restoreItem(itemId) },
-                        { recoveryCodeRepository.restoreItem(itemId) },
-                        { totpRepository.restoreItem(itemId) },
-                    )
+@Inject
+constructor(
+    private val passwordRepository: PasswordRepository,
+    private val notesRepository: NotesRepository,
+    private val creditCardRepository: CreditCardRepository,
+    private val bankAccountRepository: BankAccountRepository,
+    private val identityRepository: IdentityRepository,
+    private val softwareLicenseRepository: SoftwareLicenseRepository,
+    private val apiKeyRepository: ApiKeyRepository,
+    private val sshKeyRepository: SshKeyRepository,
+    private val recoveryCodeRepository: RecoveryCodeRepository,
+    private val totpRepository: TotpRepository,
+    @Dispatcher(SecureVaultDispatcher.Io) private val ioDispatcher: CoroutineDispatcher
+) : RestoreItemUseCase {
+    override suspend fun invoke(itemId: ItemId): DomainResult<VaultItem> = withContext(ioDispatcher) {
+        val attempts: List<suspend () -> DomainResult<VaultItem>> =
+            listOf(
+                { passwordRepository.restoreItem(itemId) },
+                { notesRepository.restoreItem(itemId) },
+                { creditCardRepository.restoreItem(itemId) },
+                { bankAccountRepository.restoreItem(itemId) },
+                { identityRepository.restoreItem(itemId) },
+                { softwareLicenseRepository.restoreItem(itemId) },
+                { apiKeyRepository.restoreItem(itemId) },
+                { sshKeyRepository.restoreItem(itemId) },
+                { recoveryCodeRepository.restoreItem(itemId) },
+                { totpRepository.restoreItem(itemId) }
+            )
 
-                var lastError: DomainError =
-                    DomainError.RepositoryError.NotFound(entityId = itemId.value, entityType = "item")
-                for (attempt in attempts) {
-                    when (val result = attempt()) {
-                        is Result.Success -> return@withContext result
-                        is Result.Failure -> lastError = result.error
-                    }
-                }
-                DomainResult.failure(lastError)
+        var lastError: DomainError =
+            DomainError.RepositoryError.NotFound(entityId = itemId.value, entityType = "item")
+        for (attempt in attempts) {
+            when (val result = attempt()) {
+                is Result.Success -> return@withContext result
+                is Result.Failure -> lastError = result.error
             }
+        }
+        DomainResult.failure(lastError)
     }
+}

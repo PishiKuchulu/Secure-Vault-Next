@@ -27,16 +27,15 @@ import javax.inject.Inject
  * case, not a silent no-op and not an invented error.
  */
 class CloseVaultUseCaseImpl
-    @Inject
-    constructor(
-        private val sessionManager: VaultSessionManager,
-    ) : CloseVaultUseCase {
-        override suspend fun invoke(vaultId: VaultId): DomainResult<Unit> {
-            val closed = sessionManager.lock(reason = LockTrigger.EXPLICIT)
-            return if (closed) {
-                DomainResult.success(Unit)
-            } else {
-                DomainResult.failure(DomainError.VaultError.AlreadyLocked(vaultId))
-            }
+@Inject
+constructor(private val sessionManager: VaultSessionManager) :
+    CloseVaultUseCase {
+    override suspend fun invoke(vaultId: VaultId): DomainResult<Unit> {
+        val closed = sessionManager.lock(reason = LockTrigger.EXPLICIT)
+        return if (closed) {
+            DomainResult.success(Unit)
+        } else {
+            DomainResult.failure(DomainError.VaultError.AlreadyLocked(vaultId))
         }
     }
+}

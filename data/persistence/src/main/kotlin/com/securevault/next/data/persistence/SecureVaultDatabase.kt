@@ -63,10 +63,10 @@ import com.securevault.next.data.persistence.entity.VaultEntity
         RecoveryCodeValueEntity::class,
         TotpSeedEntity::class,
         AuditResultEntity::class,
-        BackupMetadataEntity::class,
+        BackupMetadataEntity::class
     ],
     version = 3,
-    exportSchema = true,
+    exportSchema = true
 )
 @TypeConverters(VaultTypeConverters::class)
 abstract class SecureVaultDatabase :
@@ -100,7 +100,7 @@ abstract class SecureVaultDatabase :
             object : Migration(1, 2) {
                 override fun migrate(db: SupportSQLiteDatabase) {
                     db.execSQL(
-                        "ALTER TABLE vaults ADD COLUMN envelope_json TEXT",
+                        "ALTER TABLE vaults ADD COLUMN envelope_json TEXT"
                     )
                 }
             }
@@ -190,7 +190,7 @@ abstract class SecureVaultDatabase :
                         CREATE TRIGGER IF NOT EXISTS trg_items_fts_insert AFTER INSERT ON items BEGIN
                             INSERT INTO items_fts(item_id, title, notes) VALUES (new.id, new.title, NULL);
                         END
-                        """.trimIndent(),
+                        """.trimIndent()
                     )
                     db.execSQL(
                         """
@@ -198,14 +198,14 @@ abstract class SecureVaultDatabase :
                             DELETE FROM items_fts WHERE item_id = old.id;
                             INSERT INTO items_fts(item_id, title, notes) VALUES (new.id, new.title, NULL);
                         END
-                        """.trimIndent(),
+                        """.trimIndent()
                     )
                     db.execSQL(
                         """
                         CREATE TRIGGER IF NOT EXISTS trg_items_fts_delete AFTER DELETE ON items BEGIN
                             DELETE FROM items_fts WHERE item_id = old.id;
                         END
-                        """.trimIndent(),
+                        """.trimIndent()
                     )
                 }
 
@@ -215,7 +215,7 @@ abstract class SecureVaultDatabase :
                         INSERT INTO items_fts(item_id, title, notes)
                         SELECT id, title, NULL FROM items
                         WHERE NOT EXISTS (SELECT 1 FROM items_fts LIMIT 1)
-                        """.trimIndent(),
+                        """.trimIndent()
                     )
                 }
             }

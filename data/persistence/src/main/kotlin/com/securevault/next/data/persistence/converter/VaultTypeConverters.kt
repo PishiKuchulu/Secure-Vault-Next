@@ -151,8 +151,7 @@ class VaultTypeConverters {
      * every vault supports.
      */
     @TypeConverter
-    fun toAuthenticationMethod(value: String?): AuthenticationMethod? =
-        value?.let {
-            runCatching { AuthenticationMethod.valueOf(it) }.getOrNull() ?: AuthenticationMethod.MASTER_PASSWORD
-        }
+    fun toAuthenticationMethod(value: String?): AuthenticationMethod? = value?.let {
+        runCatching { AuthenticationMethod.valueOf(it) }.getOrNull() ?: AuthenticationMethod.MASTER_PASSWORD
+    }
 }

@@ -22,7 +22,7 @@ class SecureVaultSpacingTest {
                 spacing.medium,
                 spacing.large,
                 spacing.extraLarge,
-                spacing.extraExtraLarge,
+                spacing.extraExtraLarge
             )
 
         values.forEach { value ->
@@ -41,7 +41,7 @@ class SecureVaultSpacingTest {
                 spacing.medium,
                 spacing.large,
                 spacing.extraLarge,
-                spacing.extraExtraLarge,
+                spacing.extraExtraLarge
             )
 
         for (index in 0 until orderedValues.lastIndex) {

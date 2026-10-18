@@ -8,9 +8,9 @@ import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.repository.SearchRepository
 import com.securevault.next.core.domain.result.DomainResult
 import com.securevault.next.core.domain.usecase.SearchItemsUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * The [SearchItemsUseCase] implementation (Finding M10): a thin
@@ -18,16 +18,13 @@ import javax.inject.Inject
  * shape of the other single-repository use cases.
  */
 class SearchItemsUseCaseImpl
-    @Inject
-    constructor(
-        private val searchRepository: SearchRepository,
-        @Dispatcher(SecureVaultDispatcher.Io) private val ioDispatcher: CoroutineDispatcher,
-    ) : SearchItemsUseCase {
-        override suspend fun invoke(
-            vaultId: VaultId,
-            filter: SearchFilter,
-        ): DomainResult<SearchResult> =
-            withContext(ioDispatcher) {
-                searchRepository.search(vaultId, filter)
-            }
-    }
+@Inject
+constructor(
+    private val searchRepository: SearchRepository,
+    @Dispatcher(SecureVaultDispatcher.Io) private val ioDispatcher: CoroutineDispatcher
+) : SearchItemsUseCase {
+    override suspend fun invoke(vaultId: VaultId, filter: SearchFilter): DomainResult<SearchResult> =
+        withContext(ioDispatcher) {
+            searchRepository.search(vaultId, filter)
+        }
+}
