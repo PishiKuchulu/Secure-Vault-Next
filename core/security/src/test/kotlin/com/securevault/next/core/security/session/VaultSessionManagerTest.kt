@@ -4,10 +4,10 @@ import com.google.common.truth.Truth.assertThat
 import com.securevault.next.core.domain.model.VaultSession
 import com.securevault.next.core.domain.model.enums.AuthenticationMethod
 import com.securevault.next.core.domain.model.valueobject.VaultId
+import java.time.Instant
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import java.time.Instant
 
 class VaultSessionManagerTest {
 

@@ -18,9 +18,9 @@ import com.securevault.next.core.domain.repository.SshKeyRepository
 import com.securevault.next.core.domain.repository.TotpRepository
 import com.securevault.next.core.domain.result.DomainResult
 import com.securevault.next.core.domain.usecase.RestoreItemUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * The [RestoreItemUseCase] implementation (Finding M10).

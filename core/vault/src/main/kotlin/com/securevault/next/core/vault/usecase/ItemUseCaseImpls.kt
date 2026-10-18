@@ -2,16 +2,35 @@ package com.securevault.next.core.vault.usecase
 
 import com.securevault.next.core.common.dispatcher.Dispatcher
 import com.securevault.next.core.common.dispatcher.SecureVaultDispatcher
-import com.securevault.next.core.domain.model.item.*
+import com.securevault.next.core.domain.model.item.ApiKey
+import com.securevault.next.core.domain.model.item.BankAccount
+import com.securevault.next.core.domain.model.item.CreditCard
+import com.securevault.next.core.domain.model.item.IdentityDocument
+import com.securevault.next.core.domain.model.item.PasswordItem
+import com.securevault.next.core.domain.model.item.RecoveryCode
+import com.securevault.next.core.domain.model.item.SSHKey
+import com.securevault.next.core.domain.model.item.SecureNote
+import com.securevault.next.core.domain.model.item.SoftwareLicense
+import com.securevault.next.core.domain.model.item.TOTPSeed
+import com.securevault.next.core.domain.model.item.VaultItem
 import com.securevault.next.core.domain.model.valueobject.ItemId
-import com.securevault.next.core.domain.repository.*
+import com.securevault.next.core.domain.repository.ApiKeyRepository
+import com.securevault.next.core.domain.repository.BankAccountRepository
+import com.securevault.next.core.domain.repository.CreditCardRepository
+import com.securevault.next.core.domain.repository.IdentityRepository
+import com.securevault.next.core.domain.repository.NotesRepository
+import com.securevault.next.core.domain.repository.PasswordRepository
+import com.securevault.next.core.domain.repository.RecoveryCodeRepository
+import com.securevault.next.core.domain.repository.SoftwareLicenseRepository
+import com.securevault.next.core.domain.repository.SshKeyRepository
+import com.securevault.next.core.domain.repository.TotpRepository
 import com.securevault.next.core.domain.result.DomainResult
 import com.securevault.next.core.domain.usecase.CreateItemUseCase
-import com.securevault.next.core.domain.usecase.UpdateItemUseCase
 import com.securevault.next.core.domain.usecase.DeleteItemUseCase
+import com.securevault.next.core.domain.usecase.UpdateItemUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class CreateItemUseCaseImpl @Inject constructor(
     private val passwordRepository: PasswordRepository,

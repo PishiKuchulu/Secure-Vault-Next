@@ -12,7 +12,10 @@ object DomainErrorHandler {
     /** Maps any [Throwable] into a standard [DomainError.UnexpectedError]. */
     fun fromThrowable(t: Throwable): DomainError {
         return when (t) {
-            is IllegalArgumentException -> DomainError.ValidationError.InvalidFormat("input", t.message ?: "Invalid data")
+            is IllegalArgumentException -> DomainError.ValidationError.InvalidFormat(
+                "input",
+                t.message ?: "Invalid data",
+            )
             is java.io.IOException -> DomainError.RepositoryError.ReadFailed("IO failure", t)
             else -> DomainError.UnexpectedError(t.message ?: "An unknown error occurred", t)
         }

@@ -1,12 +1,12 @@
 package com.securevault.next.core.security.session
 
 import com.securevault.next.core.domain.model.VaultSession
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * The runtime lifecycle state of the active vault session, observable via
@@ -142,7 +142,9 @@ class VaultSessionManager @Inject constructor(
         true
     }
 
-    /** Records user activity on the active session; no-op when locked. Returns the previous [VaultSession] or `null`. */
+    /**
+     * Records user activity on the active session; no-op when locked. Returns the previous [VaultSession] or `null`.
+     */
     fun touch(): VaultSession? = synchronized(monitor) {
         val active = session ?: return null
         val updated = active.copy(lastActivityAt = clock.now())

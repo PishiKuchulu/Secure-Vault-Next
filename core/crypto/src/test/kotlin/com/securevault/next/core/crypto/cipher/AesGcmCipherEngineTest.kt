@@ -8,8 +8,8 @@ import com.securevault.next.core.crypto.memory.SecureBytes
 import com.securevault.next.core.crypto.random.SystemSecureRandomProvider
 import com.securevault.next.core.crypto.result.CryptoResult
 import com.securevault.next.core.domain.model.valueobject.EncryptedField
-import org.junit.Test
 import java.util.Base64
+import org.junit.Test
 
 class AesGcmCipherEngineTest {
 

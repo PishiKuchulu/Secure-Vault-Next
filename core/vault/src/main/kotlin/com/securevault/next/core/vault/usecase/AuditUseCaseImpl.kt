@@ -17,10 +17,10 @@ import com.securevault.next.core.domain.repository.VaultRepository
 import com.securevault.next.core.domain.result.DomainResult
 import com.securevault.next.core.domain.security.SecurityScoreEngine
 import com.securevault.next.core.domain.usecase.RunSecurityAuditUseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import java.time.Instant
 import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 class AuditUseCaseImpl @Inject constructor(
     private val vaultRepository: VaultRepository,
@@ -143,7 +143,9 @@ class AuditUseCaseImpl @Inject constructor(
     private fun generateRecommendations(weakCount: Int, reusedCount: Int): List<String> {
         val recs = mutableListOf<String>()
         if (weakCount > 0) recs.add("You have $weakCount weak passwords. Use the generator to create stronger ones.")
-        if (reusedCount > 0) recs.add("You have $reusedCount reused passwords. Unique passwords prevent cascade breaches.")
+        if (reusedCount > 0) {
+            recs.add("You have $reusedCount reused passwords. Unique passwords prevent cascade breaches.")
+        }
         return recs
     }
 }

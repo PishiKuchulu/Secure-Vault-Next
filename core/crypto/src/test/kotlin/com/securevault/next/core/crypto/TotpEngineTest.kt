@@ -48,14 +48,24 @@ class TotpEngineTest {
     @Test
     fun `matches RFC 6238 SHA256 vector at time 1111111109`() {
         assertThat(
-            TotpEngine.generateTotp(secretBase32sha256, timeMillis = 1_111_111_109_000, digits = 8, algorithm = "SHA256")
+            TotpEngine.generateTotp(
+                secretBase32sha256,
+                timeMillis = 1_111_111_109_000,
+                digits = 8,
+                algorithm = "SHA256",
+            )
         ).isEqualTo("68084774")
     }
 
     @Test
     fun `matches RFC 6238 SHA512 vector at time 1111111109`() {
         assertThat(
-            TotpEngine.generateTotp(secretBase32sha512, timeMillis = 1_111_111_109_000, digits = 8, algorithm = "SHA512")
+            TotpEngine.generateTotp(
+                secretBase32sha512,
+                timeMillis = 1_111_111_109_000,
+                digits = 8,
+                algorithm = "SHA512",
+            )
         ).isEqualTo("25091201")
     }
 
@@ -98,7 +108,14 @@ class TotpEngineTest {
 
     @Test
     fun `algorithm is case-insensitive`() {
-        assertThat(TotpEngine.generateTotp(secretBase32sha256, timeMillis = 59_000, digits = 8, algorithm = "hmacsha256"))
+        assertThat(
+            TotpEngine.generateTotp(
+                secretBase32sha256,
+                timeMillis = 59_000,
+                digits = 8,
+                algorithm = "hmacsha256",
+            ),
+        )
             .isEqualTo("46119246")
     }
 

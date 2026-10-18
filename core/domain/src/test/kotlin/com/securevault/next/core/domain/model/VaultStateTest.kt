@@ -3,8 +3,8 @@ package com.securevault.next.core.domain.model
 import com.google.common.truth.Truth.assertThat
 import com.securevault.next.core.domain.model.enums.AuthenticationMethod
 import com.securevault.next.core.domain.model.valueobject.VaultId
-import org.junit.Test
 import java.time.Instant
+import org.junit.Test
 
 class VaultStateTest {
 

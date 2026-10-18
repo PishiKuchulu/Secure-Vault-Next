@@ -2,8 +2,8 @@ package com.securevault.next.core.crypto.key
 
 import com.google.common.truth.Truth.assertThat
 import com.securevault.next.core.crypto.memory.SecureBytes
-import org.junit.Test
 import java.util.Collections
+import org.junit.Test
 
 class SessionKeyHolderTest {
 

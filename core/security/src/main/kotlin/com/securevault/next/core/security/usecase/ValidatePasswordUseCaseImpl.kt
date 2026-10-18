@@ -1,8 +1,8 @@
 package com.securevault.next.core.security.usecase
 
 import com.securevault.next.core.domain.model.valueobject.PasswordStrength
-import com.securevault.next.core.domain.usecase.ValidatePasswordUseCase
 import com.securevault.next.core.domain.security.SecurityScoreEngine
+import com.securevault.next.core.domain.usecase.ValidatePasswordUseCase
 import javax.inject.Inject
 
 /**

@@ -11,9 +11,9 @@ import com.securevault.next.core.domain.repository.VaultRepository
 import com.securevault.next.core.domain.result.DomainResult
 import com.securevault.next.core.domain.usecase.ChangeMasterPasswordUseCase
 import com.securevault.next.core.domain.validation.MasterPasswordValidator
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * Changes a vault's master password.

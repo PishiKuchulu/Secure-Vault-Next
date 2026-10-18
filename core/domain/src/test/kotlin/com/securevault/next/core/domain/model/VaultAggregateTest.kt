@@ -11,8 +11,8 @@ import com.securevault.next.core.domain.model.valueobject.UpdatedAt
 import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.model.valueobject.VaultName
 import com.securevault.next.core.domain.model.valueobject.Version
-import org.junit.Test
 import java.time.Instant
+import org.junit.Test
 
 class VaultAggregateTest {
 

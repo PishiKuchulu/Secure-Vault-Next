@@ -8,9 +8,9 @@ import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.repository.SearchRepository
 import com.securevault.next.core.domain.result.DomainResult
 import com.securevault.next.core.domain.usecase.SearchItemsUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * The [SearchItemsUseCase] implementation (Finding M10): a thin
