@@ -27,27 +27,19 @@ object MemoryWiper {
      * Executes [block] with [sensitiveData], then wipes [sensitiveData]
      * immediately after, regardless of whether [block] succeeded.
      */
-    inline fun <T> useAndWipe(
-        sensitiveData: CharArray,
-        block: (CharArray) -> T,
-    ): T =
-        try {
-            block(sensitiveData)
-        } finally {
-            wipe(sensitiveData)
-        }
+    inline fun <T> useAndWipe(sensitiveData: CharArray, block: (CharArray) -> T): T = try {
+        block(sensitiveData)
+    } finally {
+        wipe(sensitiveData)
+    }
 
     /**
      * Executes [block] with [sensitiveData], then wipes [sensitiveData]
      * immediately after, regardless of whether [block] succeeded.
      */
-    inline fun <T> useAndWipe(
-        sensitiveData: ByteArray,
-        block: (ByteArray) -> T,
-    ): T =
-        try {
-            block(sensitiveData)
-        } finally {
-            wipe(sensitiveData)
-        }
+    inline fun <T> useAndWipe(sensitiveData: ByteArray, block: (ByteArray) -> T): T = try {
+        block(sensitiveData)
+    } finally {
+        wipe(sensitiveData)
+    }
 }

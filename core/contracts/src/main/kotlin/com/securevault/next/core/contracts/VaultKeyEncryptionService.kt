@@ -11,10 +11,7 @@ import com.securevault.next.core.domain.result.DomainResult
  * never a crypto type. The caller (the create-vault use case) persists the
  * [envelopeJson] and hands the [vaultKeyBytes] to the session layer.
  */
-data class EnvelopeAndKey(
-    val envelopeJson: String,
-    val vaultKeyBytes: ByteArray,
-)
+data class EnvelopeAndKey(val envelopeJson: String, val vaultKeyBytes: ByteArray)
 
 /**
  * The pure-JVM seam between vault *orchestration* (`core:vault`) and vault
@@ -59,10 +56,7 @@ interface VaultKeyEncryptionService {
      * [masterPassword]. Returns the vault key bytes on success, or a domain
      * `AuthenticationError.InvalidCredentials` when the password is wrong.
      */
-    fun unwrapVaultKey(
-        envelopeJson: String,
-        masterPassword: CharArray,
-    ): DomainResult<ByteArray>
+    fun unwrapVaultKey(envelopeJson: String, masterPassword: CharArray): DomainResult<ByteArray>
 
     /**
      * Re-wraps the vault key under a new master password: verifies
@@ -78,6 +72,6 @@ interface VaultKeyEncryptionService {
     fun rotateMasterPassword(
         envelopeJson: String,
         currentPassword: CharArray,
-        newPassword: CharArray,
+        newPassword: CharArray
     ): DomainResult<String>
 }

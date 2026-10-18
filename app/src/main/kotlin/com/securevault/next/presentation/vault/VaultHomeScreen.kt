@@ -86,6 +86,8 @@ import com.securevault.next.core.ui.theme.SecureVaultEaseOut
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 import com.securevault.next.core.ui.theme.SecureVaultTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.Instant
+import javax.inject.Inject
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -94,8 +96,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Instant
-import javax.inject.Inject
 
 // Screen copy is centralized in strings.xml (vault_home_*). The lock-failure
 // message stays a const: it is set in the ViewModel, outside composition,
@@ -112,120 +112,117 @@ data class VaultHomeUiState(
     val error: String? = null,
     val lockError: String? = null,
     val isLocking: Boolean = false,
-    val noVault: Boolean = false,
+    val noVault: Boolean = false
 )
 
 @HiltViewModel
 class VaultHomeViewModel
-    @Inject
-    constructor(
-        private val vaultRepository: VaultRepository,
-        private val searchItems: SearchItemsUseCase,
-        private val lockVault: LockVaultUseCase,
-    ) : ViewModel() {
-        private val _uiState = MutableStateFlow(VaultHomeUiState())
-        val uiState: StateFlow<VaultHomeUiState> = _uiState.asStateFlow()
+@Inject
+constructor(
+    private val vaultRepository: VaultRepository,
+    private val searchItems: SearchItemsUseCase,
+    private val lockVault: LockVaultUseCase
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(VaultHomeUiState())
+    val uiState: StateFlow<VaultHomeUiState> = _uiState.asStateFlow()
 
-        private val _query = MutableStateFlow("")
-        val query: StateFlow<String> = _query.asStateFlow()
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> = _query.asStateFlow()
 
-        private var vaultId: VaultId? = null
+    private var vaultId: VaultId? = null
 
-        init {
-            viewModelScope.launch {
-                val metadata = vaultRepository.observeAllVaultMetadata().first().firstOrNull()
-                if (metadata == null) {
-                    _uiState.update { it.copy(isLoading = false, noVault = true) }
-                    return@launch
-                }
-                vaultId = metadata.id
-                _uiState.update { it.copy(vaultName = metadata.name.value) }
-                // The collector below emits the current query ("") right away,
-                // debounced — no separate initial search needed.
-                observeQuery(metadata.id)
+    init {
+        viewModelScope.launch {
+            val metadata = vaultRepository.observeAllVaultMetadata().first().firstOrNull()
+            if (metadata == null) {
+                _uiState.update { it.copy(isLoading = false, noVault = true) }
+                return@launch
             }
+            vaultId = metadata.id
+            _uiState.update { it.copy(vaultName = metadata.name.value) }
+            // The collector below emits the current query ("") right away,
+            // debounced — no separate initial search needed.
+            observeQuery(metadata.id)
         }
+    }
 
-        @OptIn(FlowPreview::class)
-        private suspend fun observeQuery(vaultId: VaultId) {
-            _query
-                .debounce(SEARCH_DEBOUNCE_MS)
-                .collect { runSearch(vaultId, it) }
-        }
+    @OptIn(FlowPreview::class)
+    private suspend fun observeQuery(vaultId: VaultId) {
+        _query
+            .debounce(SEARCH_DEBOUNCE_MS)
+            .collect { runSearch(vaultId, it) }
+    }
 
-        fun onQueryChange(query: String) {
-            _query.value = query
-        }
+    fun onQueryChange(query: String) {
+        _query.value = query
+    }
 
-        fun onRetry() {
-            val id = vaultId ?: return
-            viewModelScope.launch { runSearch(id, _query.value) }
-        }
+    fun onRetry() {
+        val id = vaultId ?: return
+        viewModelScope.launch { runSearch(id, _query.value) }
+    }
 
-        fun onLock(onLocked: () -> Unit) {
-            val id = vaultId ?: return
-            viewModelScope.launch {
-                _uiState.update { it.copy(isLocking = true, lockError = null) }
-                when (val result = lockVault(id)) {
-                    is Result.Success -> onLocked()
-                    is Result.Failure ->
-                        _uiState.update {
-                            it.copy(isLocking = false, lockError = STR_LOCK_FAILED)
-                        }
-                }
-            }
-        }
-
-        fun onLockErrorShown() {
-            _uiState.update { it.copy(lockError = null) }
-        }
-
-        private suspend fun runSearch(
-            vaultId: VaultId,
-            query: String,
-        ) {
-            val hadItems = _uiState.value.items.isNotEmpty()
-            _uiState.update {
-                it.copy(
-                    isLoading = !hadItems,
-                    isRefreshing = hadItems,
-                    error = null,
-                )
-            }
-            val filter =
-                if (query.isBlank()) {
-                    SearchFilter(
-                        sortField = SortField.UPDATED_AT,
-                        sortOrder = SortOrder.DESCENDING,
-                    )
-                } else {
-                    SearchFilter(
-                        query = query,
-                        sortField = SortField.TITLE,
-                        sortOrder = SortOrder.ASCENDING,
-                    )
-                }
-            when (val result = searchItems(vaultId, filter)) {
-                is Result.Success ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            isRefreshing = false,
-                            items = result.value.items,
-                            error = null,
-                        )
-                    }
+    fun onLock(onLocked: () -> Unit) {
+        val id = vaultId ?: return
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLocking = true, lockError = null) }
+            when (val result = lockVault(id)) {
+                is Result.Success -> onLocked()
                 is Result.Failure ->
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            isRefreshing = false,
-                            error = friendlyErrorMessage(result.error),
-                        )
+                        it.copy(isLocking = false, lockError = STR_LOCK_FAILED)
                     }
             }
         }
     }
+
+    fun onLockErrorShown() {
+        _uiState.update { it.copy(lockError = null) }
+    }
+
+    private suspend fun runSearch(vaultId: VaultId, query: String) {
+        val hadItems = _uiState.value.items.isNotEmpty()
+        _uiState.update {
+            it.copy(
+                isLoading = !hadItems,
+                isRefreshing = hadItems,
+                error = null
+            )
+        }
+        val filter =
+            if (query.isBlank()) {
+                SearchFilter(
+                    sortField = SortField.UPDATED_AT,
+                    sortOrder = SortOrder.DESCENDING
+                )
+            } else {
+                SearchFilter(
+                    query = query,
+                    sortField = SortField.TITLE,
+                    sortOrder = SortOrder.ASCENDING
+                )
+            }
+        when (val result = searchItems(vaultId, filter)) {
+            is Result.Success ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        isRefreshing = false,
+                        items = result.value.items,
+                        error = null
+                    )
+                }
+            is Result.Failure ->
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        isRefreshing = false,
+                        error = friendlyErrorMessage(result.error)
+                    )
+                }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -235,7 +232,7 @@ fun VaultHomeScreen(
     onOpenGenerator: () -> Unit,
     onOpenSettings: () -> Unit,
     onLock: () -> Unit,
-    viewModel: VaultHomeViewModel = hiltViewModel(),
+    viewModel: VaultHomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateLifecycleAware()
     val query by viewModel.query.collectAsStateLifecycleAware()
@@ -250,7 +247,7 @@ fun VaultHomeScreen(
         onOpenSettings = onOpenSettings,
         onLock = { viewModel.onLock(onLock) },
         onRetry = viewModel::onRetry,
-        onLockErrorShown = viewModel::onLockErrorShown,
+        onLockErrorShown = viewModel::onLockErrorShown
     )
 }
 
@@ -266,7 +263,7 @@ private fun VaultHomeContent(
     onOpenSettings: () -> Unit,
     onLock: () -> Unit,
     onRetry: () -> Unit,
-    onLockErrorShown: () -> Unit,
+    onLockErrorShown: () -> Unit
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -288,13 +285,13 @@ private fun VaultHomeContent(
                     IconButton(onClick = onOpenGenerator) {
                         Icon(
                             imageVector = Icons.Filled.AutoAwesome,
-                            contentDescription = stringResource(R.string.vault_home_generator_desc),
+                            contentDescription = stringResource(R.string.vault_home_generator_desc)
                         )
                     }
                     IconButton(onClick = onOpenSettings) {
                         Icon(
                             imageVector = Icons.Filled.Settings,
-                            contentDescription = stringResource(R.string.vault_home_settings_desc),
+                            contentDescription = stringResource(R.string.vault_home_settings_desc)
                         )
                     }
                     IconButton(onClick = onLock, enabled = !state.isLocking) {
@@ -302,53 +299,53 @@ private fun VaultHomeContent(
                             CircularProgressIndicator(
                                 modifier = Modifier.size(20.dp),
                                 strokeWidth = 2.dp,
-                                color = colors.accent,
+                                color = colors.accent
                             )
                         } else {
                             Icon(
                                 imageVector = Icons.Filled.Lock,
-                                contentDescription = stringResource(R.string.vault_home_lock_desc),
+                                contentDescription = stringResource(R.string.vault_home_lock_desc)
                             )
                         }
                     }
                 },
                 colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = colors.baseBackground,
-                        titleContentColor = colors.label,
-                        navigationIconContentColor = colors.label,
-                        actionIconContentColor = colors.accent,
-                    ),
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = colors.baseBackground,
+                    titleContentColor = colors.label,
+                    navigationIconContentColor = colors.label,
+                    actionIconContentColor = colors.accent
+                )
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = onAddItem,
                 containerColor = colors.accent,
-                contentColor = colors.onAccent,
+                contentColor = colors.onAccent
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(R.string.vault_home_add_desc),
+                    contentDescription = stringResource(R.string.vault_home_add_desc)
                 )
             }
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
             VaultSearchField(
                 query = query,
                 onQueryChange = onQueryChange,
                 modifier =
-                    Modifier.padding(
-                        horizontal = spacing.medium,
-                        vertical = spacing.small,
-                    ),
+                Modifier.padding(
+                    horizontal = spacing.medium,
+                    vertical = spacing.small
+                )
             )
             when {
                 state.noVault ->
@@ -357,12 +354,12 @@ private fun VaultHomeContent(
                         description = stringResource(R.string.vault_home_no_vault_description),
                         onRetry = onRetry,
                         retryLabel = stringResource(R.string.vault_home_retry),
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
                     )
                 state.isLoading ->
                     VaultListSkeleton(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = spacing.medium),
+                        contentPadding = PaddingValues(horizontal = spacing.medium)
                     )
                 state.error != null ->
                     ErrorState(
@@ -370,7 +367,7 @@ private fun VaultHomeContent(
                         description = state.error,
                         onRetry = onRetry,
                         retryLabel = stringResource(R.string.vault_home_retry),
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
                     )
                 state.items.isEmpty() && query.isBlank() ->
                     EmptyState(
@@ -379,7 +376,7 @@ private fun VaultHomeContent(
                         description = stringResource(R.string.vault_home_empty_description),
                         actionLabel = stringResource(R.string.vault_home_empty_action),
                         onAction = onAddItem,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
                     )
                 state.items.isEmpty() ->
                     EmptyState(
@@ -388,31 +385,31 @@ private fun VaultHomeContent(
                         description = stringResource(R.string.vault_home_no_results_description),
                         actionLabel = stringResource(R.string.vault_home_no_results_action),
                         onAction = { onQueryChange("") },
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize()
                     )
                 else -> {
                     SectionHeader(
                         title =
-                            if (query.isBlank()) {
-                                stringResource(R.string.vault_home_section_recent)
-                            } else {
-                                stringResource(R.string.vault_home_section_results)
-                            },
+                        if (query.isBlank()) {
+                            stringResource(R.string.vault_home_section_recent)
+                        } else {
+                            stringResource(R.string.vault_home_section_results)
+                        }
                     )
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding =
-                            PaddingValues(
-                                start = spacing.medium,
-                                end = spacing.medium,
-                                bottom = spacing.extraLarge,
-                            ),
-                        verticalArrangement = Arrangement.spacedBy(spacing.small),
+                        PaddingValues(
+                            start = spacing.medium,
+                            end = spacing.medium,
+                            bottom = spacing.extraLarge
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(spacing.small)
                     ) {
                         items(
                             items = state.items,
                             key = { it.metadata.id.value },
-                            contentType = { it.type },
+                            contentType = { it.type }
                         ) { item ->
                             VaultCard(
                                 title = item.metadata.title,
@@ -420,7 +417,7 @@ private fun VaultHomeContent(
                                 onClick = { onOpenItem(item.metadata.id.value) },
                                 onClickLabel = stringResource(R.string.vault_home_open_item, item.metadata.title),
                                 leading = { ItemTypeIcon(item) },
-                                modifier = Modifier.animateItem(),
+                                modifier = Modifier.animateItem()
                             )
                         }
                     }
@@ -440,16 +437,16 @@ private fun ItemTypeIcon(item: VaultItem) {
     val colors = SecureVaultColorsScope.colors
     Box(
         modifier =
-            Modifier
-                .size(40.dp)
-                .background(colors.fill, CircleShape),
-        contentAlignment = Alignment.Center,
+        Modifier
+            .size(40.dp)
+            .background(colors.fill, CircleShape),
+        contentAlignment = Alignment.Center
     ) {
         Icon(
             imageVector = item.type.uiIcon,
             contentDescription = null,
             modifier = Modifier.size(22.dp),
-            tint = colors.secondaryLabel,
+            tint = colors.secondaryLabel
         )
     }
 }
@@ -459,11 +456,7 @@ private fun ItemTypeIcon(item: VaultItem) {
  * lock, with a clear button while text is present.
  */
 @Composable
-private fun VaultSearchField(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+private fun VaultSearchField(query: String, onQueryChange: (String) -> Unit, modifier: Modifier = Modifier) {
     val colors = SecureVaultColorsScope.colors
     OutlinedTextField(
         value = query,
@@ -477,7 +470,7 @@ private fun VaultSearchField(
                 IconButton(onClick = { onQueryChange("") }) {
                     Icon(
                         imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(R.string.vault_home_clear_search_desc),
+                        contentDescription = stringResource(R.string.vault_home_clear_search_desc)
                     )
                 }
             }
@@ -486,34 +479,31 @@ private fun VaultSearchField(
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
         shape = MaterialTheme.shapes.medium,
         colors =
-            OutlinedTextFieldDefaults.colors(
-                focusedTextColor = colors.label,
-                unfocusedTextColor = colors.label,
-                focusedContainerColor = colors.fill,
-                unfocusedContainerColor = colors.fill,
-                cursorColor = colors.accent,
-                focusedBorderColor = colors.fill,
-                unfocusedBorderColor = colors.fill,
-                focusedLeadingIconColor = colors.secondaryLabel,
-                unfocusedLeadingIconColor = colors.secondaryLabel,
-                focusedTrailingIconColor = colors.secondaryLabel,
-                unfocusedTrailingIconColor = colors.secondaryLabel,
-                focusedPlaceholderColor = colors.secondaryLabel,
-                unfocusedPlaceholderColor = colors.secondaryLabel,
-            ),
+        OutlinedTextFieldDefaults.colors(
+            focusedTextColor = colors.label,
+            unfocusedTextColor = colors.label,
+            focusedContainerColor = colors.fill,
+            unfocusedContainerColor = colors.fill,
+            cursorColor = colors.accent,
+            focusedBorderColor = colors.fill,
+            unfocusedBorderColor = colors.fill,
+            focusedLeadingIconColor = colors.secondaryLabel,
+            unfocusedLeadingIconColor = colors.secondaryLabel,
+            focusedTrailingIconColor = colors.secondaryLabel,
+            unfocusedTrailingIconColor = colors.secondaryLabel,
+            focusedPlaceholderColor = colors.secondaryLabel,
+            unfocusedPlaceholderColor = colors.secondaryLabel
+        ),
         modifier =
-            modifier
-                .fillMaxWidth()
-                .heightIn(min = 48.dp),
+        modifier
+            .fillMaxWidth()
+            .heightIn(min = 48.dp)
     )
 }
 
 /** Loading skeleton shaped like the final rows: 16dp card, icon well, two text lines. */
 @Composable
-private fun VaultListSkeleton(
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(),
-) {
+private fun VaultListSkeleton(modifier: Modifier = Modifier, contentPadding: PaddingValues = PaddingValues()) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
     val transition = rememberInfiniteTransition(label = "vaultListSkeleton")
@@ -521,65 +511,65 @@ private fun VaultListSkeleton(
         initialValue = 0.45f,
         targetValue = 1f,
         animationSpec =
-            infiniteRepeatable(
-                animation = tween(durationMillis = 900, easing = SecureVaultEaseOut),
-                repeatMode = RepeatMode.Reverse,
-            ),
-        label = "skeletonAlpha",
+        infiniteRepeatable(
+            animation = tween(durationMillis = 900, easing = SecureVaultEaseOut),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "skeletonAlpha"
     )
 
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(spacing.small),
+        verticalArrangement = Arrangement.spacedBy(spacing.small)
     ) {
         items(6) {
             Surface(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 64.dp)
-                        .graphicsLayer { this.alpha = alpha },
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 64.dp)
+                    .graphicsLayer { this.alpha = alpha },
                 shape = MaterialTheme.shapes.large,
-                color = colors.surface,
+                color = colors.surface
             ) {
                 Row(
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                horizontal = spacing.medium,
-                                vertical = spacing.small + spacing.extraSmall,
-                            ),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = spacing.medium,
+                            vertical = spacing.small + spacing.extraSmall
+                        ),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(spacing.small),
+                    horizontalArrangement = Arrangement.spacedBy(spacing.small)
                 ) {
                     Box(
                         modifier =
-                            Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .background(colors.fill),
+                        Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(colors.fill)
                     )
                     Column(
                         verticalArrangement = Arrangement.spacedBy(6.dp),
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     ) {
                         Box(
                             modifier =
-                                Modifier
-                                    .height(14.dp)
-                                    .fillMaxWidth(0.55f)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(colors.fill),
+                            Modifier
+                                .height(14.dp)
+                                .fillMaxWidth(0.55f)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(colors.fill)
                         )
                         Box(
                             modifier =
-                                Modifier
-                                    .height(12.dp)
-                                    .fillMaxWidth(0.35f)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(colors.fill),
+                            Modifier
+                                .height(12.dp)
+                                .fillMaxWidth(0.35f)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(colors.fill)
                         )
                     }
                 }
@@ -593,24 +583,23 @@ private fun VaultListSkeleton(
 private fun previewItems(): List<VaultItem> {
     val now = Instant.now()
 
-    fun metadata(title: String) =
-        VaultItemMetadata(
-            id = ItemId("preview-$title"),
-            vaultId = VaultId("preview-vault"),
-            title = title,
-            createdAt = CreatedAt(now),
-            updatedAt = UpdatedAt(now),
-        )
+    fun metadata(title: String) = VaultItemMetadata(
+        id = ItemId("preview-$title"),
+        vaultId = VaultId("preview-vault"),
+        title = title,
+        createdAt = CreatedAt(now),
+        updatedAt = UpdatedAt(now)
+    )
     return listOf(
         PasswordItem(
             metadata = metadata("GitHub"),
             username = "octocat",
-            password = EncryptedField("cipher", "nonce"),
+            password = EncryptedField("cipher", "nonce")
         ),
         SecureNote(
             metadata = metadata("Wi-Fi details"),
-            content = EncryptedField("cipher", "nonce"),
-        ),
+            content = EncryptedField("cipher", "nonce")
+        )
     )
 }
 
@@ -620,11 +609,11 @@ private fun VaultHomeContentPreview() {
     SecureVaultTheme {
         VaultHomeContent(
             state =
-                VaultHomeUiState(
-                    vaultName = "Personal",
-                    isLoading = false,
-                    items = previewItems(),
-                ),
+            VaultHomeUiState(
+                vaultName = "Personal",
+                isLoading = false,
+                items = previewItems()
+            ),
             query = "",
             onQueryChange = {},
             onOpenItem = {},
@@ -633,7 +622,7 @@ private fun VaultHomeContentPreview() {
             onOpenSettings = {},
             onLock = {},
             onRetry = {},
-            onLockErrorShown = {},
+            onLockErrorShown = {}
         )
     }
 }
@@ -652,7 +641,7 @@ private fun VaultHomeEmptyPreview() {
             onOpenSettings = {},
             onLock = {},
             onRetry = {},
-            onLockErrorShown = {},
+            onLockErrorShown = {}
         )
     }
 }

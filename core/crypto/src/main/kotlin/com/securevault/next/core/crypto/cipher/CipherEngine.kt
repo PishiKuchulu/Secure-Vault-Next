@@ -24,12 +24,12 @@ interface CipherEngine {
     fun encrypt(
         plaintext: SecureBytes,
         key: SecureBytes,
-        associatedData: ByteArray = ByteArray(0),
+        associatedData: ByteArray = ByteArray(0)
     ): CryptoResult<EncryptedField>
 
     fun decrypt(
         encryptedField: EncryptedField,
         key: SecureBytes,
-        associatedData: ByteArray = ByteArray(0),
+        associatedData: ByteArray = ByteArray(0)
     ): CryptoResult<SecureBytes>
 }

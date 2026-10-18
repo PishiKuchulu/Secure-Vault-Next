@@ -48,13 +48,13 @@ import com.securevault.next.core.domain.repository.VaultRepository
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 import com.securevault.next.core.ui.theme.footnote
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Locale
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 
 /*
  * Shared presentation helpers for the vault item flows (home list,
@@ -87,23 +87,22 @@ internal fun <T> StateFlow<T>.collectAsStateLifecycleAware(): State<T> {
 internal suspend fun VaultRepository.firstVaultId(): VaultId? = observeAllVaultMetadata().first().firstOrNull()?.id
 
 /** Human-facing error copy for domain failures. Never surfaces raw technical messages. */
-internal fun friendlyErrorMessage(error: DomainError): String =
-    when (error) {
-        is DomainError.CryptoRequiredError ->
-            "The vault is locked. Unlock it and try again."
-        is DomainError.RepositoryError.NotFound ->
-            "This item couldn't be found. It may have been deleted."
-        is DomainError.RepositoryError ->
-            "Couldn't reach your vault data. Try again."
-        is DomainError.ValidationError ->
-            "Some values aren't valid. Check the highlighted fields."
-        is DomainError.VaultError ->
-            "There's a problem with this vault. Try again."
-        is DomainError.AuthenticationError ->
-            "Authentication failed. Try again."
-        else ->
-            "Something went wrong. Try again."
-    }
+internal fun friendlyErrorMessage(error: DomainError): String = when (error) {
+    is DomainError.CryptoRequiredError ->
+        "The vault is locked. Unlock it and try again."
+    is DomainError.RepositoryError.NotFound ->
+        "This item couldn't be found. It may have been deleted."
+    is DomainError.RepositoryError ->
+        "Couldn't reach your vault data. Try again."
+    is DomainError.ValidationError ->
+        "Some values aren't valid. Check the highlighted fields."
+    is DomainError.VaultError ->
+        "There's a problem with this vault. Try again."
+    is DomainError.AuthenticationError ->
+        "Authentication failed. Try again."
+    else ->
+        "Something went wrong. Try again."
+}
 
 /** Sentence-case, user-facing label per item type. */
 internal val ItemType.uiLabel: String
@@ -155,34 +154,31 @@ internal fun formatTotpCode(code: String): String = code.chunked(3).joinToString
  * sentence. For honest "not available yet" messaging — never an error.
  */
 @Composable
-internal fun QuietInfoNote(
-    text: String,
-    modifier: Modifier = Modifier,
-) {
+internal fun QuietInfoNote(text: String, modifier: Modifier = Modifier) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
 
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.large,
-        color = colors.accentSoft,
+        color = colors.accentSoft
     ) {
         Row(
             modifier = Modifier.padding(spacing.medium),
             horizontalArrangement = Arrangement.spacedBy(spacing.small),
-            verticalAlignment = Alignment.Top,
+            verticalAlignment = Alignment.Top
         ) {
             Icon(
                 imageVector = Icons.Filled.Info,
                 contentDescription = null,
                 tint = colors.accent,
-                modifier = Modifier.size(20.dp),
+                modifier = Modifier.size(20.dp)
             )
             Text(
                 text = text,
                 style = MaterialTheme.typography.footnote,
                 color = colors.label,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
             )
         }
     }
@@ -204,7 +200,7 @@ internal fun DetailFieldRow(
     copyContentDescription: String? = null,
     onCopy: (() -> Unit)? = null,
     showCopiedHint: Boolean = false,
-    copiedHintText: String = "",
+    copiedHintText: String = ""
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -212,42 +208,42 @@ internal fun DetailFieldRow(
 
     Column(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = spacing.medium,
-                    vertical = spacing.small + spacing.extraSmall,
-                ),
+        modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = spacing.medium,
+                vertical = spacing.small + spacing.extraSmall
+            )
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.footnote,
-            color = colors.secondaryLabel,
+            color = colors.secondaryLabel
         )
         Row(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = spacing.extraSmall),
+            Modifier
+                .fillMaxWidth()
+                .padding(top = spacing.extraSmall),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(spacing.small),
+            horizontalArrangement = Arrangement.spacedBy(spacing.small)
         ) {
             Text(
                 text = if (revealed) value else MASKED_VALUE,
                 style =
-                    MaterialTheme.typography.bodyLarge.copy(
-                        fontFeatureSettings = "tnum",
-                    ),
+                MaterialTheme.typography.bodyLarge.copy(
+                    fontFeatureSettings = "tnum"
+                ),
                 color = colors.label,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
             )
             if (sensitive) {
                 IconButton(onClick = { revealed = !revealed }) {
                     Icon(
                         imageVector = if (revealed) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
                         contentDescription =
-                            showContentDescription
-                                ?: if (revealed) "Hide $label" else "Show $label",
+                        showContentDescription
+                            ?: if (revealed) "Hide $label" else "Show $label"
                     )
                 }
             }
@@ -255,7 +251,7 @@ internal fun DetailFieldRow(
                 IconButton(onClick = onCopy) {
                     Icon(
                         imageVector = Icons.Filled.ContentCopy,
-                        contentDescription = copyContentDescription ?: "Copy $label",
+                        contentDescription = copyContentDescription ?: "Copy $label"
                     )
                 }
             }
@@ -265,7 +261,7 @@ internal fun DetailFieldRow(
                 text = copiedHintText,
                 style = MaterialTheme.typography.footnote,
                 color = colors.success,
-                modifier = Modifier.padding(top = spacing.extraSmall),
+                modifier = Modifier.padding(top = spacing.extraSmall)
             )
         }
     }

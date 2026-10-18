@@ -33,7 +33,7 @@ object TotpEngine {
         timeMillis: Long = System.currentTimeMillis(),
         digits: Int = 6,
         periodSeconds: Int = 30,
-        algorithm: String = DEFAULT_ALGORITHM,
+        algorithm: String = DEFAULT_ALGORITHM
     ): String {
         require(digits in MIN_DIGITS..MAX_DIGITS) {
             "TotpEngine requires digits in $MIN_DIGITS..$MAX_DIGITS, was $digits"
@@ -69,10 +69,8 @@ object TotpEngine {
     }
 
     /** Returns the seconds remaining until the end of the current [periodSeconds] window. */
-    fun getRemainingSeconds(
-        timeMillis: Long = System.currentTimeMillis(),
-        periodSeconds: Int = 30,
-    ): Int = periodSeconds - ((timeMillis / 1000) % periodSeconds).toInt()
+    fun getRemainingSeconds(timeMillis: Long = System.currentTimeMillis(), periodSeconds: Int = 30): Int =
+        periodSeconds - ((timeMillis / 1000) % periodSeconds).toInt()
 
     /**
      * Maps the provisioning-URI algorithm names ("SHA1"/"SHA256"/"SHA512")
@@ -80,15 +78,14 @@ object TotpEngine {
      * [IllegalArgumentException] for anything else, since a TOTP secret
      * must only ever be used with the RFC 6238 SHA-family algorithms.
      */
-    private fun normalizeAlgorithm(algorithm: String): String =
-        when (algorithm.uppercase()) {
-            "SHA1", "HMACSHA1" -> "HmacSHA1"
-            "SHA256", "HMACSHA256" -> "HmacSHA256"
-            "SHA512", "HMACSHA512" -> "HmacSHA512"
-            else -> throw IllegalArgumentException(
-                "Unsupported TOTP algorithm '$algorithm'; expected SHA1, SHA256 or SHA512",
-            )
-        }
+    private fun normalizeAlgorithm(algorithm: String): String = when (algorithm.uppercase()) {
+        "SHA1", "HMACSHA1" -> "HmacSHA1"
+        "SHA256", "HMACSHA256" -> "HmacSHA256"
+        "SHA512", "HMACSHA512" -> "HmacSHA512"
+        else -> throw IllegalArgumentException(
+            "Unsupported TOTP algorithm '$algorithm'; expected SHA1, SHA256 or SHA512"
+        )
+    }
 
     private const val DEFAULT_ALGORITHM = "SHA1"
     private const val MIN_DIGITS = 6

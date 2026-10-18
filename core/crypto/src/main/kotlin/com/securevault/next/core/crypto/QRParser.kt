@@ -21,7 +21,7 @@ object QRParser {
         val accountName: String? = null,
         val algorithm: String = "SHA1",
         val digits: Int = 6,
-        val period: Int = 30,
+        val period: Int = 30
     )
 
     fun parseOtpAuthUri(uriString: String): TotpConfig? {

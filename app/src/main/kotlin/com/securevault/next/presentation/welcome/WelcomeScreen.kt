@@ -44,31 +44,29 @@ import com.securevault.next.core.ui.components.VaultTextButton
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import javax.inject.Inject
 
 @HiltViewModel
 class WelcomeViewModel
-    @Inject
-    constructor(
-        vaultRepository: VaultRepository,
-    ) : ViewModel() {
-        /** The id of an existing vault, when the user has one to unlock instead of creating. */
-        val existingVaultId: StateFlow<String?> =
-            vaultRepository
-                .observeAllVaultMetadata()
-                .map { vaults -> vaults.firstOrNull()?.id?.value }
-                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
-    }
+@Inject
+constructor(vaultRepository: VaultRepository) : ViewModel() {
+    /** The id of an existing vault, when the user has one to unlock instead of creating. */
+    val existingVaultId: StateFlow<String?> =
+        vaultRepository
+            .observeAllVaultMetadata()
+            .map { vaults -> vaults.firstOrNull()?.id?.value }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+}
 
 private data class OnboardingPage(
     val icon: ImageVector,
     val iconDescriptionRes: Int,
     val titleRes: Int,
-    val bodyRes: Int,
+    val bodyRes: Int
 )
 
 /**
@@ -80,7 +78,7 @@ private data class OnboardingPage(
 fun WelcomeScreen(
     onCreateVault: () -> Unit,
     onUnlockExisting: (vaultId: String) -> Unit,
-    viewModel: WelcomeViewModel = hiltViewModel(),
+    viewModel: WelcomeViewModel = hiltViewModel()
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -92,20 +90,20 @@ fun WelcomeScreen(
                 icon = Icons.Filled.VpnKey,
                 iconDescriptionRes = R.string.welcome_page1_title,
                 titleRes = R.string.welcome_page1_title,
-                bodyRes = R.string.welcome_page1_body,
+                bodyRes = R.string.welcome_page1_body
             ),
             OnboardingPage(
                 icon = Icons.Filled.Fingerprint,
                 iconDescriptionRes = R.string.welcome_page2_title,
                 titleRes = R.string.welcome_page2_title,
-                bodyRes = R.string.welcome_page2_body,
+                bodyRes = R.string.welcome_page2_body
             ),
             OnboardingPage(
                 icon = Icons.Filled.Timer,
                 iconDescriptionRes = R.string.welcome_page3_title,
                 titleRes = R.string.welcome_page3_title,
-                bodyRes = R.string.welcome_page3_body,
-            ),
+                bodyRes = R.string.welcome_page3_body
+            )
         )
     val pagerState = rememberPagerState(pageCount = { pages.size })
 
@@ -116,52 +114,52 @@ fun WelcomeScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = colors.baseBackground,
+        color = colors.baseBackground
     ) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = spacing.large),
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = spacing.large)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
+                horizontalArrangement = Arrangement.End
             ) {
                 VaultTextButton(
                     text = stringResource(R.string.welcome_skip),
-                    onClick = finishOnboarding,
+                    onClick = finishOnboarding
                 )
             }
 
             HorizontalPager(
                 state = pagerState,
                 modifier =
-                    Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) { index ->
                 val page = pages[index]
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = spacing.medium),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.medium)
                 ) {
                     Box(
                         modifier =
-                            Modifier
-                                .size(120.dp)
-                                .background(colors.accentSoft, CircleShape),
-                        contentAlignment = Alignment.Center,
+                        Modifier
+                            .size(120.dp)
+                            .background(colors.accentSoft, CircleShape),
+                        contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = page.icon,
                             contentDescription = stringResource(page.iconDescriptionRes),
                             modifier = Modifier.size(56.dp),
-                            tint = colors.accent,
+                            tint = colors.accent
                         )
                     }
                     Spacer(modifier = Modifier.height(spacing.large))
@@ -169,14 +167,14 @@ fun WelcomeScreen(
                         text = stringResource(page.titleRes),
                         style = MaterialTheme.typography.headlineSmall,
                         color = colors.label,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(spacing.small))
                     Text(
                         text = stringResource(page.bodyRes),
                         style = MaterialTheme.typography.bodyLarge,
                         color = colors.secondaryLabel,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -184,7 +182,7 @@ fun WelcomeScreen(
             PageIndicators(
                 pageCount = pages.size,
                 currentPage = pagerState.currentPage,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
+                modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
             Spacer(modifier = Modifier.height(spacing.large))
@@ -192,7 +190,7 @@ fun WelcomeScreen(
             VaultButton(
                 text = stringResource(R.string.welcome_create_vault),
                 onClick = onCreateVault,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
 
             if (existingVaultId != null) {
@@ -200,7 +198,7 @@ fun WelcomeScreen(
                 VaultSecondaryButton(
                     text = stringResource(R.string.welcome_open_existing),
                     onClick = { onUnlockExisting(existingVaultId!!) },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
@@ -210,35 +208,31 @@ fun WelcomeScreen(
 }
 
 @Composable
-private fun PageIndicators(
-    pageCount: Int,
-    currentPage: Int,
-    modifier: Modifier = Modifier,
-) {
+private fun PageIndicators(pageCount: Int, currentPage: Int, modifier: Modifier = Modifier) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
     val indicatorDescription =
         stringResource(
             R.string.welcome_page_indicator,
             currentPage + 1,
-            pageCount,
+            pageCount
         )
 
     Row(
         modifier = modifier.semantics { contentDescription = indicatorDescription },
         horizontalArrangement = Arrangement.spacedBy(spacing.small),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(pageCount) { index ->
             val active = index == currentPage
             Box(
                 modifier =
-                    Modifier
-                        .size(if (active) 10.dp else 8.dp)
-                        .background(
-                            color = if (active) colors.accent else colors.fill,
-                            shape = CircleShape,
-                        ),
+                Modifier
+                    .size(if (active) 10.dp else 8.dp)
+                    .background(
+                        color = if (active) colors.accent else colors.fill,
+                        shape = CircleShape
+                    )
             )
         }
     }
