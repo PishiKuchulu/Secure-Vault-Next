@@ -82,19 +82,21 @@ fun UnlockScreen(
         color = colors.baseBackground,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .imePadding()
-                .padding(horizontal = spacing.large),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .imePadding()
+                    .padding(horizontal = spacing.large),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(spacing.extraExtraLarge))
 
             Box(
-                modifier = Modifier
-                    .size(88.dp)
-                    .background(colors.accentSoft, CircleShape),
+                modifier =
+                    Modifier
+                        .size(88.dp)
+                        .background(colors.accentSoft, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
@@ -108,11 +110,12 @@ fun UnlockScreen(
             Spacer(modifier = Modifier.height(spacing.large))
 
             Text(
-                text = if (uiState.vaultName.isNotBlank()) {
-                    stringResource(R.string.unlock_title, uiState.vaultName)
-                } else {
-                    stringResource(R.string.unlock_title_fallback)
-                },
+                text =
+                    if (uiState.vaultName.isNotBlank()) {
+                        stringResource(R.string.unlock_title, uiState.vaultName)
+                    } else {
+                        stringResource(R.string.unlock_title_fallback)
+                    },
                 style = MaterialTheme.typography.headlineSmall,
                 color = colors.label,
                 textAlign = TextAlign.Center,
@@ -210,10 +213,11 @@ private fun UnlockStatusArea(
     when {
         uiState.lockoutRemainingSeconds > 0 -> {
             Text(
-                text = stringResource(
-                    R.string.unlock_locked_out,
-                    formatCountdown(uiState.lockoutRemainingSeconds),
-                ),
+                text =
+                    stringResource(
+                        R.string.unlock_locked_out,
+                        formatCountdown(uiState.lockoutRemainingSeconds),
+                    ),
                 style = MaterialTheme.typography.bodyLarge.tabularNumerals(),
                 color = colors.danger,
                 textAlign = TextAlign.Center,
@@ -222,11 +226,13 @@ private fun UnlockStatusArea(
         }
         uiState.wrongPasswordAttemptsLeft != null -> {
             InlineError(
-                message = stringResource(R.string.unlock_incorrect_password) +
-                    " " + stringResource(
-                        R.string.unlock_attempts_remaining,
-                        uiState.wrongPasswordAttemptsLeft,
-                    ),
+                message =
+                    stringResource(R.string.unlock_incorrect_password) +
+                        " " +
+                        stringResource(
+                            R.string.unlock_attempts_remaining,
+                            uiState.wrongPasswordAttemptsLeft,
+                        ),
                 modifier = modifier,
             )
         }
@@ -238,8 +244,9 @@ private fun UnlockStatusArea(
         }
         uiState.biometricEnableFailure != null -> {
             InlineError(
-                message = stringResource(R.string.biometric_enable_failed) +
-                    " " + uiState.biometricEnableFailure,
+                message =
+                    stringResource(R.string.biometric_enable_failed) +
+                        " " + uiState.biometricEnableFailure,
                 modifier = modifier,
             )
         }

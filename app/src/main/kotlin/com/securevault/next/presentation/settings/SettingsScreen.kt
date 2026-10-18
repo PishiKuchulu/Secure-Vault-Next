@@ -44,14 +44,15 @@ import com.securevault.next.core.ui.components.VaultSheetTitle
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 
-private val AutoLockOptions = listOf(
-    AutoLockPolicy.IMMEDIATELY,
-    AutoLockPolicy.MINUTE_1,
-    AutoLockPolicy.MINUTES_5,
-    AutoLockPolicy.MINUTES_15,
-    AutoLockPolicy.MINUTES_30,
-    AutoLockPolicy.NEVER,
-)
+private val AutoLockOptions =
+    listOf(
+        AutoLockPolicy.IMMEDIATELY,
+        AutoLockPolicy.MINUTE_1,
+        AutoLockPolicy.MINUTES_5,
+        AutoLockPolicy.MINUTES_15,
+        AutoLockPolicy.MINUTES_30,
+        AutoLockPolicy.NEVER,
+    )
 
 /**
  * The real settings screen, inset-grouped: security controls (auto-lock
@@ -87,27 +88,30 @@ fun SettingsScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = colors.baseBackground,
-                    titleContentColor = colors.label,
-                    navigationIconContentColor = colors.label,
-                ),
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = colors.baseBackground,
+                        titleContentColor = colors.label,
+                        navigationIconContentColor = colors.label,
+                    ),
             )
         },
         containerColor = colors.baseBackground,
     ) { padding ->
         Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .padding(padding)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
         ) {
             SectionHeader(title = stringResource(R.string.settings_section_security))
 
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.medium),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.medium),
                 shape = MaterialTheme.shapes.large,
                 color = colors.surface,
             ) {
@@ -121,17 +125,18 @@ fun SettingsScreen(
                     )
                     SettingsRow(
                         title = stringResource(R.string.settings_biometric),
-                        subtitle = if (uiState.biometricAvailable) {
-                            stringResource(
-                                if (uiState.biometricEnabled) {
-                                    R.string.settings_biometric_subtitle_on
-                                } else {
-                                    R.string.settings_biometric_subtitle_off
-                                },
-                            )
-                        } else {
-                            stringResource(R.string.settings_biometric_unavailable)
-                        },
+                        subtitle =
+                            if (uiState.biometricAvailable) {
+                                stringResource(
+                                    if (uiState.biometricEnabled) {
+                                        R.string.settings_biometric_subtitle_on
+                                    } else {
+                                        R.string.settings_biometric_subtitle_off
+                                    },
+                                )
+                            } else {
+                                stringResource(R.string.settings_biometric_unavailable)
+                            },
                         showChevron = false,
                         showDivider = true,
                         trailing = {
@@ -148,9 +153,10 @@ fun SettingsScreen(
                                         )
                                     }
                                 },
-                                enabled = uiState.biometricAvailable &&
-                                    !uiState.biometricBusy &&
-                                    activity != null,
+                                enabled =
+                                    uiState.biometricAvailable &&
+                                        !uiState.biometricBusy &&
+                                        activity != null,
                             )
                         },
                     )
@@ -173,19 +179,21 @@ fun SettingsScreen(
             if (uiState.biometricError != null) {
                 InlineError(
                     message = uiState.biometricError!!,
-                    modifier = Modifier.padding(
-                        horizontal = spacing.medium,
-                        vertical = spacing.small,
-                    ),
+                    modifier =
+                        Modifier.padding(
+                            horizontal = spacing.medium,
+                            vertical = spacing.small,
+                        ),
                 )
             }
 
             SectionHeader(title = stringResource(R.string.settings_section_about))
 
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.medium),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.medium),
                 shape = MaterialTheme.shapes.large,
                 color = colors.surface,
             ) {
@@ -267,14 +275,15 @@ private fun AutoLockSheet(
     }
 }
 
-private fun AutoLockPolicy.labelResId(): Int = when (this) {
-    AutoLockPolicy.IMMEDIATELY -> R.string.settings_auto_lock_immediately
-    AutoLockPolicy.MINUTE_1 -> R.string.settings_auto_lock_1_min
-    AutoLockPolicy.MINUTES_5 -> R.string.settings_auto_lock_5_min
-    AutoLockPolicy.MINUTES_15 -> R.string.settings_auto_lock_15_min
-    AutoLockPolicy.MINUTES_30 -> R.string.settings_auto_lock_30_min
-    AutoLockPolicy.NEVER -> R.string.settings_auto_lock_never
-}
+private fun AutoLockPolicy.labelResId(): Int =
+    when (this) {
+        AutoLockPolicy.IMMEDIATELY -> R.string.settings_auto_lock_immediately
+        AutoLockPolicy.MINUTE_1 -> R.string.settings_auto_lock_1_min
+        AutoLockPolicy.MINUTES_5 -> R.string.settings_auto_lock_5_min
+        AutoLockPolicy.MINUTES_15 -> R.string.settings_auto_lock_15_min
+        AutoLockPolicy.MINUTES_30 -> R.string.settings_auto_lock_30_min
+        AutoLockPolicy.NEVER -> R.string.settings_auto_lock_never
+    }
 
 /**
  * Change-master-password sheet: current password (verified by the
@@ -313,18 +322,20 @@ private fun ChangePasswordSheet(
             VaultButton(
                 text = stringResource(R.string.action_done),
                 onClick = onDismiss,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.medium),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.medium),
             )
         } else {
             VaultPasswordTextField(
                 value = current,
                 onValueChange = { current = it },
                 label = stringResource(R.string.settings_change_password_current),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.medium),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.medium),
             )
             Spacer(modifier = Modifier.height(spacing.small))
             VaultPasswordTextField(
@@ -332,27 +343,30 @@ private fun ChangePasswordSheet(
                 onValueChange = { newPassword = it },
                 label = stringResource(R.string.settings_change_password_new),
                 supporting = stringResource(R.string.settings_change_password_requirements),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.medium),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.medium),
             )
             Spacer(modifier = Modifier.height(spacing.small))
             VaultPasswordTextField(
                 value = confirm,
                 onValueChange = { confirm = it },
                 label = stringResource(R.string.settings_change_password_confirm),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.medium),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.medium),
             )
 
             if (error != null) {
                 InlineError(
                     message = error,
-                    modifier = Modifier.padding(
-                        horizontal = spacing.medium,
-                        vertical = spacing.small,
-                    ),
+                    modifier =
+                        Modifier.padding(
+                            horizontal = spacing.medium,
+                            vertical = spacing.small,
+                        ),
                 )
             }
 
@@ -361,12 +375,14 @@ private fun ChangePasswordSheet(
                 text = stringResource(R.string.settings_change_password_action),
                 onClick = { onSubmit(current, newPassword, confirm) },
                 loading = busy,
-                enabled = current.isNotBlank() &&
-                    newPassword.isNotBlank() &&
-                    confirm.isNotBlank(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.medium),
+                enabled =
+                    current.isNotBlank() &&
+                        newPassword.isNotBlank() &&
+                        confirm.isNotBlank(),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = spacing.medium),
             )
         }
 

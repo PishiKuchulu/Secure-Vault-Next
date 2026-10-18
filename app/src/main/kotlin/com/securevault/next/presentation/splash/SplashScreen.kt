@@ -30,10 +30,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.securevault.next.R
+import com.securevault.next.core.ui.theme.SECURE_VAULT_STATE_CHANGE_DURATION_MS
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultEaseOut
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
-import com.securevault.next.core.ui.theme.SecureVaultStateChangeDurationMs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 
@@ -78,18 +78,20 @@ private fun SplashScreenContent(
     LaunchedEffect(Unit) { entered = true }
     val alpha by animateFloatAsState(
         targetValue = if (entered) 1f else 0f,
-        animationSpec = tween(
-            durationMillis = SecureVaultStateChangeDurationMs,
-            easing = SecureVaultEaseOut,
-        ),
+        animationSpec =
+            tween(
+                durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
+                easing = SecureVaultEaseOut,
+            ),
         label = "splashAlpha",
     )
     val scale by animateFloatAsState(
         targetValue = if (entered) 1f else 0.94f,
-        animationSpec = tween(
-            durationMillis = SecureVaultStateChangeDurationMs,
-            easing = SecureVaultEaseOut,
-        ),
+        animationSpec =
+            tween(
+                durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
+                easing = SecureVaultEaseOut,
+            ),
         label = "splashScale",
     )
 
@@ -98,20 +100,21 @@ private fun SplashScreenContent(
         color = colors.baseBackground,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .graphicsLayer {
-                    scaleX = scale
-                    scaleY = scale
-                }
-                .alpha(alpha),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                    }.alpha(alpha),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
             Box(
-                modifier = Modifier
-                    .size(96.dp)
-                    .background(colors.accentSoft, CircleShape),
+                modifier =
+                    Modifier
+                        .size(96.dp)
+                        .background(colors.accentSoft, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
                 Icon(
