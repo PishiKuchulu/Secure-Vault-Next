@@ -16,9 +16,9 @@ import com.securevault.next.data.persistence.pojo.ItemSummaryPojo
  */
 @Dao
 interface SearchDao {
-
     @Transaction
-    @Query("""
+    @Query(
+        """
         SELECT items.*
         FROM items
         JOIN items_fts ON items.id = items_fts.item_id
@@ -27,15 +27,17 @@ interface SearchDao {
           AND items_fts MATCH :query
           AND (:favoritesOnly = 0 OR items.is_favorite = 1)
         ORDER BY items.title ASC
-    """)
+    """,
+    )
     suspend fun searchItems(
         vaultId: VaultId,
         query: String,
-        favoritesOnly: Boolean = false
+        favoritesOnly: Boolean = false,
     ): List<ItemSummaryPojo>
 
     @Transaction
-    @Query("""
+    @Query(
+        """
         SELECT items.*
         FROM items
         JOIN items_fts ON items.id = items_fts.item_id
@@ -44,11 +46,12 @@ interface SearchDao {
           AND items_fts MATCH :query
           AND (:favoritesOnly = 0 OR items.is_favorite = 1)
         ORDER BY items.updated_at DESC
-    """)
+    """,
+    )
     suspend fun searchItemsSortedByDate(
         vaultId: VaultId,
         query: String,
-        favoritesOnly: Boolean = false
+        favoritesOnly: Boolean = false,
     ): List<ItemSummaryPojo>
 
     /**

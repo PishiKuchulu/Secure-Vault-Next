@@ -18,29 +18,23 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             parentColumns = ["id"],
             childColumns = ["item_id"],
             onDelete = ForeignKey.CASCADE,
-        )
-    ]
+        ),
+    ],
 )
 data class CreditCardEntity(
     @PrimaryKey
     @ColumnInfo(name = "item_id")
     val itemId: ItemId,
-
     @ColumnInfo(name = "cardholder_name")
     val cardholderName: String,
-
     @Embedded(prefix = "card_number_")
     val cardNumber: EncryptedFieldEntity,
-
     @ColumnInfo(name = "expiry_month")
     val expiryMonth: Int,
-
     @ColumnInfo(name = "expiry_year")
     val expiryYear: Int,
-
     @Embedded(prefix = "cvv_")
     val cvv: EncryptedFieldEntity,
-
     @Embedded(prefix = "pin_")
     val pin: EncryptedFieldEntity? = null,
 )

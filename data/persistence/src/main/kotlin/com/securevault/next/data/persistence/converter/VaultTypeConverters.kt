@@ -22,7 +22,6 @@ import java.time.Instant
  * standard library types that SQLite doesn't support natively.
  */
 class VaultTypeConverters {
-
     // --- java.time ---
 
     @TypeConverter
@@ -156,5 +155,4 @@ class VaultTypeConverters {
         value?.let {
             runCatching { AuthenticationMethod.valueOf(it) }.getOrNull() ?: AuthenticationMethod.MASTER_PASSWORD
         }
-
 }

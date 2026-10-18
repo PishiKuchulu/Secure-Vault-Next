@@ -20,33 +20,26 @@ import java.time.Instant
             parentColumns = ["id"],
             childColumns = ["vault_id"],
             onDelete = ForeignKey.CASCADE,
-        )
+        ),
     ],
     indices = [
-        Index("vault_id")
-    ]
+        Index("vault_id"),
+    ],
 )
 data class CategoryEntity(
     @PrimaryKey
     val id: CategoryId,
-
     @ColumnInfo(name = "vault_id")
     val vaultId: VaultId,
-
     val name: String,
-
     @ColumnInfo(name = "icon_alias")
     val iconAlias: String? = null,
-
     @ColumnInfo(name = "color_hex")
     val colorHex: String? = null,
-
     @ColumnInfo(name = "parent_category_id")
     val parentCategoryId: CategoryId? = null,
-
     @ColumnInfo(name = "created_at")
     val createdAt: Instant,
-
     @ColumnInfo(name = "updated_at")
     val updatedAt: Instant,
 )

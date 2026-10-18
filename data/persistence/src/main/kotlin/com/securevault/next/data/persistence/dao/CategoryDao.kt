@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface CategoryDao {
-
     @Query("SELECT * FROM categories WHERE vault_id = :vaultId ORDER BY name ASC")
     fun observeCategories(vaultId: VaultId): Flow<List<CategoryEntity>>
 

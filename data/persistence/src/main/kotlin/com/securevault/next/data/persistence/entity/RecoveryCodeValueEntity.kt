@@ -23,19 +23,16 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             parentColumns = ["item_id"],
             childColumns = ["recovery_code_item_id"],
             onDelete = ForeignKey.CASCADE,
-        )
-    ]
+        ),
+    ],
 )
 data class RecoveryCodeValueEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-
     @ColumnInfo(name = "recovery_code_item_id")
     val recoveryCodeItemId: ItemId,
-
     @ColumnInfo(name = "sort_order")
     val sortOrder: Int,
-
     @Embedded(prefix = "code_")
     val code: EncryptedFieldEntity,
 )

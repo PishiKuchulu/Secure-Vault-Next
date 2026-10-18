@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface ItemDao {
-
     // --- Metadata and Summaries ---
 
     @Transaction
@@ -49,11 +48,17 @@ interface ItemDao {
 
     @Transaction
     @Query("SELECT * FROM items WHERE vault_id = :vaultId AND (:type IS NULL OR item_type = :type) AND is_deleted = 0")
-    fun observeFullItemsByType(vaultId: VaultId, type: ItemType?): Flow<List<FullItemPojo>>
+    fun observeFullItemsByType(
+        vaultId: VaultId,
+        type: ItemType?,
+    ): Flow<List<FullItemPojo>>
 
     @Transaction
     @Query("SELECT * FROM items WHERE vault_id = :vaultId AND (:type IS NULL OR item_type = :type) AND is_deleted = 0")
-    suspend fun getFullItemsByType(vaultId: VaultId, type: ItemType?): List<FullItemPojo>
+    suspend fun getFullItemsByType(
+        vaultId: VaultId,
+        type: ItemType?,
+    ): List<FullItemPojo>
 
     // --- Core Item Operations ---
 
@@ -124,29 +129,44 @@ interface ItemDao {
         "SELECT * FROM items WHERE vault_id = :vaultId AND is_deleted = 0 AND is_archived = 0 " +
             "ORDER BY last_accessed_at DESC LIMIT :limit",
     )
-    fun observeRecentItems(vaultId: VaultId, limit: Int = 10): Flow<List<ItemSummaryPojo>>
+    fun observeRecentItems(
+        vaultId: VaultId,
+        limit: Int = 10,
+    ): Flow<List<ItemSummaryPojo>>
 
     @Transaction
     @Query(
         "SELECT * FROM items WHERE vault_id = :vaultId AND is_deleted = 0 AND is_archived = 0 " +
             "ORDER BY use_count DESC LIMIT :limit",
     )
-    fun observeFrequentlyUsedItems(vaultId: VaultId, limit: Int = 10): Flow<List<ItemSummaryPojo>>
+    fun observeFrequentlyUsedItems(
+        vaultId: VaultId,
+        limit: Int = 10,
+    ): Flow<List<ItemSummaryPojo>>
 
     @Transaction
     @Query("SELECT * FROM items WHERE vault_id = :vaultId AND is_pinned = 1 AND is_deleted = 0")
     fun observePinnedItems(vaultId: VaultId): Flow<List<ItemSummaryPojo>>
 
     @Query("UPDATE items SET last_accessed_at = :timestamp, use_count = use_count + 1 WHERE id = :itemId")
-    suspend fun recordItemAccess(itemId: ItemId, timestamp: java.time.Instant)
+    suspend fun recordItemAccess(
+        itemId: ItemId,
+        timestamp: java.time.Instant,
+    )
 
     // --- Bulk Operations ---
 
     @Query("UPDATE items SET is_deleted = 1, deleted_at = :timestamp WHERE id IN (:itemIds)")
-    suspend fun bulkMoveToTrash(itemIds: List<ItemId>, timestamp: java.time.Instant)
+    suspend fun bulkMoveToTrash(
+        itemIds: List<ItemId>,
+        timestamp: java.time.Instant,
+    )
 
     @Query("UPDATE items SET is_favorite = :isFavorite WHERE id IN (:itemIds)")
-    suspend fun bulkSetFavorite(itemIds: List<ItemId>, isFavorite: Boolean)
+    suspend fun bulkSetFavorite(
+        itemIds: List<ItemId>,
+        isFavorite: Boolean,
+    )
 
     @Query("UPDATE items SET category_id = :categoryId WHERE id IN (:itemIds)")
     suspend fun bulkMoveToCategory(
@@ -178,7 +198,7 @@ interface ItemDao {
             notes_algorithm = :algorithm,
             notes = NULL
         WHERE id = :itemId
-        """
+        """,
     )
     suspend fun migrateNotesToEncrypted(
         itemId: ItemId,

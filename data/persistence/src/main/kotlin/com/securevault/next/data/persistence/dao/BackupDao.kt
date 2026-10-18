@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface BackupDao {
-
     @Query("SELECT * FROM backups WHERE vault_id = :vaultId ORDER BY created_at DESC")
     fun observeBackups(vaultId: VaultId): Flow<List<BackupMetadataEntity>>
 

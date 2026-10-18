@@ -18,14 +18,13 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             parentColumns = ["id"],
             childColumns = ["item_id"],
             onDelete = ForeignKey.CASCADE,
-        )
-    ]
+        ),
+    ],
 )
 data class TotpSeedEntity(
     @PrimaryKey
     @ColumnInfo(name = "item_id")
     val itemId: ItemId,
-
     @Embedded(prefix = "config_")
     val config: TotpConfigEntity,
 )

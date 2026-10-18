@@ -30,41 +30,33 @@ import java.time.Instant
             parentColumns = ["id"],
             childColumns = ["vault_id"],
             onDelete = ForeignKey.CASCADE,
-        )
+        ),
     ],
     indices = [
-        Index("vault_id")
-    ]
+        Index("vault_id"),
+    ],
 )
 data class BackupMetadataEntity(
     @PrimaryKey
     val id: String,
-
     @ColumnInfo(name = "vault_id")
     val vaultId: VaultId,
-
     @ColumnInfo(name = "created_at")
     val createdAt: Instant,
-
     @ColumnInfo(name = "size_bytes")
     val sizeBytes: Long,
-
     @ColumnInfo(name = "item_count")
     val itemCount: Int,
-
     @ColumnInfo(name = "app_version")
     val appVersion: String,
-
     @ColumnInfo(name = "file_path")
     val filePath: String,
-
     /**
      * Backup file format version. Written by the backup pipeline when it
      * creates the row; defaults to 1 for rows predating v3.
      */
     @ColumnInfo(name = "format_version", defaultValue = "1")
     val formatVersion: Int = 1,
-
     /**
      * The vault revision the backup was taken at, when known. A restore
      * implementation must compare this against the live vault revision
@@ -72,7 +64,6 @@ data class BackupMetadataEntity(
      */
     @ColumnInfo(name = "vault_revision")
     val vaultRevision: Long? = null,
-
     /**
      * Hex-encoded SHA-256 digest of the backup file, when computed at
      * backup time. Verified before any restore.

@@ -28,10 +28,8 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
 data class ItemFtsEntity(
     @ColumnInfo(name = "item_id")
     val itemId: ItemId,
-
     @ColumnInfo(name = "title")
     val title: String,
-
     @ColumnInfo(name = "notes")
     val notes: String?,
 )

@@ -18,21 +18,17 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             parentColumns = ["id"],
             childColumns = ["item_id"],
             onDelete = ForeignKey.CASCADE,
-        )
-    ]
+        ),
+    ],
 )
 data class PasswordEntity(
     @PrimaryKey
     @ColumnInfo(name = "item_id")
     val itemId: ItemId,
-
     val username: String? = null,
-
     @Embedded(prefix = "password_")
     val password: EncryptedFieldEntity,
-
     val url: String? = null,
-
     // TOTP Config (Flattened)
     @Embedded(prefix = "totp_")
     val totp: TotpConfigEntity? = null,

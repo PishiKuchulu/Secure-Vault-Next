@@ -18,21 +18,17 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             parentColumns = ["id"],
             childColumns = ["item_id"],
             onDelete = ForeignKey.CASCADE,
-        )
-    ]
+        ),
+    ],
 )
 data class ApiKeyEntity(
     @PrimaryKey
     @ColumnInfo(name = "item_id")
     val itemId: ItemId,
-
     val service: String,
-
     @Embedded(prefix = "key_value_")
     val keyValue: EncryptedFieldEntity,
-
     @Embedded(prefix = "key_secret_")
     val keySecret: EncryptedFieldEntity? = null,
-
     val environment: String? = null,
 )

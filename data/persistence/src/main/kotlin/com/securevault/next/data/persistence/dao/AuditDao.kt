@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface AuditDao {
-
     @Query("SELECT * FROM audit_results WHERE vault_id = :vaultId")
     fun observeAuditResult(vaultId: VaultId): Flow<AuditResultEntity?>
 

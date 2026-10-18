@@ -18,29 +18,23 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             parentColumns = ["id"],
             childColumns = ["item_id"],
             onDelete = ForeignKey.CASCADE,
-        )
-    ]
+        ),
+    ],
 )
 data class BankAccountEntity(
     @PrimaryKey
     @ColumnInfo(name = "item_id")
     val itemId: ItemId,
-
     @ColumnInfo(name = "bank_name")
     val bankName: String,
-
     @ColumnInfo(name = "account_holder_name")
     val accountHolderName: String,
-
     @Embedded(prefix = "account_number_")
     val accountNumber: EncryptedFieldEntity,
-
     @Embedded(prefix = "routing_number_")
     val routingNumber: EncryptedFieldEntity? = null,
-
     @Embedded(prefix = "iban_")
     val iban: EncryptedFieldEntity? = null,
-
     @ColumnInfo(name = "swift_code")
     val swiftCode: String? = null,
 )

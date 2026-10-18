@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
  */
 @Dao
 interface VaultDao {
-
     @Query("SELECT * FROM vaults WHERE id = :vaultId")
     fun observeVault(vaultId: VaultId): Flow<VaultEntity?>
 
@@ -28,7 +27,10 @@ interface VaultDao {
     suspend fun getEnvelopeJson(vaultId: VaultId): String?
 
     @Query("UPDATE vaults SET envelope_json = :envelopeJson WHERE id = :vaultId")
-    suspend fun updateEnvelopeJson(vaultId: VaultId, envelopeJson: String): Int
+    suspend fun updateEnvelopeJson(
+        vaultId: VaultId,
+        envelopeJson: String,
+    ): Int
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertVault(vault: VaultEntity)
