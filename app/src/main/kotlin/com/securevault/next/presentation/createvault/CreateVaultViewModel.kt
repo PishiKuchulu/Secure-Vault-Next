@@ -9,16 +9,17 @@ import com.securevault.next.core.common.result.fold
 import com.securevault.next.core.domain.model.VaultSecurityPolicy
 import com.securevault.next.core.domain.model.VaultSettings
 import com.securevault.next.core.domain.model.enums.PasswordStrengthLevel
-import com.securevault.next.core.domain.model.valueobject.PasswordStrength
-import com.securevault.next.core.domain.model.valueobject.VaultName
 import com.securevault.next.core.domain.model.isValid
 import com.securevault.next.core.domain.model.validationErrors
+import com.securevault.next.core.domain.model.valueobject.PasswordStrength
+import com.securevault.next.core.domain.model.valueobject.VaultName
 import com.securevault.next.core.domain.usecase.CreateVaultUseCase
 import com.securevault.next.core.domain.usecase.GeneratePasswordUseCase
 import com.securevault.next.core.domain.usecase.PasswordGenerationOptions
 import com.securevault.next.core.domain.usecase.ValidatePasswordUseCase
 import com.securevault.next.core.domain.validation.MasterPasswordValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,7 +31,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * Inline validation problems on the create-vault form. Policy messages

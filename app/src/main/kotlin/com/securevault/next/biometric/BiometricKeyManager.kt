@@ -22,12 +22,12 @@ import com.securevault.next.core.security.session.FailedAttemptTracker
 import com.securevault.next.core.security.session.SessionClock
 import com.securevault.next.core.security.session.VaultSessionManager
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 /**
  * Biometric quick-unlock for SecureVault Next.

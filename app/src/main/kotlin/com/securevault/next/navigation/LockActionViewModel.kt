@@ -6,8 +6,8 @@ import com.securevault.next.core.domain.model.valueobject.VaultId
 import com.securevault.next.core.domain.usecase.LockVaultUseCase
 import com.securevault.next.core.security.session.VaultSessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 /**
  * Runs the explicit lock action from navigation callbacks (the home

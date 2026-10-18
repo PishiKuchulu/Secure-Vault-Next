@@ -16,6 +16,9 @@ import com.securevault.next.core.domain.usecase.UnlockVaultUseCase
 import com.securevault.next.core.security.session.FailedAttemptTracker
 import com.securevault.next.core.security.session.LockoutState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.Duration
+import java.time.Instant
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -26,9 +29,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Duration
-import java.time.Instant
-import javax.inject.Inject
 
 data class UnlockUiState(
     val vaultName: String = "",

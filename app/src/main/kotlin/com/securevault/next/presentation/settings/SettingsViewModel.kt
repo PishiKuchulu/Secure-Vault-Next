@@ -17,12 +17,12 @@ import com.securevault.next.core.domain.repository.VaultRepository
 import com.securevault.next.core.domain.usecase.ChangeMasterPasswordUseCase
 import com.securevault.next.core.security.session.VaultSessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 data class SettingsUiState(
     val autoLockPolicy: AutoLockPolicy = AutoLockPolicy.MINUTES_5,

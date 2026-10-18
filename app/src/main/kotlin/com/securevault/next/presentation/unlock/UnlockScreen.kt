@@ -36,11 +36,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.securevault.next.R
 import com.securevault.next.core.ui.components.InlineError
 import com.securevault.next.core.ui.components.VaultButton
+import com.securevault.next.core.ui.components.VaultPasswordTextField
 import com.securevault.next.core.ui.components.VaultSecondaryButton
 import com.securevault.next.core.ui.components.VaultSheet
 import com.securevault.next.core.ui.components.VaultSheetTitle
 import com.securevault.next.core.ui.components.VaultTextButton
-import com.securevault.next.core.ui.components.VaultPasswordTextField
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 import com.securevault.next.core.ui.theme.tabularNumerals

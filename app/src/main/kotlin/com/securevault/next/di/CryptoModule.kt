@@ -1,5 +1,6 @@
 package com.securevault.next.di
 
+import com.securevault.next.core.contracts.VaultKeyEncryptionService
 import com.securevault.next.core.crypto.cipher.AesGcmCipherEngine
 import com.securevault.next.core.crypto.cipher.CipherEngine
 import com.securevault.next.core.crypto.integrity.HmacSha256IntegrityVerifier
@@ -16,7 +17,6 @@ import com.securevault.next.core.crypto.vault.DefaultItemEncryptionEngine
 import com.securevault.next.core.crypto.vault.DefaultVaultEncryptionEngine
 import com.securevault.next.core.crypto.vault.DefaultVaultKeyEncryptionService
 import com.securevault.next.core.crypto.vault.VaultEncryptionEngine
-import com.securevault.next.core.contracts.VaultKeyEncryptionService
 import com.securevault.next.core.domain.crypto.ItemEncryptionEngine
 import com.securevault.next.core.domain.model.VaultSecurityPolicy
 import com.securevault.next.core.security.session.FailedAttemptTracker

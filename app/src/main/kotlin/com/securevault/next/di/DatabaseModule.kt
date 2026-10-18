@@ -3,7 +3,13 @@ package com.securevault.next.di
 import android.content.Context
 import androidx.room.Room
 import com.securevault.next.data.persistence.SecureVaultDatabase
-import com.securevault.next.data.persistence.dao.*
+import com.securevault.next.data.persistence.dao.AuditDao
+import com.securevault.next.data.persistence.dao.BackupDao
+import com.securevault.next.data.persistence.dao.CategoryDao
+import com.securevault.next.data.persistence.dao.ItemDao
+import com.securevault.next.data.persistence.dao.SearchDao
+import com.securevault.next.data.persistence.dao.TagDao
+import com.securevault.next.data.persistence.dao.VaultDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
