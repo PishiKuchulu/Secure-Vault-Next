@@ -44,21 +44,25 @@ import com.securevault.next.core.ui.components.VaultTextButton
 import com.securevault.next.core.ui.theme.SecureVaultColorsScope
 import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
 @HiltViewModel
-class WelcomeViewModel @Inject constructor(
-    vaultRepository: VaultRepository,
-) : ViewModel() {
-    /** The id of an existing vault, when the user has one to unlock instead of creating. */
-    val existingVaultId: StateFlow<String?> = vaultRepository.observeAllVaultMetadata()
-        .map { vaults -> vaults.firstOrNull()?.id?.value }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
-}
+class WelcomeViewModel
+    @Inject
+    constructor(
+        vaultRepository: VaultRepository,
+    ) : ViewModel() {
+        /** The id of an existing vault, when the user has one to unlock instead of creating. */
+        val existingVaultId: StateFlow<String?> =
+            vaultRepository
+                .observeAllVaultMetadata()
+                .map { vaults -> vaults.firstOrNull()?.id?.value }
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+    }
 
 private data class OnboardingPage(
     val icon: ImageVector,
@@ -82,26 +86,27 @@ fun WelcomeScreen(
     val spacing = SecureVaultSpacingScope.spacing
     val existingVaultId by viewModel.existingVaultId.collectAsState()
 
-    val pages = listOf(
-        OnboardingPage(
-            icon = Icons.Filled.VpnKey,
-            iconDescriptionRes = R.string.welcome_page1_title,
-            titleRes = R.string.welcome_page1_title,
-            bodyRes = R.string.welcome_page1_body,
-        ),
-        OnboardingPage(
-            icon = Icons.Filled.Fingerprint,
-            iconDescriptionRes = R.string.welcome_page2_title,
-            titleRes = R.string.welcome_page2_title,
-            bodyRes = R.string.welcome_page2_body,
-        ),
-        OnboardingPage(
-            icon = Icons.Filled.Timer,
-            iconDescriptionRes = R.string.welcome_page3_title,
-            titleRes = R.string.welcome_page3_title,
-            bodyRes = R.string.welcome_page3_body,
-        ),
-    )
+    val pages =
+        listOf(
+            OnboardingPage(
+                icon = Icons.Filled.VpnKey,
+                iconDescriptionRes = R.string.welcome_page1_title,
+                titleRes = R.string.welcome_page1_title,
+                bodyRes = R.string.welcome_page1_body,
+            ),
+            OnboardingPage(
+                icon = Icons.Filled.Fingerprint,
+                iconDescriptionRes = R.string.welcome_page2_title,
+                titleRes = R.string.welcome_page2_title,
+                bodyRes = R.string.welcome_page2_body,
+            ),
+            OnboardingPage(
+                icon = Icons.Filled.Timer,
+                iconDescriptionRes = R.string.welcome_page3_title,
+                titleRes = R.string.welcome_page3_title,
+                bodyRes = R.string.welcome_page3_body,
+            ),
+        )
     val pagerState = rememberPagerState(pageCount = { pages.size })
 
     val finishOnboarding = {
@@ -114,9 +119,10 @@ fun WelcomeScreen(
         color = colors.baseBackground,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = spacing.large),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = spacing.large),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -130,22 +136,25 @@ fun WelcomeScreen(
 
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) { index ->
                 val page = pages[index]
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = spacing.medium),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = spacing.medium),
                 ) {
                     Box(
-                        modifier = Modifier
-                            .size(120.dp)
-                            .background(colors.accentSoft, CircleShape),
+                        modifier =
+                            Modifier
+                                .size(120.dp)
+                                .background(colors.accentSoft, CircleShape),
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
@@ -208,11 +217,12 @@ private fun PageIndicators(
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
-    val indicatorDescription = stringResource(
-        R.string.welcome_page_indicator,
-        currentPage + 1,
-        pageCount,
-    )
+    val indicatorDescription =
+        stringResource(
+            R.string.welcome_page_indicator,
+            currentPage + 1,
+            pageCount,
+        )
 
     Row(
         modifier = modifier.semantics { contentDescription = indicatorDescription },
@@ -222,12 +232,13 @@ private fun PageIndicators(
         repeat(pageCount) { index ->
             val active = index == currentPage
             Box(
-                modifier = Modifier
-                    .size(if (active) 10.dp else 8.dp)
-                    .background(
-                        color = if (active) colors.accent else colors.fill,
-                        shape = CircleShape,
-                    ),
+                modifier =
+                    Modifier
+                        .size(if (active) 10.dp else 8.dp)
+                        .background(
+                            color = if (active) colors.accent else colors.fill,
+                            shape = CircleShape,
+                        ),
             )
         }
     }

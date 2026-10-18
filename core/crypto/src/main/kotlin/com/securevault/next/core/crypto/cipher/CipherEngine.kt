@@ -21,7 +21,6 @@ import com.securevault.next.core.domain.model.valueobject.EncryptedField
  * encrypted with.
  */
 interface CipherEngine {
-
     fun encrypt(
         plaintext: SecureBytes,
         key: SecureBytes,

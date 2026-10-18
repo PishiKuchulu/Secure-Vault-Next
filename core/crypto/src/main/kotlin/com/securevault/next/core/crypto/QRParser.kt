@@ -15,14 +15,13 @@ import android.net.Uri
  * parse failure".
  */
 object QRParser {
-
     data class TotpConfig(
         val secret: String,
         val issuer: String? = null,
         val accountName: String? = null,
         val algorithm: String = "SHA1",
         val digits: Int = 6,
-        val period: Int = 30
+        val period: Int = 30,
     )
 
     fun parseOtpAuthUri(uriString: String): TotpConfig? {
@@ -41,12 +40,14 @@ object QRParser {
 
             // Absent -> RFC 6238 default; present but unparseable or out
             // of range -> malformed.
-            val digits = uri.getQueryParameter("digits")?.let { raw ->
-                raw.toIntOrNull()?.takeIf { it in MIN_DIGITS..MAX_DIGITS } ?: return null
-            } ?: DEFAULT_DIGITS
-            val period = uri.getQueryParameter("period")?.let { raw ->
-                raw.toIntOrNull()?.takeIf { it > 0 } ?: return null
-            } ?: DEFAULT_PERIOD
+            val digits =
+                uri.getQueryParameter("digits")?.let { raw ->
+                    raw.toIntOrNull()?.takeIf { it in MIN_DIGITS..MAX_DIGITS } ?: return null
+                } ?: DEFAULT_DIGITS
+            val period =
+                uri.getQueryParameter("period")?.let { raw ->
+                    raw.toIntOrNull()?.takeIf { it > 0 } ?: return null
+                } ?: DEFAULT_PERIOD
 
             TotpConfig(secret, issuer, accountName, algorithm, digits, period)
         } catch (e: Exception) {

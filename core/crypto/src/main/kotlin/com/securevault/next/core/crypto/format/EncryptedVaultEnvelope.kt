@@ -1,8 +1,6 @@
 package com.securevault.next.core.crypto.format
 
 import com.securevault.next.core.domain.model.valueobject.EncryptedField
-import java.io.ByteArrayOutputStream
-import java.io.DataOutputStream
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -12,6 +10,8 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
+import java.io.ByteArrayOutputStream
+import java.io.DataOutputStream
 
 /**
  * Serializer for the envelope's embedded [EncryptedField] (the wrapped
@@ -22,13 +22,17 @@ import kotlinx.serialization.encoding.encodeStructure
  * modifying the [EncryptedField] type.
  */
 object EncryptedFieldSerializer : KSerializer<EncryptedField> {
-    override val descriptor: SerialDescriptor = buildClassSerialDescriptor("EncryptedField") {
-        element<String>("ciphertext")
-        element<String>("nonce")
-        element<String>("algorithm")
-    }
+    override val descriptor: SerialDescriptor =
+        buildClassSerialDescriptor("EncryptedField") {
+            element<String>("ciphertext")
+            element<String>("nonce")
+            element<String>("algorithm")
+        }
 
-    override fun serialize(encoder: Encoder, value: EncryptedField) {
+    override fun serialize(
+        encoder: Encoder,
+        value: EncryptedField,
+    ) {
         encoder.encodeStructure(descriptor) {
             encodeStringElement(descriptor, 0, value.ciphertext)
             encodeStringElement(descriptor, 1, value.nonce)
@@ -144,7 +148,10 @@ data class EncryptedVaultEnvelope(
         val buffer = ByteArrayOutputStream()
         val out = DataOutputStream(buffer)
 
-        fun writeField(name: String, value: String) {
+        fun writeField(
+            name: String,
+            value: String,
+        ) {
             out.writeUTF(name)
             val bytes = value.toByteArray(Charsets.UTF_8)
             out.writeInt(bytes.size)

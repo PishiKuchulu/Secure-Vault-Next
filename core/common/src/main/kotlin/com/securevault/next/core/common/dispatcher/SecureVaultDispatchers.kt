@@ -17,7 +17,9 @@ import javax.inject.Qualifier
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Qualifier
-annotation class Dispatcher(val secureVaultDispatcher: SecureVaultDispatcher)
+annotation class Dispatcher(
+    val secureVaultDispatcher: SecureVaultDispatcher,
+)
 
 /**
  * The set of coroutine dispatchers used across SecureVault Next.

@@ -39,25 +39,30 @@ data class KdfMetadata(
      * (everything except the salt, which callers read from [salt]
      * directly).
      */
-    fun toParameters(): KdfParameters = KdfParameters(
-        algorithm = algorithm,
-        parameterVersion = parameterVersion,
-        memoryCostKib = memoryCostKib,
-        iterations = iterations,
-        parallelism = parallelism,
-        outputLengthBytes = outputLengthBytes,
-    )
+    fun toParameters(): KdfParameters =
+        KdfParameters(
+            algorithm = algorithm,
+            parameterVersion = parameterVersion,
+            memoryCostKib = memoryCostKib,
+            iterations = iterations,
+            parallelism = parallelism,
+            outputLengthBytes = outputLengthBytes,
+        )
 
     companion object {
         /** Builds [KdfMetadata] from a derivation's [parameters] and the [saltBase64] used with it. */
-        fun from(parameters: KdfParameters, saltBase64: String): KdfMetadata = KdfMetadata(
-            algorithm = parameters.algorithm,
-            parameterVersion = parameters.parameterVersion,
-            memoryCostKib = parameters.memoryCostKib,
-            iterations = parameters.iterations,
-            parallelism = parameters.parallelism,
-            outputLengthBytes = parameters.outputLengthBytes,
-            salt = saltBase64,
-        )
+        fun from(
+            parameters: KdfParameters,
+            saltBase64: String,
+        ): KdfMetadata =
+            KdfMetadata(
+                algorithm = parameters.algorithm,
+                parameterVersion = parameters.parameterVersion,
+                memoryCostKib = parameters.memoryCostKib,
+                iterations = parameters.iterations,
+                parallelism = parameters.parallelism,
+                outputLengthBytes = parameters.outputLengthBytes,
+                salt = saltBase64,
+            )
     }
 }

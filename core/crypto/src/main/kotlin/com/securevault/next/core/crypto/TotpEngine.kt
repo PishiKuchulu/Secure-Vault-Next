@@ -16,7 +16,6 @@ import kotlin.math.pow
  * SHA-family names: SHA1 (default, 160-bit), SHA256 or SHA512.
  */
 object TotpEngine {
-
     /**
      * Generates the current TOTP for [secretBase32] at [timeMillis].
      *
@@ -56,10 +55,11 @@ object TotpEngine {
             val hash = mac.doFinal(message)
 
             val offset = hash[hash.size - 1].toInt() and 0x0f
-            val binary = ((hash[offset].toInt() and 0x7f) shl 24) or
-                ((hash[offset + 1].toInt() and 0xff) shl 16) or
-                ((hash[offset + 2].toInt() and 0xff) shl 8) or
-                (hash[offset + 3].toInt() and 0xff)
+            val binary =
+                ((hash[offset].toInt() and 0x7f) shl 24) or
+                    ((hash[offset + 1].toInt() and 0xff) shl 16) or
+                    ((hash[offset + 2].toInt() and 0xff) shl 8) or
+                    (hash[offset + 3].toInt() and 0xff)
 
             val otp = binary % 10.0.pow(digits.toDouble()).toInt()
             return otp.toString().padStart(digits, '0')
@@ -69,8 +69,10 @@ object TotpEngine {
     }
 
     /** Returns the seconds remaining until the end of the current [periodSeconds] window. */
-    fun getRemainingSeconds(timeMillis: Long = System.currentTimeMillis(), periodSeconds: Int = 30): Int =
-        periodSeconds - ((timeMillis / 1000) % periodSeconds).toInt()
+    fun getRemainingSeconds(
+        timeMillis: Long = System.currentTimeMillis(),
+        periodSeconds: Int = 30,
+    ): Int = periodSeconds - ((timeMillis / 1000) % periodSeconds).toInt()
 
     /**
      * Maps the provisioning-URI algorithm names ("SHA1"/"SHA256"/"SHA512")
@@ -78,14 +80,15 @@ object TotpEngine {
      * [IllegalArgumentException] for anything else, since a TOTP secret
      * must only ever be used with the RFC 6238 SHA-family algorithms.
      */
-    private fun normalizeAlgorithm(algorithm: String): String = when (algorithm.uppercase()) {
-        "SHA1", "HMACSHA1" -> "HmacSHA1"
-        "SHA256", "HMACSHA256" -> "HmacSHA256"
-        "SHA512", "HMACSHA512" -> "HmacSHA512"
-        else -> throw IllegalArgumentException(
-            "Unsupported TOTP algorithm '$algorithm'; expected SHA1, SHA256 or SHA512",
-        )
-    }
+    private fun normalizeAlgorithm(algorithm: String): String =
+        when (algorithm.uppercase()) {
+            "SHA1", "HMACSHA1" -> "HmacSHA1"
+            "SHA256", "HMACSHA256" -> "HmacSHA256"
+            "SHA512", "HMACSHA512" -> "HmacSHA512"
+            else -> throw IllegalArgumentException(
+                "Unsupported TOTP algorithm '$algorithm'; expected SHA1, SHA256 or SHA512",
+            )
+        }
 
     private const val DEFAULT_ALGORITHM = "SHA1"
     private const val MIN_DIGITS = 6
@@ -101,19 +104,20 @@ object TotpEngine {
  * so an ill-formed secret fails fast instead of silently truncating.
  */
 private object Base32 {
-
     private const val ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
 
     // ALPHABET.max() == 'Z' (code 90); 128 comfortably covers any ASCII input.
-    private val LOOKUP: IntArray = IntArray(128) { -1 }.also { table ->
-        ALPHABET.forEachIndexed { index, char -> table[char.code] = index }
-    }
+    private val LOOKUP: IntArray =
+        IntArray(128) { -1 }.also { table ->
+            ALPHABET.forEachIndexed { index, char -> table[char.code] = index }
+        }
 
     /** Decodes [encoded] (with or without `=` padding) into its bytes. */
     fun decode(encoded: String): ByteArray {
-        val cleaned = encoded
-            .filterNot { it == '=' }
-            .uppercase()
+        val cleaned =
+            encoded
+                .filterNot { it == '=' }
+                .uppercase()
 
         require(cleaned.isNotEmpty()) { "Base32 input must not be empty" }
 

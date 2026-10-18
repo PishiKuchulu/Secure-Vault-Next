@@ -15,7 +15,6 @@ import com.securevault.next.core.crypto.result.CryptoResult
  * itself.
  */
 interface KeyDerivationEngine {
-
     /**
      * Derives [KdfParameters.outputLengthBytes] bytes of key material
      * from [password] and [salt] using [parameters].
@@ -24,5 +23,9 @@ interface KeyDerivationEngine {
      * and a separate integrity/MAC key (see `core.crypto.vault.VaultEncryptionEngine`)
      * — this function itself is agnostic to how its output bytes are used.
      */
-    fun derive(password: SecureBytes, salt: SecureBytes, parameters: KdfParameters): CryptoResult<SecureBytes>
+    fun derive(
+        password: SecureBytes,
+        salt: SecureBytes,
+        parameters: KdfParameters,
+    ): CryptoResult<SecureBytes>
 }

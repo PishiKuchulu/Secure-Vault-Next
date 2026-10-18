@@ -19,7 +19,6 @@ import com.securevault.next.core.crypto.result.asCryptoSuccess
  * to whichever copy got edited. Both call sites now delegate here.
  */
 object DerivedKeySplitter {
-
     const val MASTER_KEY_LENGTH_BYTES = 32
     const val MAC_KEY_LENGTH_BYTES = 32
     const val REQUIRED_TOTAL_LENGTH_BYTES = MASTER_KEY_LENGTH_BYTES + MAC_KEY_LENGTH_BYTES
@@ -32,18 +31,20 @@ object DerivedKeySplitter {
     fun split(derived: SecureBytes): CryptoResult<Pair<SecureBytes, SecureBytes>> {
         if (derived.size < REQUIRED_TOTAL_LENGTH_BYTES) {
             derived.close()
-            return CryptoError.CryptoFailure(
-                "Derived key material is too short to split into a master key and a MAC key " +
-                    "(need $REQUIRED_TOTAL_LENGTH_BYTES bytes, got ${derived.size})",
-            ).asCryptoFailure()
+            return CryptoError
+                .CryptoFailure(
+                    "Derived key material is too short to split into a master key and a MAC key " +
+                        "(need $REQUIRED_TOTAL_LENGTH_BYTES bytes, got ${derived.size})",
+                ).asCryptoFailure()
         }
 
         return derived.consume { bytes ->
             val masterKeyBytes = bytes.copyOfRange(0, MASTER_KEY_LENGTH_BYTES)
-            val macKeyBytes = bytes.copyOfRange(
-                MASTER_KEY_LENGTH_BYTES,
-                REQUIRED_TOTAL_LENGTH_BYTES,
-            )
+            val macKeyBytes =
+                bytes.copyOfRange(
+                    MASTER_KEY_LENGTH_BYTES,
+                    REQUIRED_TOTAL_LENGTH_BYTES,
+                )
             (SecureBytes.wrap(masterKeyBytes) to SecureBytes.wrap(macKeyBytes)).asCryptoSuccess()
         }
     }

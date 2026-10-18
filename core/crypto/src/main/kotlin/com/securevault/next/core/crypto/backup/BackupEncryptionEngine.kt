@@ -29,7 +29,6 @@ import com.securevault.next.core.crypto.vault.VaultEncryptionEngine
  * [VaultEncryptionEngine.createVault] / [VaultEncryptionEngine.unlockVault].
  */
 interface BackupEncryptionEngine {
-
     /** Creates a new encrypted backup envelope protected by [backupPassword], containing [plaintextContent]. */
     fun createBackup(
         backupPassword: SecureBytes,
@@ -41,10 +40,16 @@ interface BackupEncryptionEngine {
      * Authenticates against a backup [envelope] with [backupPassword]
      * and unwraps its [BackupKey], without decrypting the content yet.
      */
-    fun restoreBackup(envelope: EncryptedVaultEnvelope, backupPassword: SecureBytes): CryptoResult<BackupKey>
+    fun restoreBackup(
+        envelope: EncryptedVaultEnvelope,
+        backupPassword: SecureBytes,
+    ): CryptoResult<BackupKey>
 
     /** Decrypts a backup [envelope]'s content using an already-unwrapped [backupKey] (from [restoreBackup]). */
-    fun decryptBackupContent(envelope: EncryptedVaultEnvelope, backupKey: BackupKey): CryptoResult<SecureBytes>
+    fun decryptBackupContent(
+        envelope: EncryptedVaultEnvelope,
+        backupKey: BackupKey,
+    ): CryptoResult<SecureBytes>
 }
 
 /**
@@ -70,23 +75,24 @@ data class BackupCreationResult(
 class DefaultBackupEncryptionEngine(
     private val vaultEncryptionEngine: VaultEncryptionEngine,
 ) : BackupEncryptionEngine {
-
     override fun createBackup(
         backupPassword: SecureBytes,
         plaintextContent: SecureBytes,
         kdfParameters: KdfParameters,
     ): CryptoResult<BackupCreationResult> =
-        vaultEncryptionEngine.createVault(backupPassword, plaintextContent, kdfParameters)
+        vaultEncryptionEngine
+            .createVault(backupPassword, plaintextContent, kdfParameters)
             .map { result ->
                 BackupCreationResult(envelope = result.envelope, backupKey = BackupKey(result.vaultKey.bytes))
             }
 
-    override fun restoreBackup(envelope: EncryptedVaultEnvelope, backupPassword: SecureBytes): CryptoResult<BackupKey> =
-        vaultEncryptionEngine.unlockVault(envelope, backupPassword).map { BackupKey(it.bytes) }
+    override fun restoreBackup(
+        envelope: EncryptedVaultEnvelope,
+        backupPassword: SecureBytes,
+    ): CryptoResult<BackupKey> = vaultEncryptionEngine.unlockVault(envelope, backupPassword).map { BackupKey(it.bytes) }
 
     override fun decryptBackupContent(
         envelope: EncryptedVaultEnvelope,
         backupKey: BackupKey,
-    ): CryptoResult<SecureBytes> =
-        vaultEncryptionEngine.decryptContent(envelope, VaultKey(backupKey.bytes))
+    ): CryptoResult<SecureBytes> = vaultEncryptionEngine.decryptContent(envelope, VaultKey(backupKey.bytes))
 }

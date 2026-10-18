@@ -5,7 +5,6 @@ import kotlinx.coroutines.CancellationException
 import org.junit.Test
 
 class ResultTest {
-
     @Test
     fun `success carries its value`() {
         val result: Result<Int, String> = Result.success(42)
@@ -64,7 +63,12 @@ class ResultTest {
             if (value % 2 == 0) Result.success(value / 2) else Result.failure("odd: $value")
 
         val bothSucceed = Result.success(8).flatMap(::half).flatMap(::half)
-        val secondFails = Result.success(8).flatMap(::half).flatMap(::half).flatMap(::half)
+        val secondFails =
+            Result
+                .success(8)
+                .flatMap(::half)
+                .flatMap(::half)
+                .flatMap(::half)
 
         assertThat(bothSucceed.getOrNull()).isEqualTo(2)
         assertThat(secondFails.errorOrNull()).isEqualTo("odd: 1")
@@ -92,9 +96,10 @@ class ResultTest {
 
     @Test
     fun `resultOf wraps a thrown exception into a Failure`() {
-        val result = resultOf<Int, String>(onException = { it.message ?: "unknown" }) {
-            error("kaboom")
-        }
+        val result =
+            resultOf<Int, String>(onException = { it.message ?: "unknown" }) {
+                error("kaboom")
+            }
 
         assertThat(result.isFailure).isTrue()
         assertThat(result.errorOrNull()).isEqualTo("kaboom")

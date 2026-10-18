@@ -13,7 +13,6 @@ package com.securevault.next.core.common.memory
  * memory scrapers.
  */
 object MemoryWiper {
-
     /** Overwrites every element of [array] with the null character. */
     fun wipe(array: CharArray?) {
         array?.fill('\u0000')
@@ -28,23 +27,27 @@ object MemoryWiper {
      * Executes [block] with [sensitiveData], then wipes [sensitiveData]
      * immediately after, regardless of whether [block] succeeded.
      */
-    inline fun <T> useAndWipe(sensitiveData: CharArray, block: (CharArray) -> T): T {
-        return try {
+    inline fun <T> useAndWipe(
+        sensitiveData: CharArray,
+        block: (CharArray) -> T,
+    ): T =
+        try {
             block(sensitiveData)
         } finally {
             wipe(sensitiveData)
         }
-    }
 
     /**
      * Executes [block] with [sensitiveData], then wipes [sensitiveData]
      * immediately after, regardless of whether [block] succeeded.
      */
-    inline fun <T> useAndWipe(sensitiveData: ByteArray, block: (ByteArray) -> T): T {
-        return try {
+    inline fun <T> useAndWipe(
+        sensitiveData: ByteArray,
+        block: (ByteArray) -> T,
+    ): T =
+        try {
             block(sensitiveData)
         } finally {
             wipe(sensitiveData)
         }
-    }
 }

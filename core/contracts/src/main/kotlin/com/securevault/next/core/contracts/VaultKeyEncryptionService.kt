@@ -42,7 +42,6 @@ data class EnvelopeAndKey(
  * once transferred.
  */
 interface VaultKeyEncryptionService {
-
     /**
      * Creates a new encrypted envelope protecting a freshly generated vault
      * key, derived from [masterPassword]. Returns the serialized envelope
@@ -60,7 +59,10 @@ interface VaultKeyEncryptionService {
      * [masterPassword]. Returns the vault key bytes on success, or a domain
      * `AuthenticationError.InvalidCredentials` when the password is wrong.
      */
-    fun unwrapVaultKey(envelopeJson: String, masterPassword: CharArray): DomainResult<ByteArray>
+    fun unwrapVaultKey(
+        envelopeJson: String,
+        masterPassword: CharArray,
+    ): DomainResult<ByteArray>
 
     /**
      * Re-wraps the vault key under a new master password: verifies
