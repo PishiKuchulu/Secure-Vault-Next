@@ -16,15 +16,15 @@ import com.securevault.next.data.persistence.entity.TagEntity
 data class ItemSummaryPojo(
     @Embedded
     val item: ItemEntity,
-
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
-        associateBy = Junction(
-            value = ItemTagCrossRef::class,
-            parentColumn = "item_id",
-            entityColumn = "tag_id"
-        )
+        associateBy =
+            Junction(
+                value = ItemTagCrossRef::class,
+                parentColumn = "item_id",
+                entityColumn = "tag_id",
+            ),
     )
     val tags: List<TagEntity>,
 )
