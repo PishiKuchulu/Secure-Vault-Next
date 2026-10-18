@@ -17,9 +17,9 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             entity = ItemEntity::class,
             parentColumns = ["id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class CreditCardEntity(
     @PrimaryKey
@@ -36,5 +36,5 @@ data class CreditCardEntity(
     @Embedded(prefix = "cvv_")
     val cvv: EncryptedFieldEntity,
     @Embedded(prefix = "pin_")
-    val pin: EncryptedFieldEntity? = null,
+    val pin: EncryptedFieldEntity? = null
 )

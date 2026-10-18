@@ -31,22 +31,22 @@ import java.time.Instant
             entity = VaultEntity::class,
             parentColumns = ["id"],
             childColumns = ["vault_id"],
-            onDelete = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = CategoryEntity::class,
             parentColumns = ["id"],
             childColumns = ["category_id"],
-            onDelete = ForeignKey.SET_NULL,
-        ),
+            onDelete = ForeignKey.SET_NULL
+        )
     ],
     indices = [
         Index("vault_id"),
         Index("category_id"),
         Index("item_type"),
         Index("is_favorite"),
-        Index("is_deleted"),
-    ],
+        Index("is_deleted")
+    ]
 )
 data class ItemEntity(
     @PrimaryKey
@@ -101,5 +101,5 @@ data class ItemEntity(
     @ColumnInfo(name = "deleted_at")
     val deletedAt: Instant? = null,
     @ColumnInfo(name = "expires_at")
-    val expiresAt: Instant? = null,
+    val expiresAt: Instant? = null
 )

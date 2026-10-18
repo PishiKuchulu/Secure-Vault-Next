@@ -22,9 +22,9 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             entity = RecoveryCodeEntity::class,
             parentColumns = ["item_id"],
             childColumns = ["recovery_code_item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class RecoveryCodeValueEntity(
     @PrimaryKey(autoGenerate = true)
@@ -34,5 +34,5 @@ data class RecoveryCodeValueEntity(
     @ColumnInfo(name = "sort_order")
     val sortOrder: Int,
     @Embedded(prefix = "code_")
-    val code: EncryptedFieldEntity,
+    val code: EncryptedFieldEntity
 )

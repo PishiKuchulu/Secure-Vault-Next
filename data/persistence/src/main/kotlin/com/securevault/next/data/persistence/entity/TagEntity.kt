@@ -19,12 +19,12 @@ import java.time.Instant
             entity = VaultEntity::class,
             parentColumns = ["id"],
             childColumns = ["vault_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
+            onDelete = ForeignKey.CASCADE
+        )
     ],
     indices = [
-        Index("vault_id"),
-    ],
+        Index("vault_id")
+    ]
 )
 data class TagEntity(
     @PrimaryKey
@@ -37,5 +37,5 @@ data class TagEntity(
     @ColumnInfo(name = "created_at")
     val createdAt: Instant,
     @ColumnInfo(name = "updated_at")
-    val updatedAt: Instant,
+    val updatedAt: Instant
 )

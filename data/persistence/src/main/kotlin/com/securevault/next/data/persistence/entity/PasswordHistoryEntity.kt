@@ -20,12 +20,12 @@ import java.time.Instant
             entity = PasswordEntity::class,
             parentColumns = ["item_id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
+            onDelete = ForeignKey.CASCADE
+        )
     ],
     indices = [
-        Index("item_id"),
-    ],
+        Index("item_id")
+    ]
 )
 data class PasswordHistoryEntity(
     @PrimaryKey
@@ -35,5 +35,5 @@ data class PasswordHistoryEntity(
     @Embedded(prefix = "password_")
     val password: EncryptedFieldEntity,
     @ColumnInfo(name = "changed_at")
-    val changedAt: Instant,
+    val changedAt: Instant
 )

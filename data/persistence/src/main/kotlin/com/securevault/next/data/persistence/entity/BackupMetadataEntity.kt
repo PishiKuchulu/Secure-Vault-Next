@@ -29,12 +29,12 @@ import java.time.Instant
             entity = VaultEntity::class,
             parentColumns = ["id"],
             childColumns = ["vault_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
+            onDelete = ForeignKey.CASCADE
+        )
     ],
     indices = [
-        Index("vault_id"),
-    ],
+        Index("vault_id")
+    ]
 )
 data class BackupMetadataEntity(
     @PrimaryKey
@@ -69,5 +69,5 @@ data class BackupMetadataEntity(
      * backup time. Verified before any restore.
      */
     @ColumnInfo(name = "sha256")
-    val sha256: String? = null,
+    val sha256: String? = null
 )

@@ -17,14 +17,14 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             entity = ItemEntity::class,
             parentColumns = ["id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class SecureNoteEntity(
     @PrimaryKey
     @ColumnInfo(name = "item_id")
     val itemId: ItemId,
     @Embedded(prefix = "content_")
-    val content: EncryptedFieldEntity,
+    val content: EncryptedFieldEntity
 )

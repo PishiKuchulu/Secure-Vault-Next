@@ -17,9 +17,9 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             entity = ItemEntity::class,
             parentColumns = ["id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class PasswordEntity(
     @PrimaryKey
@@ -31,15 +31,11 @@ data class PasswordEntity(
     val url: String? = null,
     // TOTP Config (Flattened)
     @Embedded(prefix = "totp_")
-    val totp: TotpConfigEntity? = null,
+    val totp: TotpConfigEntity? = null
 )
 
 /** Opaque encrypted field representation for Room. */
-data class EncryptedFieldEntity(
-    val ciphertext: String,
-    val nonce: String,
-    val algorithm: String,
-)
+data class EncryptedFieldEntity(val ciphertext: String, val nonce: String, val algorithm: String)
 
 /** TOTP configuration details. */
 data class TotpConfigEntity(
@@ -49,5 +45,5 @@ data class TotpConfigEntity(
     val accountName: String? = null,
     val algorithm: String,
     val digits: Int,
-    val periodSeconds: Int,
+    val periodSeconds: Int
 )

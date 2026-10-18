@@ -18,23 +18,23 @@ import com.securevault.next.core.domain.model.valueobject.TagId
             entity = ItemEntity::class,
             parentColumns = ["id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = TagEntity::class,
             parentColumns = ["id"],
             childColumns = ["tag_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
+            onDelete = ForeignKey.CASCADE
+        )
     ],
     indices = [
         Index("item_id"),
-        Index("tag_id"),
-    ],
+        Index("tag_id")
+    ]
 )
 data class ItemTagCrossRef(
     @ColumnInfo(name = "item_id")
     val itemId: ItemId,
     @ColumnInfo(name = "tag_id")
-    val tagId: TagId,
+    val tagId: TagId
 )

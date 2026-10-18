@@ -17,9 +17,9 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             entity = ItemEntity::class,
             parentColumns = ["id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class BankAccountEntity(
     @PrimaryKey
@@ -36,5 +36,5 @@ data class BankAccountEntity(
     @Embedded(prefix = "iban_")
     val iban: EncryptedFieldEntity? = null,
     @ColumnInfo(name = "swift_code")
-    val swiftCode: String? = null,
+    val swiftCode: String? = null
 )

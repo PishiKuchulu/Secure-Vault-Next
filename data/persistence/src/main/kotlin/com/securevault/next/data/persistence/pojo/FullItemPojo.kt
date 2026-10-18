@@ -29,11 +29,11 @@ data class FullItemPojo(
         parentColumn = "id",
         entityColumn = "id",
         associateBy =
-            Junction(
-                value = ItemTagCrossRef::class,
-                parentColumn = "item_id",
-                entityColumn = "tag_id",
-            ),
+        Junction(
+            value = ItemTagCrossRef::class,
+            parentColumn = "item_id",
+            entityColumn = "tag_id"
+        )
     )
     val tags: List<TagEntity>,
     @Relation(parentColumn = "id", entityColumn = "item_id")
@@ -57,5 +57,5 @@ data class FullItemPojo(
     @Relation(parentColumn = "id", entityColumn = "recovery_code_item_id")
     val recoveryCodeValues: List<RecoveryCodeValueEntity> = emptyList(),
     @Relation(parentColumn = "id", entityColumn = "item_id")
-    val totpSeed: TotpSeedEntity? = null,
+    val totpSeed: TotpSeedEntity? = null
 )

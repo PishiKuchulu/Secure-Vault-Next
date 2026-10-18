@@ -17,9 +17,9 @@ import java.time.Instant
             entity = VaultEntity::class,
             parentColumns = ["id"],
             childColumns = ["vault_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class AuditResultEntity(
     @PrimaryKey
@@ -43,5 +43,5 @@ data class AuditResultEntity(
     val breachedItemsJson: String,
     /** JSON list of recommendation strings. */
     @ColumnInfo(name = "recommendations_json")
-    val recommendationsJson: String,
+    val recommendationsJson: String
 )

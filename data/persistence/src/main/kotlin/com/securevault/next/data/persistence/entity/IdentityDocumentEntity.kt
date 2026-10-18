@@ -18,9 +18,9 @@ import java.time.Instant
             entity = ItemEntity::class,
             parentColumns = ["id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class IdentityDocumentEntity(
     @PrimaryKey
@@ -37,5 +37,5 @@ data class IdentityDocumentEntity(
     @ColumnInfo(name = "expiry_date")
     val expiryDate: Instant? = null,
     @ColumnInfo(name = "issuing_country")
-    val issuingCountry: String? = null,
+    val issuingCountry: String? = null
 )

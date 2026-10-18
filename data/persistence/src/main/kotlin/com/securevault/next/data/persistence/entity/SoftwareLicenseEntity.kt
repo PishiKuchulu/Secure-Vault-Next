@@ -18,9 +18,9 @@ import java.time.Instant
             entity = ItemEntity::class,
             parentColumns = ["id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class SoftwareLicenseEntity(
     @PrimaryKey
@@ -36,5 +36,5 @@ data class SoftwareLicenseEntity(
     val purchaseDate: Instant? = null,
     @ColumnInfo(name = "expiry_date")
     val expiryDate: Instant? = null,
-    val vendor: String? = null,
+    val vendor: String? = null
 )

@@ -20,11 +20,11 @@ data class ItemSummaryPojo(
         parentColumn = "id",
         entityColumn = "id",
         associateBy =
-            Junction(
-                value = ItemTagCrossRef::class,
-                parentColumn = "item_id",
-                entityColumn = "tag_id",
-            ),
+        Junction(
+            value = ItemTagCrossRef::class,
+            parentColumn = "item_id",
+            entityColumn = "tag_id"
+        )
     )
-    val tags: List<TagEntity>,
+    val tags: List<TagEntity>
 )

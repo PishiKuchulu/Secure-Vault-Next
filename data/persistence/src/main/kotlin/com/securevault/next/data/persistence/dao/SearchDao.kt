@@ -27,13 +27,9 @@ interface SearchDao {
           AND items_fts MATCH :query
           AND (:favoritesOnly = 0 OR items.is_favorite = 1)
         ORDER BY items.title ASC
-    """,
+    """
     )
-    suspend fun searchItems(
-        vaultId: VaultId,
-        query: String,
-        favoritesOnly: Boolean = false,
-    ): List<ItemSummaryPojo>
+    suspend fun searchItems(vaultId: VaultId, query: String, favoritesOnly: Boolean = false): List<ItemSummaryPojo>
 
     @Transaction
     @Query(
@@ -46,12 +42,12 @@ interface SearchDao {
           AND items_fts MATCH :query
           AND (:favoritesOnly = 0 OR items.is_favorite = 1)
         ORDER BY items.updated_at DESC
-    """,
+    """
     )
     suspend fun searchItemsSortedByDate(
         vaultId: VaultId,
         query: String,
-        favoritesOnly: Boolean = false,
+        favoritesOnly: Boolean = false
     ): List<ItemSummaryPojo>
 
     /**

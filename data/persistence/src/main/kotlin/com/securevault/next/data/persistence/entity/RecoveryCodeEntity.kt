@@ -21,9 +21,9 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             entity = ItemEntity::class,
             parentColumns = ["id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class RecoveryCodeEntity(
     @PrimaryKey
@@ -32,5 +32,5 @@ data class RecoveryCodeEntity(
     val service: String,
     /** CSV of indices that have been used. */
     @ColumnInfo(name = "used_indices_csv")
-    val usedIndicesCsv: String,
+    val usedIndicesCsv: String
 )

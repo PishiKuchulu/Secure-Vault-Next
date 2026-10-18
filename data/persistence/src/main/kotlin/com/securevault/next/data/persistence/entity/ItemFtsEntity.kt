@@ -31,5 +31,5 @@ data class ItemFtsEntity(
     @ColumnInfo(name = "title")
     val title: String,
     @ColumnInfo(name = "notes")
-    val notes: String?,
+    val notes: String?
 )

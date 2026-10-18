@@ -1,7 +1,7 @@
 package com.securevault.next.data.persistence.benchmark
 
-import org.junit.Test
 import kotlin.system.measureTimeMillis
+import org.junit.Test
 
 /**
  * Benchmark for verifying performance with 100,000 items.

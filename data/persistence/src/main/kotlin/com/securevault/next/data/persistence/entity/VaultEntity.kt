@@ -62,5 +62,5 @@ data class VaultEntity(
     // which are therefore not unlockable and must be re-created. Non-null for
     // every vault created after this schema version.
     @ColumnInfo(name = "envelope_json")
-    val envelopeJson: String?,
+    val envelopeJson: String?
 )

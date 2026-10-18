@@ -17,9 +17,9 @@ import com.securevault.next.core.domain.model.valueobject.ItemId
             entity = ItemEntity::class,
             parentColumns = ["id"],
             childColumns = ["item_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class SshKeyEntity(
     @PrimaryKey
@@ -34,5 +34,5 @@ data class SshKeyEntity(
     @Embedded(prefix = "passphrase_")
     val passphrase: EncryptedFieldEntity? = null,
     @ColumnInfo(name = "host_address")
-    val hostAddress: String? = null,
+    val hostAddress: String? = null
 )
