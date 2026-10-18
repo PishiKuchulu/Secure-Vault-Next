@@ -54,11 +54,7 @@ import kotlinx.coroutines.flow.collectLatest
  * stack, so back can never return here from the vault home.
  */
 @Composable
-fun UnlockScreen(
-    vaultId: String,
-    onUnlocked: () -> Unit,
-    viewModel: UnlockViewModel = hiltViewModel(),
-) {
+fun UnlockScreen(vaultId: String, onUnlocked: () -> Unit, viewModel: UnlockViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -79,31 +75,31 @@ fun UnlockScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = colors.baseBackground,
+        color = colors.baseBackground
     ) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .imePadding()
-                    .padding(horizontal = spacing.large),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .imePadding()
+                .padding(horizontal = spacing.large),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(spacing.extraExtraLarge))
 
             Box(
                 modifier =
-                    Modifier
-                        .size(88.dp)
-                        .background(colors.accentSoft, CircleShape),
-                contentAlignment = Alignment.Center,
+                Modifier
+                    .size(88.dp)
+                    .background(colors.accentSoft, CircleShape),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Filled.Lock,
                     contentDescription = null,
                     modifier = Modifier.size(40.dp),
-                    tint = colors.accent,
+                    tint = colors.accent
                 )
             }
 
@@ -111,14 +107,14 @@ fun UnlockScreen(
 
             Text(
                 text =
-                    if (uiState.vaultName.isNotBlank()) {
-                        stringResource(R.string.unlock_title, uiState.vaultName)
-                    } else {
-                        stringResource(R.string.unlock_title_fallback)
-                    },
+                if (uiState.vaultName.isNotBlank()) {
+                    stringResource(R.string.unlock_title, uiState.vaultName)
+                } else {
+                    stringResource(R.string.unlock_title_fallback)
+                },
                 style = MaterialTheme.typography.headlineSmall,
                 color = colors.label,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(spacing.small))
@@ -127,7 +123,7 @@ fun UnlockScreen(
                 text = stringResource(R.string.unlock_subtitle),
                 style = MaterialTheme.typography.bodyLarge,
                 color = colors.secondaryLabel,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(spacing.extraLarge))
@@ -136,14 +132,14 @@ fun UnlockScreen(
                 value = uiState.password,
                 onValueChange = viewModel::onPasswordChange,
                 label = stringResource(R.string.unlock_password_label),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(spacing.medium))
 
             UnlockStatusArea(
                 uiState = uiState,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(spacing.medium))
@@ -153,7 +149,7 @@ fun UnlockScreen(
                 onClick = { viewModel.onUnlockClick(vaultId) },
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !lockedOut,
-                loading = uiState.isLoading,
+                loading = uiState.isLoading
             )
 
             if (uiState.canUseBiometrics && activity != null) {
@@ -166,13 +162,13 @@ fun UnlockScreen(
                             vaultId = vaultId,
                             promptTitle = promptTitle,
                             promptSubtitle = promptSubtitle,
-                            promptNegative = promptNegative,
+                            promptNegative = promptNegative
                         )
                     },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = !lockedOut,
                     loading = uiState.biometricBusy,
-                    icon = Icons.Filled.Fingerprint,
+                    icon = Icons.Filled.Fingerprint
                 )
             }
 
@@ -190,10 +186,10 @@ fun UnlockScreen(
                     vaultId = vaultId,
                     promptTitle = promptTitle,
                     promptSubtitle = promptSubtitle,
-                    promptNegative = promptNegative,
+                    promptNegative = promptNegative
                 )
             },
-            onDismiss = { viewModel.onDismissBiometricOffer(vaultId) },
+            onDismiss = { viewModel.onDismissBiometricOffer(vaultId) }
         )
     }
 }
@@ -204,56 +200,53 @@ fun UnlockScreen(
  * or a plain inline error — never stacked, never a toast.
  */
 @Composable
-private fun UnlockStatusArea(
-    uiState: UnlockUiState,
-    modifier: Modifier = Modifier,
-) {
+private fun UnlockStatusArea(uiState: UnlockUiState, modifier: Modifier = Modifier) {
     val colors = SecureVaultColorsScope.colors
 
     when {
         uiState.lockoutRemainingSeconds > 0 -> {
             Text(
                 text =
-                    stringResource(
-                        R.string.unlock_locked_out,
-                        formatCountdown(uiState.lockoutRemainingSeconds),
-                    ),
+                stringResource(
+                    R.string.unlock_locked_out,
+                    formatCountdown(uiState.lockoutRemainingSeconds)
+                ),
                 style = MaterialTheme.typography.bodyLarge.tabularNumerals(),
                 color = colors.danger,
                 textAlign = TextAlign.Center,
-                modifier = modifier,
+                modifier = modifier
             )
         }
         uiState.wrongPasswordAttemptsLeft != null -> {
             InlineError(
                 message =
-                    stringResource(R.string.unlock_incorrect_password) +
-                        " " +
-                        stringResource(
-                            R.string.unlock_attempts_remaining,
-                            uiState.wrongPasswordAttemptsLeft,
-                        ),
-                modifier = modifier,
+                stringResource(R.string.unlock_incorrect_password) +
+                    " " +
+                    stringResource(
+                        R.string.unlock_attempts_remaining,
+                        uiState.wrongPasswordAttemptsLeft
+                    ),
+                modifier = modifier
             )
         }
         uiState.biometricKeyInvalidated -> {
             InlineError(
                 message = stringResource(R.string.unlock_biometric_key_invalid),
-                modifier = modifier,
+                modifier = modifier
             )
         }
         uiState.biometricEnableFailure != null -> {
             InlineError(
                 message =
-                    stringResource(R.string.biometric_enable_failed) +
-                        " " + uiState.biometricEnableFailure,
-                modifier = modifier,
+                stringResource(R.string.biometric_enable_failed) +
+                    " " + uiState.biometricEnableFailure,
+                modifier = modifier
             )
         }
         uiState.inlineError != null -> {
             InlineError(
                 message = uiState.inlineError,
-                modifier = modifier,
+                modifier = modifier
             )
         }
     }
@@ -275,7 +268,7 @@ private fun BiometricOfferSheet(
     enabling: Boolean,
     enableFailure: String?,
     onEnable: () -> Unit,
-    onDismiss: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     val spacing = SecureVaultSpacingScope.spacing
     val colors = SecureVaultColorsScope.colors
@@ -288,13 +281,13 @@ private fun BiometricOfferSheet(
         Text(
             text = stringResource(R.string.biometric_offer_body),
             style = MaterialTheme.typography.bodyLarge,
-            color = colors.secondaryLabel,
+            color = colors.secondaryLabel
         )
 
         if (enableFailure != null) {
             Spacer(modifier = Modifier.height(spacing.small))
             InlineError(
-                message = stringResource(R.string.biometric_enable_failed) + " " + enableFailure,
+                message = stringResource(R.string.biometric_enable_failed) + " " + enableFailure
             )
         }
 
@@ -304,18 +297,18 @@ private fun BiometricOfferSheet(
             text = stringResource(R.string.biometric_offer_enable),
             onClick = onEnable,
             modifier = Modifier.fillMaxWidth(),
-            loading = enabling,
+            loading = enabling
         )
 
         Spacer(modifier = Modifier.height(spacing.small))
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             VaultTextButton(
                 text = stringResource(R.string.biometric_offer_not_now),
-                onClick = onDismiss,
+                onClick = onDismiss
             )
         }
 

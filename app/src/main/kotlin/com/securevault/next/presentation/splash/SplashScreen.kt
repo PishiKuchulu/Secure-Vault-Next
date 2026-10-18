@@ -47,12 +47,12 @@ import kotlinx.coroutines.flow.collectLatest
 fun SplashScreen(
     onUnlockExisting: (vaultId: String) -> Unit,
     onOnboard: () -> Unit,
-    viewModel: SplashViewModel = hiltViewModel(),
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
     SplashScreenContent(
         events = viewModel.events,
         onUnlockExisting = onUnlockExisting,
-        onOnboard = onOnboard,
+        onOnboard = onOnboard
     )
 }
 
@@ -60,7 +60,7 @@ fun SplashScreen(
 private fun SplashScreenContent(
     events: Flow<SplashUiEvent>,
     onUnlockExisting: (vaultId: String) -> Unit,
-    onOnboard: () -> Unit,
+    onOnboard: () -> Unit
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -79,56 +79,56 @@ private fun SplashScreenContent(
     val alpha by animateFloatAsState(
         targetValue = if (entered) 1f else 0f,
         animationSpec =
-            tween(
-                durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
-                easing = SecureVaultEaseOut,
-            ),
-        label = "splashAlpha",
+        tween(
+            durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
+            easing = SecureVaultEaseOut
+        ),
+        label = "splashAlpha"
     )
     val scale by animateFloatAsState(
         targetValue = if (entered) 1f else 0.94f,
         animationSpec =
-            tween(
-                durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
-                easing = SecureVaultEaseOut,
-            ),
-        label = "splashScale",
+        tween(
+            durationMillis = SECURE_VAULT_STATE_CHANGE_DURATION_MS,
+            easing = SecureVaultEaseOut
+        ),
+        label = "splashScale"
     )
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = colors.baseBackground,
+        color = colors.baseBackground
     ) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .graphicsLayer {
-                        scaleX = scale
-                        scaleY = scale
-                    }.alpha(alpha),
+            Modifier
+                .fillMaxSize()
+                .graphicsLayer {
+                    scaleX = scale
+                    scaleY = scale
+                }.alpha(alpha),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Center
         ) {
             Box(
                 modifier =
-                    Modifier
-                        .size(96.dp)
-                        .background(colors.accentSoft, CircleShape),
-                contentAlignment = Alignment.Center,
+                Modifier
+                    .size(96.dp)
+                    .background(colors.accentSoft, CircleShape),
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Filled.Lock,
                     contentDescription = stringResource(R.string.splash_logo_description),
                     modifier = Modifier.size(44.dp),
-                    tint = colors.accent,
+                    tint = colors.accent
                 )
             }
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.headlineSmall,
                 color = colors.label,
-                modifier = Modifier.padding(top = spacing.large),
+                modifier = Modifier.padding(top = spacing.large)
             )
         }
     }

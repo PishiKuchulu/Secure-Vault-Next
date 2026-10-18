@@ -56,11 +56,11 @@ import com.securevault.next.core.ui.theme.SecureVaultSpacingScope
 import com.securevault.next.core.ui.theme.SecureVaultTheme
 import com.securevault.next.core.ui.theme.footnote
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
 // Screen copy is centralized in strings.xml (generator_*). The clipboard label and
 // the strength labels stay consts: the clipboard label is used in the ViewModel
@@ -80,114 +80,107 @@ data class GeneratorUiState(
     val includeSymbols: Boolean = true,
     val excludeAmbiguous: Boolean = false,
     val password: GeneratedPassword? = null,
-    val justCopied: Boolean = false,
+    val justCopied: Boolean = false
 )
 
 @HiltViewModel
 class GeneratorViewModel
-    @Inject
-    constructor(
-        private val generatePassword: GeneratePasswordUseCase,
-        private val clipboard: SecureClipboardManager,
-    ) : ViewModel() {
-        private val _uiState = MutableStateFlow(GeneratorUiState())
-        val uiState: StateFlow<GeneratorUiState> = _uiState.asStateFlow()
+@Inject
+constructor(
+    private val generatePassword: GeneratePasswordUseCase,
+    private val clipboard: SecureClipboardManager
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(GeneratorUiState())
+    val uiState: StateFlow<GeneratorUiState> = _uiState.asStateFlow()
 
-        init {
-            regenerate()
-        }
-
-        fun onLengthChange(length: Int) {
-            _uiState.update {
-                it.copy(
-                    length =
-                        length.coerceIn(
-                            PasswordGenerationOptions.MIN_LENGTH,
-                            PasswordGenerationOptions.MAX_LENGTH,
-                        ),
-                    justCopied = false,
-                )
-            }
-            regenerate()
-        }
-
-        fun onToggleUppercase(enabled: Boolean) = setClass(enabled) { copy(includeUppercase = it) }
-
-        fun onToggleLowercase(enabled: Boolean) = setClass(enabled) { copy(includeLowercase = it) }
-
-        fun onToggleDigits(enabled: Boolean) = setClass(enabled) { copy(includeDigits = it) }
-
-        fun onToggleSymbols(enabled: Boolean) = setClass(enabled) { copy(includeSymbols = it) }
-
-        fun onToggleExcludeAmbiguous(enabled: Boolean) {
-            _uiState.update { it.copy(excludeAmbiguous = enabled, justCopied = false) }
-            regenerate()
-        }
-
-        fun onRegenerate() {
-            _uiState.update { it.copy(justCopied = false) }
-            regenerate()
-        }
-
-        fun onCopy() {
-            val value = _uiState.value.password?.value ?: return
-            clipboard.copyToClipboard(STR_COPY, value)
-            _uiState.update { it.copy(justCopied = true) }
-        }
-
-        /**
-         * The last enabled character class can't be switched off — the
-         * generator contract requires at least one class.
-         */
-        private fun setClass(
-            enabled: Boolean,
-            set: GeneratorUiState.(Boolean) -> GeneratorUiState,
-        ) {
-            val current = _uiState.value
-            if (!enabled) {
-                val enabledCount =
-                    listOf(
-                        current.includeUppercase,
-                        current.includeLowercase,
-                        current.includeDigits,
-                        current.includeSymbols,
-                    ).count { it }
-                if (enabledCount <= 1) return
-            }
-            _uiState.update { it.set(enabled).copy(justCopied = false) }
-            regenerate()
-        }
-
-        private fun regenerate() {
-            val state = _uiState.value
-            val options =
-                PasswordGenerationOptions(
-                    length = state.length,
-                    includeUppercase = state.includeUppercase,
-                    includeLowercase = state.includeLowercase,
-                    includeDigits = state.includeDigits,
-                    includeSymbols = state.includeSymbols,
-                    excludeAmbiguousCharacters = state.excludeAmbiguous,
-                )
-            _uiState.update { it.copy(password = generatePassword(options)) }
-        }
+    init {
+        regenerate()
     }
 
-private fun strengthLabel(level: PasswordStrengthLevel): String =
-    when (level) {
-        PasswordStrengthLevel.VERY_WEAK -> STR_STRENGTH_VERY_WEAK
-        PasswordStrengthLevel.WEAK -> STR_STRENGTH_WEAK
-        PasswordStrengthLevel.FAIR -> STR_STRENGTH_FAIR
-        PasswordStrengthLevel.STRONG -> STR_STRENGTH_STRONG
-        PasswordStrengthLevel.VERY_STRONG -> STR_STRENGTH_VERY_STRONG
+    fun onLengthChange(length: Int) {
+        _uiState.update {
+            it.copy(
+                length =
+                length.coerceIn(
+                    PasswordGenerationOptions.MIN_LENGTH,
+                    PasswordGenerationOptions.MAX_LENGTH
+                ),
+                justCopied = false
+            )
+        }
+        regenerate()
     }
+
+    fun onToggleUppercase(enabled: Boolean) = setClass(enabled) { copy(includeUppercase = it) }
+
+    fun onToggleLowercase(enabled: Boolean) = setClass(enabled) { copy(includeLowercase = it) }
+
+    fun onToggleDigits(enabled: Boolean) = setClass(enabled) { copy(includeDigits = it) }
+
+    fun onToggleSymbols(enabled: Boolean) = setClass(enabled) { copy(includeSymbols = it) }
+
+    fun onToggleExcludeAmbiguous(enabled: Boolean) {
+        _uiState.update { it.copy(excludeAmbiguous = enabled, justCopied = false) }
+        regenerate()
+    }
+
+    fun onRegenerate() {
+        _uiState.update { it.copy(justCopied = false) }
+        regenerate()
+    }
+
+    fun onCopy() {
+        val value = _uiState.value.password?.value ?: return
+        clipboard.copyToClipboard(STR_COPY, value)
+        _uiState.update { it.copy(justCopied = true) }
+    }
+
+    /**
+     * The last enabled character class can't be switched off — the
+     * generator contract requires at least one class.
+     */
+    private fun setClass(enabled: Boolean, set: GeneratorUiState.(Boolean) -> GeneratorUiState) {
+        val current = _uiState.value
+        if (!enabled) {
+            val enabledCount =
+                listOf(
+                    current.includeUppercase,
+                    current.includeLowercase,
+                    current.includeDigits,
+                    current.includeSymbols
+                ).count { it }
+            if (enabledCount <= 1) return
+        }
+        _uiState.update { it.set(enabled).copy(justCopied = false) }
+        regenerate()
+    }
+
+    private fun regenerate() {
+        val state = _uiState.value
+        val options =
+            PasswordGenerationOptions(
+                length = state.length,
+                includeUppercase = state.includeUppercase,
+                includeLowercase = state.includeLowercase,
+                includeDigits = state.includeDigits,
+                includeSymbols = state.includeSymbols,
+                excludeAmbiguousCharacters = state.excludeAmbiguous
+            )
+        _uiState.update { it.copy(password = generatePassword(options)) }
+    }
+}
+
+private fun strengthLabel(level: PasswordStrengthLevel): String = when (level) {
+    PasswordStrengthLevel.VERY_WEAK -> STR_STRENGTH_VERY_WEAK
+    PasswordStrengthLevel.WEAK -> STR_STRENGTH_WEAK
+    PasswordStrengthLevel.FAIR -> STR_STRENGTH_FAIR
+    PasswordStrengthLevel.STRONG -> STR_STRENGTH_STRONG
+    PasswordStrengthLevel.VERY_STRONG -> STR_STRENGTH_VERY_STRONG
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GeneratorScreen(
-    onBack: () -> Unit,
-    viewModel: GeneratorViewModel = hiltViewModel(),
-) {
+fun GeneratorScreen(onBack: () -> Unit, viewModel: GeneratorViewModel = hiltViewModel()) {
     val state by viewModel.uiState.collectAsStateLifecycleAware()
 
     GeneratorContent(
@@ -200,7 +193,7 @@ fun GeneratorScreen(
         onToggleSymbols = viewModel::onToggleSymbols,
         onToggleExcludeAmbiguous = viewModel::onToggleExcludeAmbiguous,
         onRegenerate = viewModel::onRegenerate,
-        onCopy = viewModel::onCopy,
+        onCopy = viewModel::onCopy
     )
 }
 
@@ -216,7 +209,7 @@ private fun GeneratorContent(
     onToggleSymbols: (Boolean) -> Unit,
     onToggleExcludeAmbiguous: (Boolean) -> Unit,
     onRegenerate: () -> Unit,
-    onCopy: () -> Unit,
+    onCopy: () -> Unit
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -230,61 +223,61 @@ private fun GeneratorContent(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.generator_back_desc),
+                            contentDescription = stringResource(R.string.generator_back_desc)
                         )
                     }
                 },
                 colors =
-                    TopAppBarDefaults.topAppBarColors(
-                        containerColor = colors.baseBackground,
-                        titleContentColor = colors.label,
-                        navigationIconContentColor = colors.label,
-                        actionIconContentColor = colors.accent,
-                    ),
+                TopAppBarDefaults.topAppBarColors(
+                    containerColor = colors.baseBackground,
+                    titleContentColor = colors.label,
+                    navigationIconContentColor = colors.label,
+                    actionIconContentColor = colors.accent
+                )
             )
-        },
+        }
     ) { innerPadding ->
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = spacing.medium),
-            verticalArrangement = Arrangement.spacedBy(spacing.small),
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = spacing.medium),
+            verticalArrangement = Arrangement.spacedBy(spacing.small)
         ) {
             // The generated password: selectable, tabular, with strength.
             Surface(
                 shape = MaterialTheme.shapes.large,
                 color = colors.surface,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier = Modifier.padding(spacing.medium),
-                    verticalArrangement = Arrangement.spacedBy(spacing.small),
+                    verticalArrangement = Arrangement.spacedBy(spacing.small)
                 ) {
                     SelectionContainer {
                         Text(
                             text = state.password?.value.orEmpty(),
                             style =
-                                MaterialTheme.typography.titleLarge.copy(
-                                    fontFeatureSettings = "tnum",
-                                ),
+                            MaterialTheme.typography.titleLarge.copy(
+                                fontFeatureSettings = "tnum"
+                            ),
                             color = colors.label,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
                     state.password?.let { generated ->
                         StrengthMeter(
                             score = generated.strength.score.value / 100f,
                             label = strengthLabel(generated.strength.level),
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth()
                         )
                         generated.strength.feedback.take(3).forEach { tip ->
                             Text(
                                 text = "• $tip",
                                 style = MaterialTheme.typography.footnote,
-                                color = colors.secondaryLabel,
+                                color = colors.secondaryLabel
                             )
                         }
                     }
@@ -292,7 +285,7 @@ private fun GeneratorContent(
                         Text(
                             text = stringResource(R.string.generator_copied_hint),
                             style = MaterialTheme.typography.footnote,
-                            color = colors.success,
+                            color = colors.success
                         )
                     }
                 }
@@ -302,75 +295,75 @@ private fun GeneratorContent(
             Surface(
                 shape = MaterialTheme.shapes.large,
                 color = colors.surface,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column(
                     modifier =
-                        Modifier.padding(
-                            horizontal = spacing.medium,
-                            vertical = spacing.small,
-                        ),
+                    Modifier.padding(
+                        horizontal = spacing.medium,
+                        vertical = spacing.small
+                    )
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
                             text = stringResource(R.string.generator_length_label),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = colors.label,
+                            color = colors.label
                         )
                         Text(
                             text = state.length.toString(),
                             style =
-                                MaterialTheme.typography.titleMedium.copy(
-                                    fontFeatureSettings = "tnum",
-                                ),
-                            color = colors.label,
+                            MaterialTheme.typography.titleMedium.copy(
+                                fontFeatureSettings = "tnum"
+                            ),
+                            color = colors.label
                         )
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(spacing.small),
+                        horizontalArrangement = Arrangement.spacedBy(spacing.small)
                     ) {
                         IconButton(
                             onClick = { onLengthChange(state.length - 1) },
-                            enabled = state.length > PasswordGenerationOptions.MIN_LENGTH,
+                            enabled = state.length > PasswordGenerationOptions.MIN_LENGTH
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Remove,
                                 contentDescription = stringResource(R.string.generator_decrease_desc),
-                                tint = colors.accent,
+                                tint = colors.accent
                             )
                         }
                         Slider(
                             value = state.length.toFloat(),
                             onValueChange = { onLengthChange(it.toInt()) },
                             valueRange =
-                                PasswordGenerationOptions.MIN_LENGTH.toFloat().rangeTo(
-                                    PasswordGenerationOptions.MAX_LENGTH.toFloat(),
-                                ),
+                            PasswordGenerationOptions.MIN_LENGTH.toFloat().rangeTo(
+                                PasswordGenerationOptions.MAX_LENGTH.toFloat()
+                            ),
                             steps =
-                                PasswordGenerationOptions.MAX_LENGTH -
-                                    PasswordGenerationOptions.MIN_LENGTH - 1,
+                            PasswordGenerationOptions.MAX_LENGTH -
+                                PasswordGenerationOptions.MIN_LENGTH - 1,
                             colors =
-                                SliderDefaults.colors(
-                                    thumbColor = colors.accent,
-                                    activeTrackColor = colors.accent,
-                                    inactiveTrackColor = colors.fill,
-                                ),
-                            modifier = Modifier.weight(1f),
+                            SliderDefaults.colors(
+                                thumbColor = colors.accent,
+                                activeTrackColor = colors.accent,
+                                inactiveTrackColor = colors.fill
+                            ),
+                            modifier = Modifier.weight(1f)
                         )
                         IconButton(
                             onClick = { onLengthChange(state.length + 1) },
-                            enabled = state.length < PasswordGenerationOptions.MAX_LENGTH,
+                            enabled = state.length < PasswordGenerationOptions.MAX_LENGTH
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Add,
                                 contentDescription = stringResource(R.string.generator_increase_desc),
-                                tint = colors.accent,
+                                tint = colors.accent
                             )
                         }
                     }
@@ -381,7 +374,7 @@ private fun GeneratorContent(
             Surface(
                 shape = MaterialTheme.shapes.large,
                 color = colors.surface,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column {
                     GeneratorSwitchRow(
@@ -389,60 +382,60 @@ private fun GeneratorContent(
                         subtitle = stringResource(R.string.generator_uppercase_sub),
                         checked = state.includeUppercase,
                         onCheckedChange = onToggleUppercase,
-                        showDivider = true,
+                        showDivider = true
                     )
                     GeneratorSwitchRow(
                         title = stringResource(R.string.generator_lowercase),
                         subtitle = stringResource(R.string.generator_lowercase_sub),
                         checked = state.includeLowercase,
                         onCheckedChange = onToggleLowercase,
-                        showDivider = true,
+                        showDivider = true
                     )
                     GeneratorSwitchRow(
                         title = stringResource(R.string.generator_digits),
                         subtitle = stringResource(R.string.generator_digits_sub),
                         checked = state.includeDigits,
                         onCheckedChange = onToggleDigits,
-                        showDivider = true,
+                        showDivider = true
                     )
                     GeneratorSwitchRow(
                         title = stringResource(R.string.generator_symbols),
                         subtitle = stringResource(R.string.generator_symbols_sub),
                         checked = state.includeSymbols,
                         onCheckedChange = onToggleSymbols,
-                        showDivider = true,
+                        showDivider = true
                     )
                     GeneratorSwitchRow(
                         title = stringResource(R.string.generator_exclude_ambiguous),
                         subtitle = stringResource(R.string.generator_exclude_ambiguous_sub),
                         checked = state.excludeAmbiguous,
                         onCheckedChange = onToggleExcludeAmbiguous,
-                        showDivider = false,
+                        showDivider = false
                     )
                 }
             }
 
             Row(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            top = spacing.medium,
-                            bottom = spacing.extraLarge,
-                        ),
-                horizontalArrangement = Arrangement.spacedBy(spacing.small),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = spacing.medium,
+                        bottom = spacing.extraLarge
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(spacing.small)
             ) {
                 VaultSecondaryButton(
                     text = stringResource(R.string.generator_screen_regenerate),
                     onClick = onRegenerate,
                     icon = Icons.Filled.Refresh,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f)
                 )
                 VaultButton(
                     text = STR_COPY,
                     onClick = onCopy,
                     icon = Icons.Filled.ContentCopy,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f)
                 )
             }
         }
@@ -457,7 +450,7 @@ private fun GeneratorSwitchRow(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     showDivider: Boolean,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val colors = SecureVaultColorsScope.colors
     val spacing = SecureVaultSpacingScope.spacing
@@ -465,46 +458,46 @@ private fun GeneratorSwitchRow(
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = spacing.medium, vertical = spacing.small),
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = spacing.medium, vertical = spacing.small),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(spacing.small),
+            horizontalArrangement = Arrangement.spacedBy(spacing.small)
         ) {
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = colors.label,
+                    color = colors.label
                 )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.footnote,
-                    color = colors.secondaryLabel,
+                    color = colors.secondaryLabel
                 )
             }
             Switch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
                 colors =
-                    SwitchDefaults.colors(
-                        checkedThumbColor = colors.onAccent,
-                        checkedTrackColor = colors.accent,
-                        checkedBorderColor = Color.Transparent,
-                        uncheckedThumbColor = colors.secondaryLabel,
-                        uncheckedTrackColor = colors.fill,
-                        uncheckedBorderColor = Color.Transparent,
-                    ),
+                SwitchDefaults.colors(
+                    checkedThumbColor = colors.onAccent,
+                    checkedTrackColor = colors.accent,
+                    checkedBorderColor = Color.Transparent,
+                    uncheckedThumbColor = colors.secondaryLabel,
+                    uncheckedTrackColor = colors.fill,
+                    uncheckedBorderColor = Color.Transparent
+                )
             )
         }
         if (showDivider) {
             HorizontalDivider(
                 modifier = Modifier.padding(start = spacing.medium),
                 thickness = 1.dp,
-                color = colors.separator,
+                color = colors.separator
             )
         }
     }
@@ -518,18 +511,18 @@ private fun GeneratorContentPreview() {
     SecureVaultTheme {
         GeneratorContent(
             state =
-                GeneratorUiState(
-                    password =
-                        GeneratedPassword(
-                            value = "xK9#mQ2\$vL8nP4@wR7tY",
-                            strength =
-                                PasswordStrength(
-                                    score = SecurityScore(92),
-                                    level = PasswordStrengthLevel.VERY_STRONG,
-                                    feedback = listOf("This password looks strong."),
-                                ),
-                        ),
-                ),
+            GeneratorUiState(
+                password =
+                GeneratedPassword(
+                    value = "xK9#mQ2\$vL8nP4@wR7tY",
+                    strength =
+                    PasswordStrength(
+                        score = SecurityScore(92),
+                        level = PasswordStrengthLevel.VERY_STRONG,
+                        feedback = listOf("This password looks strong.")
+                    )
+                )
+            ),
             onBack = {},
             onLengthChange = {},
             onToggleUppercase = {},
@@ -538,7 +531,7 @@ private fun GeneratorContentPreview() {
             onToggleSymbols = {},
             onToggleExcludeAmbiguous = {},
             onRegenerate = {},
-            onCopy = {},
+            onCopy = {}
         )
     }
 }
